@@ -18,60 +18,60 @@
 -- currently disabled for paths, unfortunately.
 
 local function logicartsPath(placeable, name, png, xpos)
-  return {
-    type = "simple-entity-with-force",
-    name = name,
-    flags = {
-      "player-creation",
-    },
-    selectable_in_game = true,
-    build_sound = nil,
-    mined_sound = nil,
-    created_smoke = nil,
-    minable = {
-      mining_time = 1,
-      result = placeable,
-    },
-    collision_mask = {
-      "doodad-layer",
-    },
-    --collision_box = nil,
-    collision_box = {
-      {
-        -0.4,
-        -0.4
-      },
-      {
-        0.4,
-        0.4
-      }
-    },
-    selection_box = {
-      {
-        -0.5,
-        -0.5
-      },
-      {
-        0.5,
-        0.5
-      }
-    },
-    picture = {
-      x = xpos,
-      filename = png,
-      width = 128,
-      height = 128,
-      scale = 0.25,
-    },
-    render_layer = "floor",
-    tile_width = 1,
-    tile_height = 1,
-    --fast_replaceable_group = "logicarts-path",
-    placeable_by = {
-      item = placeable,
-      count = 1,
-    }
-  }
+	return {
+		type = "simple-entity-with-force",
+		name = name,
+		flags = {
+			"player-creation",
+		},
+		selectable_in_game = true,
+		build_sound = nil,
+		mined_sound = nil,
+		created_smoke = nil,
+		minable = {
+			mining_time = 1,
+			result = placeable,
+		},
+		collision_mask = {
+			"doodad-layer",
+		},
+		--collision_box = nil,
+		collision_box = {
+			{
+				-0.4,
+				-0.4
+			},
+			{
+				0.4,
+				0.4
+			}
+		},
+		selection_box = {
+			{
+				-0.5,
+				-0.5
+			},
+			{
+				0.5,
+				0.5
+			}
+		},
+		picture = {
+			x = xpos,
+			filename = png,
+			width = 128,
+			height = 128,
+			scale = 0.25,
+		},
+		render_layer = "floor",
+		tile_width = 1,
+		tile_height = 1,
+		--fast_replaceable_group = "logicarts-path",
+		placeable_by = {
+			item = placeable,
+			count = 1,
+		}
+	}
 end
 
 data:extend({logicartsPath("logicarts-path", "logicarts-path-north", "__logicarts__/path.png", 0)})
@@ -90,62 +90,62 @@ data:extend({logicartsPath("logicarts-stop", "logicarts-stop-south", "__logicart
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-west", "__logicarts__/stop.png", 384)})
 
 data:extend({
-  {
-    type = "simple-entity-with-force",
-    name = "logicarts-yield",
-    flags = {
-      "player-creation",
-    },
-    selectable_in_game = true,
-    mined_sound = nil,
-    minable = {
-      mining_time = 1,
-      result = "logicarts-yield",
-    },
-    collision_mask = {
-      "doodad-layer",
-    },
-    --collision_box = nil,
-    collision_box = {
-      {
-        -0.4,
-        -0.4
-      },
-      {
-        0.4,
-        0.4
-      }
-    },
-    selection_box = {
-      {
-        -0.5,
-        -0.5
-      },
-      {
-        0.5,
-        0.5
-      }
-    },
-    picture = {
-      x = 512,
-      filename = "__logicarts__/path.png",
-      width = 128,
-      height = 128,
-      shift = {
-        0,
-        0,
-      },
-      scale = 0.25,
-    },
-    render_layer = "floor",
-    tile_width = 1,
-    tile_height = 1,
-    --fast_replaceable_group = "logicarts-path",
-    placeable_by = {
-      item = "logicarts-yield",
-      count = 1,
-    },
-  },
+	{
+		type = "simple-entity-with-force",
+		name = "logicarts-yield",
+		flags = {
+			"player-creation",
+		},
+		selectable_in_game = true,
+		mined_sound = nil,
+		minable = {
+			mining_time = 1,
+			result = "logicarts-yield",
+		},
+		collision_mask = {
+			"doodad-layer",
+		},
+		--collision_box = nil,
+		collision_box = {
+			{
+				-0.4,
+				-0.4
+			},
+			{
+				0.4,
+				0.4
+			}
+		},
+		selection_box = {
+			{
+				-0.5,
+				-0.5
+			},
+			{
+				0.5,
+				0.5
+			}
+		},
+		picture = {
+			x = 512,
+			filename = "__logicarts__/path.png",
+			width = 128,
+			height = 128,
+			shift = {
+				0,
+				0,
+			},
+			scale = 0.25,
+		},
+		render_layer = "floor",
+		tile_width = 1,
+		tile_height = 1,
+		--fast_replaceable_group = "logicarts-path",
+		placeable_by = {
+			item = "logicarts-yield",
+			count = 1,
+		},
+	},
 })
 
 -- The logicarts-path entity is only used to make path placement with the mouse
@@ -156,36 +156,36 @@ path.name = "logicarts-path"
 path.minable.result = "logicarts-path"
 path.build_sound = nil
 path.collision_mask = {
-  "doodad-layer",
+	"doodad-layer",
 }
 --path.fast_replaceable_group = "logicarts-path"
 path.sprites.north = {
-  x = 0,
-  filename = "__logicarts__/path.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 0,
+	filename = "__logicarts__/path.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 path.sprites.east = {
-  x = 128,
-  filename = "__logicarts__/path.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 128,
+	filename = "__logicarts__/path.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 path.sprites.south = {
-  x = 256,
-  filename = "__logicarts__/path.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 256,
+	filename = "__logicarts__/path.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 path.sprites.west = {
-  x = 384,
-  filename = "__logicarts__/path.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 384,
+	filename = "__logicarts__/path.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 data:extend({ path })
 
@@ -197,36 +197,36 @@ stop.name = "logicarts-stop"
 stop.minable.result = "logicarts-stop"
 stop.build_sound = nil
 stop.collision_mask = {
-  "doodad-layer",
+	"doodad-layer",
 }
 --stop.fast_replaceable_group = "logicarts-stop"
 stop.sprites.north = {
-  x = 0,
-  filename = "__logicarts__/stop.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 0,
+	filename = "__logicarts__/stop.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 stop.sprites.east = {
-  x = 128,
-  filename = "__logicarts__/stop.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 128,
+	filename = "__logicarts__/stop.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 stop.sprites.south = {
-  x = 256,
-  filename = "__logicarts__/stop.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 256,
+	filename = "__logicarts__/stop.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 stop.sprites.west = {
-  x = 384,
-  filename = "__logicarts__/stop.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 384,
+	filename = "__logicarts__/stop.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 data:extend({ stop })
 
@@ -238,36 +238,36 @@ turn.name = "logicarts-turn"
 turn.minable.result = "logicarts-turn"
 turn.build_sound = nil
 turn.collision_mask = {
-  "doodad-layer",
+	"doodad-layer",
 }
 --turn.fast_replaceable_group = "logicarts-turn"
 turn.sprites.north = {
-  x = 0,
-  filename = "__logicarts__/turn.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 0,
+	filename = "__logicarts__/turn.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 turn.sprites.east = {
-  x = 128,
-  filename = "__logicarts__/turn.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 128,
+	filename = "__logicarts__/turn.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 turn.sprites.south = {
-  x = 256,
-  filename = "__logicarts__/turn.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 256,
+	filename = "__logicarts__/turn.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 turn.sprites.west = {
-  x = 384,
-  filename = "__logicarts__/turn.png",
-  width = 128,
-  height = 128,
-  scale = 0.25,
+	x = 384,
+	filename = "__logicarts__/turn.png",
+	width = 128,
+	height = 128,
+	scale = 0.25,
 }
 data:extend({ turn })
 
@@ -298,24 +298,24 @@ car.flags = {
 car.tile_width = 1
 car.tile_height = 1
 car.collision_box = {
-  {
-    -0.4,
-    -0.4
-  },
-  {
-    0.4,
-    0.4
-  }
+	{
+		-0.4,
+		-0.4
+	},
+	{
+		0.4,
+		0.4
+	}
 }
 car.selection_box = {
-  {
-    -0.5,
-    -0.5
-  },
-  {
-    0.5,
-    0.5
-  }
+	{
+		-0.5,
+		-0.5
+	},
+	{
+		0.5,
+		0.5
+	}
 }
 car.energy_consumption = "50kW"
 --car.burner = {
@@ -332,49 +332,49 @@ car.energy_consumption = "50kW"
 --}
 
 car.animation.layers = {
-  {
-    animation_speed = 1,
-    direction_count = 4,
-    frame_count = 1,
-    height = 169,
-    max_advance = 0.2,
-    priority = "low",
-    scale = 0.25,
-    shift = {
-      0,
-      0,
-    },
-    stripes = {
-      {
-        filename = "__logicarts__/car.png",
-        height_in_frames = 1,
-        width_in_frames = 4,
-      },
-    },
-    width = 180,
-  },
-  {
-    draw_as_shadow = true,
-    animation_speed = 1,
-    direction_count = 4,
-    frame_count = 1,
-    height = 72,
-    max_advance = 0.2,
-    priority = "low",
-    scale = 0.44,
-    shift = {
-      0.2,
-      0.2,
-    },
-    stripes = {
-      {
-        filename = "__logicarts__/car-shadow.png",
-        height_in_frames = 1,
-        width_in_frames = 4,
-      },
-    },
-    width = 100,
-  },
+	{
+		animation_speed = 1,
+		direction_count = 4,
+		frame_count = 1,
+		height = 169,
+		max_advance = 0.2,
+		priority = "low",
+		scale = 0.25,
+		shift = {
+			0,
+			0,
+		},
+		stripes = {
+			{
+				filename = "__logicarts__/car.png",
+				height_in_frames = 1,
+				width_in_frames = 4,
+			},
+		},
+		width = 180,
+	},
+	{
+		draw_as_shadow = true,
+		animation_speed = 1,
+		direction_count = 4,
+		frame_count = 1,
+		height = 72,
+		max_advance = 0.2,
+		priority = "low",
+		scale = 0.44,
+		shift = {
+			0.2,
+			0.2,
+		},
+		stripes = {
+			{
+				filename = "__logicarts__/car-shadow.png",
+				height_in_frames = 1,
+				width_in_frames = 4,
+			},
+		},
+		width = 100,
+	},
 }
 
 data:extend({ car })
