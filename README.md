@@ -88,6 +88,10 @@ Couple other links I can't find right now...
 
 ## Change Log
 
+0.1.6
+
+Carts now send signals to constant combinators slightly before arrival to allow circuits time to execute and possibly avoid a cart stopping at all.
+
 0.1.5
 
 Added an path-stop paint symbol.

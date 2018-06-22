@@ -117,6 +117,19 @@ local function gridCell(x, y)
 		}
 		grid[tile] = cell
 	end
+	cell.x = floor(x)
+	cell.y = floor(y)
+	return cell
+end
+
+local function gridPeek(x, y)
+	local grid = mod.grid
+	local tile = gridKey(x, y)
+	local cell = grid[tile]
+	if cell ~= nil then
+		cell.x = x
+		cell.y = y
+	end
 	return cell
 end
 
@@ -278,11 +291,7 @@ local function OnEntityRemoved(event)
 	end
 end
 
-local function checkDirection(car, direction, gate)
-
-	local x = car.position.x
-	local y = car.position.y
-
+local function cellTranslate(x, y, direction)
 	if direction == NORTH then
 		y = y - 1
 	elseif direction == EAST then
@@ -292,8 +301,13 @@ local function checkDirection(car, direction, gate)
 	elseif direction == WEST then
 		x = x - 1
 	end
+	return x, y
+end
 
-	local cell = mod.grid[gridKey(x, y)]
+local function checkDirection(car, direction, gate)
+
+	local x, y = cellTranslate(car.position.x, car.position.y, direction)
+	local cell = gridPeek(x, y)
 
 	if cell ~= nil then
 
@@ -305,6 +319,100 @@ local function checkDirection(car, direction, gate)
 	end
 
 	return false, cell
+end
+
+local function getCombinator(surface, x, y)
+	local cx = floor(x)
+	local cy = floor(y)
+
+	local area = {
+		{ x = cx - 1, y = cy - 1 },
+		{ x = cx + 2, y = cy + 2 },
+	}
+
+	local combinators = surface.find_entities_filtered({ area = area, type = "constant-combinator" })
+
+	for i = 1,#combinators,1 do
+		local en = combinators[i]
+		local ed = en.direction
+		local alignH = floor(en.position.y) == cy
+		local alignV = floor(en.position.x) == cx
+		if   (alignH and (ed == EAST or ed == WEST))
+			or (alignV and (ed == NORTH or ed == SOUTH))
+		then
+			return en
+		end
+	end
+	return nil
+end
+
+local function setCombinatorSignals(combinator, items, virtuals)
+	local parameters = {}
+
+	if items ~= nil then
+		for item, count in pairs(items) do
+			local index = #parameters+1
+			parameters[index] = {
+				index = index,
+				signal = {
+					type = "item",
+					name = item,
+				},
+				count = count,
+			}
+		end
+	end
+	
+	if virtuals ~= nil then
+		for item, count in pairs(virtuals) do
+			local index = #parameters+1
+			parameters[index] = {
+				index = index,
+				signal = {
+					type = "virtual",
+					name = item,
+				},
+				count = count,
+			}
+		end
+	end
+
+	combinator.get_control_behavior().parameters = {
+		parameters = parameters
+	}
+end
+
+local function getCombinatorVirtuals(combinator)
+	local virtuals = {}
+	local signals = combinator.get_merged_signals()
+	if type(signals) == "table" then
+		for _, v in pairs(signals) do
+			if v.signal.type == "virtual" then
+				virtuals[v.signal.name] = true
+			end
+		end
+	end
+	return virtuals
+end
+
+local function carContents(car)
+	local contents = car.get_fuel_inventory().get_contents()
+	local trunk = car.get_inventory(defines.inventory.car_trunk).get_contents()
+	for k,v in pairs(trunk) do
+		contents[k] = (contents[k] or 0) + v
+	end
+	local equipment = car.grid.get_contents()
+	for k,v in pairs(equipment) do
+		contents[k] = (contents[k] or 0) + v
+	end
+	return contents
+end
+
+local function carSignals(car)
+	return {
+		["signal-C"] = car.unit_number,
+		["signal-F"] = car.get_fuel_inventory().get_item_count(),
+	}
 end
 
 local quadrantDirections = {
@@ -356,9 +464,9 @@ local function runCar(car)
 
 	local centered = xc and yc
 
-	local cell = mod.grid[gridKey(x, y)]
+	local cell = gridPeek(x, y)
 
-	-- have we somehow entered a tile already in use?
+	-- have we somehow entered a tile already in grid?
 	local cellConflict = cell ~= nil
 		and cell.car_id ~= nil
 		and cell.car_id ~= car.unit_number
@@ -435,9 +543,13 @@ local function runCar(car)
 	end
 
 	-- Nearby entities
-	local stopCombinator = nil
+	local adjacentCombinator = getCombinator(car.surface, x, y)
 	local stopGatePath = nil -- gate in direction of cell
 	local stopGateCar = nil -- gate in direction of car (checked when turning is blocked)
+
+	-- inventory, fuel and grid contents
+	local contents = carContents(car)
+	local signals = carSignals(car)
 
 	-- Signals to control a car
 	local red = false
@@ -447,51 +559,14 @@ local function runCar(car)
 	local right = false
 	local straight = false
 
-	local cx = floor(x)
-	local cy = floor(y)
-
-	local area = {
-		{ x = cx - 1, y = cy - 1 },
-		{ x = cx + 2, y = cy + 2 },
-	}
-
-	-- TODO use type = { ... } once Factorio stable moves past 0.16.36
-	local combinators = car.surface.find_entities_filtered({ area = area, type = "constant-combinator" })
-
-	for i = 1,#combinators,1 do
-		local en = combinators[i]
-		local ed = en.direction
-		local alignH = floor(en.position.y) == cy
-		local alignV = floor(en.position.x) == cx
-		if   (alignH and (ed == EAST or ed == WEST))
-			or (alignV and (ed == NORTH or ed == SOUTH))
-		then
-			stopCombinator = en
-			break
-		end
-	end
-
-	if stopCombinator ~= nil then
-		local signals = stopCombinator.get_merged_signals()
-		if type(signals) == "table" then
-			for _, v in pairs(signals) do
-				if v.signal.type == "virtual" then
-					if v.signal.name == "signal-green" then
-						green = true
-					elseif v.signal.name == "signal-red" then
-						red = true
-					elseif v.signal.name == "signal-yellow" then
-						yellow = true
-					elseif v.signal.name == "signal-L" then
-						left = true
-					elseif v.signal.name == "signal-R" then
-						right = true
-					elseif v.signal.name == "signal-S" then
-						straight = true
-					end
-				end
-			end
-		end
+	if adjacentCombinator ~= nil then
+		local virtuals = getCombinatorVirtuals(adjacentCombinator)
+		green    = virtuals["signal-green"] or false
+		red      = virtuals["signal-red"] or false
+		yellow   = virtuals["signal-yellow"] or false
+		left     = virtuals["signal-L"] or false
+		right    = virtuals["signal-R"] or false
+		straight = virtuals["signal-S"] or false
 	end
 
 	if left then
@@ -503,8 +578,16 @@ local function runCar(car)
 	end
 
 	-- Special control tiles
-	local yield = cell.entity ~= nil and cell.is_yield
+	local yield = yellow or (cell.entity ~= nil and cell.is_yield)
 	local turn = (not left and not right and not straight) and cell.entity ~= nil and cell.is_turn
+
+	local cx = floor(x)
+	local cy = floor(y)
+
+	local area = {
+		{ x = cx - 1, y = cy - 1 },
+		{ x = cx + 2, y = cy + 2 },
+	}
 
 	-- TODO use type = { ... } once Factorio stable moves past 0.16.36
 	local gates = car.surface.find_entities_filtered({ area = area, type = "gate" })
@@ -551,63 +634,8 @@ local function runCar(car)
 
 	if stop then
 
-		local contents = car.get_fuel_inventory().get_contents()
-		local trunk = car.get_inventory(defines.inventory.car_trunk).get_contents()
-		for k,v in pairs(trunk) do
-			contents[k] = (contents[k] or 0) + v
-		end
-
-		if stopCombinator ~= nil then
-
-			local parameters = {}
-			for item, count in pairs(trunk) do
-				local index = #parameters+1
-				parameters[index] = {
-					index = index,
-					signal = {
-						type = "item",
-						name = item,
-					},
-					count = count,
-				}
-			end
-
-			local index = #parameters+1
-			parameters[index] = {
-				index = index,
-				signal = {
-					type = "virtual",
-					name = "signal-C",
-				},
-				count = car.unit_number,
-			}
-
-			local index = #parameters+1
-			parameters[index] = {
-				index = index,
-				signal = {
-					type = "virtual",
-					name = "signal-F",
-				},
-				count = car.get_fuel_inventory().get_item_count(),
-			}
-
-			local equipment = car.grid.get_contents()
-			for item, count in pairs(equipment) do
-				local index = #parameters+1
-				parameters[index] = {
-					index = index,
-					signal = {
-						type = "item",
-						name = item,
-					},
-					count = count,
-				}
-			end
-
-			stopCombinator.get_control_behavior().parameters = {
-				parameters = parameters
-			}
+		if adjacentCombinator ~= nil and contents ~= nil and signals ~= nil then
+			setCombinatorSignals(adjacentCombinator, contents, carSignals(car))
 		end
 
 		if red or not fueled then
@@ -645,8 +673,8 @@ local function runCar(car)
 	state.stopCount = nil
 	state.contents = nil
 
-	if stopCombinator ~= nil then
-		stopCombinator.get_control_behavior().parameters = nil
+	if adjacentCombinator ~= nil then
+		adjacentCombinator.get_control_behavior().parameters = nil
 	end
 
 	-- centered; claim the cell but figure out what to do next
@@ -670,6 +698,14 @@ local function runCar(car)
 		car.speed = CAR_ENTITY_SPEED
 		cellClaim(nextCell, car, CAR_TICK_MARGIN)
 		burner.remaining_burning_fuel = burner.remaining_burning_fuel - CAR_CONSUMPTION
+
+		-- if approaching a combinator, update it in advance to allow circuits to change in time
+		local nextCombinator = getCombinator(car.surface, nextCell.x, nextCell.y)
+
+		if nextCombinator ~= nil and contents ~= nil and signals ~= nil then
+			setCombinatorSignals(nextCombinator, contents, signals)
+		end
+
 		return CAR_TICK_STARTING
 	end
 
