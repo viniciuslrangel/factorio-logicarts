@@ -95,4 +95,24 @@ data:extend({
 		energy_required = 2.0,
 		order = "logicarts-a-a",
 	},
+	{
+		type = "recipe",
+		name = "logicarts-car-electric",
+		category = "advanced-crafting",
+		subgroup = "logicarts-subgroup",
+		enabled = false,
+		icon = "__logicarts__/car-electric-icon.png",
+		icon_size = 128,
+		ingredients = {
+			{ type = "item", name = "electric-engine-unit", amount = 1 },
+			{ type = "item", name = "steel-plate", amount = 1 },
+			{ type = "item", name = "advanced-circuit", amount = 1 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-car-electric", amount = 1 },
+		},
+		hidden = false,
+		energy_required = 2.0,
+		order = "logicarts-a-a",
+	},
 })

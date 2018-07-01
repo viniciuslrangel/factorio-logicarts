@@ -11,6 +11,16 @@ data:extend({
 	},
 	{
 		type = "item",
+		name = "logicarts-car-electric",
+		icon = "__logicarts__/car-electric-icon.png",
+		icon_size = 128,
+		flags = {"goes-to-quickbar"},
+		place_result = "logicarts-car-electric",
+		order = "logicarts-a-a",
+		stack_size = 50,
+	},
+	{
+		type = "item",
 		name = "logicarts-path",
 		icon = "__logicarts__/path-icon.png",
 		icon_size = 128,

@@ -317,20 +317,7 @@ car.selection_box = {
 		0.5
 	}
 }
-car.energy_consumption = "50kW"
---car.burner = {
---  effectivity = 1,
---  fuel_inventory_size = 0,
---}
---car.sound_no_fuel = nil
---car.working_sound = {
---  sound = {
---    filename = "__base__/sound/electric-furnace.ogg",
---    volume = 0.2,
---  },
---  match_speed_to_activity = true,
---}
-
+car.consumption = "50kW"
 car.animation.layers = {
 	{
 		animation_speed = 1,
@@ -347,6 +334,116 @@ car.animation.layers = {
 		stripes = {
 			{
 				filename = "__logicarts__/car.png",
+				height_in_frames = 1,
+				width_in_frames = 4,
+			},
+		},
+		width = 180,
+	},
+	{
+		draw_as_shadow = true,
+		animation_speed = 1,
+		direction_count = 4,
+		frame_count = 1,
+		height = 72,
+		max_advance = 0.2,
+		priority = "low",
+		scale = 0.44,
+		shift = {
+			0.2,
+			0.2,
+		},
+		stripes = {
+			{
+				filename = "__logicarts__/car-shadow.png",
+				height_in_frames = 1,
+				width_in_frames = 4,
+			},
+		},
+		width = 100,
+	},
+}
+
+data:extend({ car })
+
+
+-- A mini car with sprites that are part 1x1 scaled car and part rail wagon...
+-- As direction_count=4, these look terible if you try to drive one around, but
+-- it's an easy way of getting carts to be actual vehicles (for on_tick UPS
+-- mainly), instead of units or something else animated manually.
+
+local car = table.deepcopy(data.raw.car.car)
+car.name = "logicarts-car-electric"
+car.minable.result = "logicarts-car-electric"
+car.inventory_size = 10
+car.guns = nil
+car.equipment_grid = "logicarts-equipment-grid"
+car.animation.layers[1].scale = 0.5
+car.animation.layers[1].shift[2] = 0
+car.animation.layers[1].hr_version.scale = 0.25
+car.animation.layers[1].hr_version.shift[2] = 0
+car.animation.layers[2].scale = 0.5
+car.animation.layers[1].shift[2] = 0
+car.animation.layers[2].hr_version.scale = 0.25
+car.animation.layers[2].hr_version.shift[2] = 0
+car.animation.layers[3].scale = 0.5
+car.turret_animation = nil
+car.flags = {
+	"player-creation",
+}
+car.tile_width = 1
+car.tile_height = 1
+car.collision_box = {
+	{
+		-0.4,
+		-0.4
+	},
+	{
+		0.4,
+		0.4
+	}
+}
+car.selection_box = {
+	{
+		-0.5,
+		-0.5
+	},
+	{
+		0.5,
+		0.5
+	}
+}
+car.consumption = "50kW"
+car.burner = {
+  effectivity = 1,
+  fuel_inventory_size = 0,
+  render_no_power_icon = false,
+}
+car.sound_no_fuel = nil
+car.working_sound = {
+  sound = {
+    filename = "__base__/sound/electric-furnace.ogg",
+    volume = 0.2,
+  },
+  match_speed_to_activity = true,
+}
+
+car.animation.layers = {
+	{
+		animation_speed = 1,
+		direction_count = 4,
+		frame_count = 1,
+		height = 169,
+		max_advance = 0.2,
+		priority = "low",
+		scale = 0.25,
+		shift = {
+			0,
+			0,
+		},
+		stripes = {
+			{
+				filename = "__logicarts__/car-electric.png",
 				height_in_frames = 1,
 				width_in_frames = 4,
 			},

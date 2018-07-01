@@ -30,4 +30,28 @@ data:extend({
 		},
 		order = "c-o-a",
 	},
+	{
+		type = "technology",
+		name = "logicarts-tech2",
+		icon = "__logicarts__/tech2.png",
+		icon_size = 128,
+		effects = {
+			{ type = "unlock-recipe", recipe = "logicarts-car-electric" },
+		},
+		prerequisites = {
+			"electric-engine",
+			"advanced-electronics",
+			"logicarts-tech1",
+		},
+		unit = {
+			count = 100,
+			ingredients = {
+				{"science-pack-1", 1},
+				{"science-pack-2", 1},
+				{"science-pack-3", 1},
+			},
+			time = 30
+		},
+		order = "c-o-a",
+	},
 })

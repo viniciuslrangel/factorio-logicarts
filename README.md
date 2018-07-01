@@ -2,8 +2,6 @@
 
 POC WIP
 
-**BEHAVIOUR CHANGE for implicit cart stops in 0.1.5 -- detail in change log below**
-
 Small carts (1x1 cars) that follow paths painted on the ground.
 
 * Pathing is not automatic -- networks must designed carefully to avoid collision!
@@ -13,18 +11,21 @@ Small carts (1x1 cars) that follow paths painted on the ground.
 ## Technology
 
 "Logistic Carts" tech (red + green science) is available after researching engines.
+"Electric Logistic Carts" tech (red + green + blue science) is available after researching electric engines.
 
 ## Carts
 
 * Mini 1x1 tile cars
 * Base speed 10kph
-* Fuel burning
+* Fuel burning or Electric
 * 10 trunk spaces
 * Small equipment grid
 
 As with cars, trunk spaces can be filtered.
 
-Riding in carts is possible, but it's not really practical to drive them. They currently have simple 4-way directional sprites, and their on_tick handler will mess with steering and speed.
+Riding in carts as passenger is possible, but driving is blocked because it misses up the on_tick handler.
+
+Electric carts work with solar panels or [induction charging](https://mods.factorio.com/mod/Induction%20Charging).
 
 ## Paint
 
@@ -50,6 +51,7 @@ When a cart detects a constant combinator *next to and facing* a stop, it change
 
 * C as the cart number (currently entity.unit_number)
 * F as the unburnt fuel supply
+* E as the available energy in battery equipment
 
 The cart will check the constant combinator's circuit network for incoming signals too:
 
@@ -60,6 +62,18 @@ The cart will check the constant combinator's circuit network for incoming signa
 * S to continue straight regardless of path
 
 In the absense of incoming signals the cart will wait for the default 3s of inactivity.
+
+## Filtered Trunk Slots
+
+Cart inventory signals sent to constant combinators are affected by filters:
+
+* Unfiltered trunk items will be a normal positive count
+* Filtered trunk items will be negative counts *if there is a shortfall*, else positive
+
+This allows using a decider combinator to direct carts based on their filter states:
+
+* Loading station: *item < 0* (any filtered cart requiring item)
+* Unloading station: *item > 0* or *item > -N* (any cart with item)
 
 ## Cart Groups
 
@@ -87,6 +101,23 @@ Since UPS is dependent on the computer and the base, any UPS reports are welcome
 Couple other links I can't find right now...
 
 ## Change Log
+
+0.1.9
+
+Added second-tier electric cart. Usable with solar panels or [induction charging](https://mods.factorio.com/mod/Induction%20Charging).
+Adjustment to per-tile cart fuel consumption to better match the advertised 50kW consumption.
+
+0.1.8
+
+Changed precedence of yellow turn paint vs L/R/S signals (previous order essentially made them useless when combined).   
+Fixed constant combinators not resetting in some layouts after cart departure on L/R signal.
+
+0.1.7
+
+Improved anti-collision and path centering checks.
+Fixed constant combinator detection when adjacent to more than one path.
+Driving carts is now blocked as it causes too many issues with on_tick. Player will be automatically switched to the passenger seat.
+*BEHAVIOUR CHANGE*: If a cart has filtered trunk slots the item count sent to constant combinators will be negative if there is a shortfall. This allows *item < 0* checks for loading stops, and *item >= N* of *item != 0* for unloading stops. 
 
 0.1.6
 
