@@ -102,6 +102,12 @@ Couple other links I can't find right now...
 
 ## Change Log
 
+0.1.10
+
+Prevent nil entity ref crash: https://forums.factorio.com/viewtopic.php?f=190&t=61053#p370623 .
+Adjust cart timing slightly to reduce jitter (due to auto centering on a tile before moving to next).
+Add missing item-group-name.
+
 0.1.9
 
 Added second-tier electric cart. Usable with solar panels or [induction charging](https://mods.factorio.com/mod/Induction%20Charging).
@@ -109,7 +115,7 @@ Adjustment to per-tile cart fuel consumption to better match the advertised 50kW
 
 0.1.8
 
-Changed precedence of yellow turn paint vs L/R/S signals (previous order essentially made them useless when combined).   
+Changed precedence of yellow turn paint vs L/R/S signals (previous order essentially made them useless when combined).
 Fixed constant combinators not resetting in some layouts after cart departure on L/R signal.
 
 0.1.7
@@ -117,7 +123,7 @@ Fixed constant combinators not resetting in some layouts after cart departure on
 Improved anti-collision and path centering checks.
 Fixed constant combinator detection when adjacent to more than one path.
 Driving carts is now blocked as it causes too many issues with on_tick. Player will be automatically switched to the passenger seat.
-*BEHAVIOUR CHANGE*: If a cart has filtered trunk slots the item count sent to constant combinators will be negative if there is a shortfall. This allows *item < 0* checks for loading stops, and *item >= N* of *item != 0* for unloading stops. 
+*BEHAVIOUR CHANGE*: If a cart has filtered trunk slots the item count sent to constant combinators will be negative if there is a shortfall. This allows *item < 0* checks for loading stops, and *item >= N* of *item != 0* for unloading stops.
 
 0.1.6
 

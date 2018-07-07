@@ -12,8 +12,8 @@ local CAR_SPEED = 10
 local CAR_ENTITY_SPEED = CAR_SPEED/216
 
 -- Bounds determining when a car x,y is centered on a tile
-local TILE_CENTER_LOW = 0.5-(CAR_ENTITY_SPEED*2)
-local TILE_CENTER_HIGH = 0.5+(CAR_ENTITY_SPEED*2)
+local TILE_CENTER_LOW = 0.5-(CAR_ENTITY_SPEED)
+local TILE_CENTER_HIGH = 0.5+(CAR_ENTITY_SPEED)
 
 -- Tick delay between updates after a car starts to move to the next tile
 -- Since cars don't start moving until the path is free, this should be close to
@@ -275,6 +275,9 @@ end
 local function OnEntityCreated(event)
 	State()
 	local entity = event.created_entity
+	if entity == nil then
+		return
+	end
 
 	if entity.name == "logicarts-car" or entity.name == "logicarts-car-electric" then
 		entity.friction_modifier = 0
@@ -311,14 +314,23 @@ end
 
 local function OnEntityRotated(event)
 	State()
+	local entity = event.entity
+	if entity == nil then
+		return
+	end
+
 	updateEntityCell(event.entity)
 end
 
 local function OnPlayerDrivingStateChanged(event)
 	State()
 	local entity = event.entity
+	if entity == nil then
+		return
+	end
+
 	if (entity.name == "logicarts-car" or entity.name == "logicarts-car-electric") and entity.get_driver() ~= nil then
-		local player = entity.get_driver() 
+		local player = entity.get_driver()
 		entity.set_driver(nil)
 		if entity.get_passenger() == nil then
 			entity.set_passenger(player)
@@ -329,6 +341,9 @@ end
 local function OnEntityRemoved(event)
 	State()
 	local entity = event.entity
+	if entity == nil then
+		return
+	end
 
 	if mod.entities[entity.unit_number] ~= nil then
 		if entity.name ~= "logicarts-car" and entity.name ~= "logicarts-car-electric" then
@@ -425,7 +440,7 @@ local function setCombinatorSignals(combinator, items, virtuals)
 			}
 		end
 	end
-	
+
 	if virtuals ~= nil then
 		for item, count in pairs(virtuals) do
 			local index = #parameters+1
@@ -512,7 +527,7 @@ local function carContents(car)
 		end
 	end
 	-- If filtered trunk slots are in use, send the item shortfall as a negative value.
-	-- This allows loading station circuits to look for item < 0.  
+	-- This allows loading station circuits to look for item < 0.
 	local reqs = {}
 	for i = 1,#trunk,1 do
 		local filter = trunk.get_filter(i)
@@ -638,7 +653,7 @@ local function runCar(car)
 
 	if not centered and carBlocked(car, carDirection) then
 		return CAR_TICK_BLOCKED
-	end	
+	end
 
 	if not centered and fueled then
 		-- keep moving
