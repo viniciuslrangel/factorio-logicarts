@@ -1,3 +1,4 @@
+require("prototypes.debug")
 require("prototypes.category")
 require("prototypes.equipment")
 require("prototypes.item")

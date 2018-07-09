@@ -1,14 +1,17 @@
+data:extend({
+	{
+		type = "equipment-grid",
+		name = "logicarts-equipment-grid",
+		width = 4,
+		height = 4,
+		equipment_categories = {"armor"}
+	},
+})
+
 local function signalEquipment(n)
 	local name = "logicarts-equipment-"..n
 	local icon = "__logicarts__/icon-G"..n..".png"
 	data:extend({
-		{
-			type = "equipment-grid",
-			name = "logicarts-equipment-grid",
-			width = 4,
-			height = 4,
-			equipment_categories = {"armor"}
-		},
 		{
 			type = "item",
 			name = name,
@@ -60,7 +63,7 @@ local function signalEquipment(n)
 			},
 			hidden = false,
 			energy_required = 1.0,
-			order = "logicarts-b-"..n,
+			order = "logicarts-c-"..n,
 		},
 	})
 end
@@ -70,3 +73,4 @@ signalEquipment(2)
 signalEquipment(3)
 signalEquipment(4)
 signalEquipment(5)
+

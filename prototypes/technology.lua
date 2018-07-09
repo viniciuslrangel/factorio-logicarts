@@ -2,12 +2,13 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech1",
-		icon = "__logicarts__/tech1.png",
+		icon = "__logicarts__/graphics/cart-tech.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-path" },
 			{ type = "unlock-recipe", recipe = "logicarts-turn" },
 			{ type = "unlock-recipe", recipe = "logicarts-stop" },
+			{ type = "unlock-recipe", recipe = "logicarts-turn-blocked" },
 			{ type = "unlock-recipe", recipe = "logicarts-yield" },
 			{ type = "unlock-recipe", recipe = "logicarts-car" },
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-1" },
@@ -33,7 +34,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech2",
-		icon = "__logicarts__/tech2.png",
+		icon = "__logicarts__/graphics/e-cart-tech.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-car-electric" },

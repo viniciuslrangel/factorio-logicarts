@@ -8,7 +8,7 @@ data:extend({
 		name = "logicarts-group",
 		order = "z",
 		inventory_order = "z",
-		icon = "__logicarts__/tech1.png",
+		icon = "__logicarts__/graphics/cart-tech.png",
 		icon_size = 128,
 	},
 	{
@@ -19,8 +19,14 @@ data:extend({
 	},
 	{
 		type = "item-subgroup",
-		name = "logicarts-subgroup-signal",
+		name = "logicarts-subgroup-path",
 		group = "logicarts-group",
 		order = "b"
+	},
+	{
+		type = "item-subgroup",
+		name = "logicarts-subgroup-signal",
+		group = "logicarts-group",
+		order = "c"
 	},
 })

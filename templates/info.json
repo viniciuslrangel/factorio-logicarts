@@ -8,6 +8,6 @@
   "homepage": "https://gitlab.com/aerosuidae/logicarts",
   "description": "Carts (mini cars) carry items around a network of painted paths.",
   "dependencies": [
-    "base >= 0.16.36"
+    "base >= 0.16.51"
   ]
 }

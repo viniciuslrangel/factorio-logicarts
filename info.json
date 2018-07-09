@@ -1,6 +1,6 @@
 {
   "name": "logicarts",
-  "version": "0.1.10",
+  "version": "0.1.14",
   "factorio_version": "0.16",
   "title": "Logistic Carts",
   "author": "dorfl",
@@ -8,6 +8,6 @@
   "homepage": "https://gitlab.com/aerosuidae/logicarts",
   "description": "Carts (mini cars) carry items around a network of painted paths.",
   "dependencies": [
-    "base >= 0.16.36"
+    "base >= 0.16.51"
   ]
 }

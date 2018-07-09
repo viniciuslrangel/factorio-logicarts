@@ -6,7 +6,7 @@ local EAST = defines.direction.east
 local WEST = defines.direction.west
 
 -- kph
-local CAR_SPEED = 10
+local CAR_SPEED = 5
 
 -- entity.speed of cars
 local CAR_ENTITY_SPEED = CAR_SPEED/216
@@ -40,12 +40,17 @@ local CAR_TICK_PLACED = CAR_TICK_BLOCKED
 -- Since cars are using zero friction and constant speed, without touching entity.riding_state,
 -- the fuel consumption needs to be deducted manually once per tile https://wiki.factorio.com/Types/Energy
 local CAR_CONSUMPTION = 18*1000
+local CAR_CONSUMPTION_ELECTRIC = CAR_CONSUMPTION
+local CAR_CONSUMPTION_BURNER = CAR_CONSUMPTION * 3
 
 -- Tick delay between signal updates when a car is at a logicarts-stop.
 local CAR_TICK_STOPPED = 60
 
 -- Tick delay (used x3) for inactivity check when car at a logicarts-stop.
 local CAR_TICK_ACTIVITY = 60
+
+local CAR_BURNER = "logicarts-car"
+local CAR_ELECTRIC = "logicarts-car-electric"
 
 local quadrantDirections = {
 	NORTH,
@@ -68,6 +73,13 @@ local rightDirections = {
 	[WEST] = NORTH,
 }
 
+local reverseDirections = {
+	[NORTH] = SOUTH,
+	[EAST] = WEST,
+	[SOUTH] = NORTH,
+	[WEST] = EAST,
+}
+
 local directionNames = {
 	[NORTH] = "north",
 	[SOUTH] = "south",
@@ -82,6 +94,11 @@ local directionOrientations = {
 	[WEST] = 0.75,
 }
 
+local cartEntities = {
+	[CAR_BURNER] = true,
+	[CAR_ELECTRIC] = true,
+}
+
 local pathEntities = {
 	["logicarts-path-north"] = NORTH,
 	["logicarts-path-south"] = SOUTH,
@@ -89,11 +106,18 @@ local pathEntities = {
 	["logicarts-path-west"] = WEST,
 }
 
-local turnEntities = {
+local turnClearEntities = {
 	["logicarts-turn-north"] = NORTH,
 	["logicarts-turn-south"] = SOUTH,
 	["logicarts-turn-east"] = EAST,
 	["logicarts-turn-west"] = WEST,
+}
+
+local turnBlockedEntities = {
+	["logicarts-turn-blocked-north"] = NORTH,
+	["logicarts-turn-blocked-south"] = SOUTH,
+	["logicarts-turn-blocked-east"] = EAST,
+	["logicarts-turn-blocked-west"] = WEST,
 }
 
 local stopEntities = {
@@ -104,29 +128,67 @@ local stopEntities = {
 }
 
 local floor = math.floor
+local ceil = math.ceil
 local abs = math.abs
 local max = math.max
 local min = math.min
 
+local function serialize(t)
+	local s = {}
+	for k,v in pairs(t) do
+		if type(v) == "table" then
+			v = serialize(v)
+		end
+		s[#s+1] = tostring(k).." = "..tostring(v)
+	end
+	return "{ "..table.concat(s, ", ").." }"
+end
+
+local function cellCenter(x, y)
+	return floor(x) + 0.5, floor(y) + 0.5
+end
+
+local function cellCenterPos(x, y)
+	x, y = cellCenter(x, y)
+	return { x = x, y = y }
+end
+
+local cellTranslators = {
+	[NORTH] = function(x, y) return x, y-1 end,
+	[SOUTH] = function(x, y) return x, y+1 end,
+	[EAST]  = function(x, y) return x+1, y end,
+	[WEST]  = function(x, y) return x-1, y end,
+}
+
+-- Translate x,y in direction by one cell
+local function cellTranslate(dir, x, y)
+	x, y = cellTranslators[dir](x, y)
+	return x, y
+end
+
+-- Translate a position in direction by one cell
+local function directionPosition(dir, pos)
+	local x, y = cellTranslate(dir, pos[1] or pos.x, pos[2] or pos.y)
+	return { x = x, y = y }
+end
+
 local function State()
 	mod = global
+	mod.grid = nil
+	mod.entities = nil
 
-	if mod.grid == nil then
-		mod.grid = {}
-	end
 	if mod.queues == nil then
 		mod.queues = {}
-	end
-	if mod.entities == nil then
-		mod.entities = {}
 	end
 	if mod.carStates == nil then
 		mod.carStates = {}
 	end
+	if mod.markers == nil then
+		mod.markers = {}
+	end
 end
 
 -- Schedule the next position check for a car in "ticks" time
-
 local function carQueue(car, ticks)
 	local tick = game.tick+ticks
 	local queues = mod.queues
@@ -138,125 +200,111 @@ local function carQueue(car, ticks)
 	queue[#queue+1] = car
 end
 
-local function cellClaim(cell, car, ticks)
-	cell.car_id = car.unit_number
-	cell.car_tick = game.tick + ticks + 10
-end
-
-local function cellClaimed(cell)
-	return cell ~= nil and cell.car_id ~= nil and mod.entities[cell.car_id] ~= nil and (cell.car_tick or 0) >= game.tick
-end
-
-local function gridKey(x, y)
-	return floor(x)..":"..floor(y)
-end
-
-local function carBlocked(car, direction)
-	local x = car.position.x
-	local y = car.position.y
-	if direction == NORTH then
-		y = y - 1
-	elseif direction == EAST then
-		x = x + 1
-	elseif direction == SOUTH then
-		y = y + 1
-	elseif direction == WEST then
-		x = x - 1
+-- Schedule removal of a marker in "ticks" time
+local function markerQueue(marker, ticks)
+	local tick = game.tick+ticks
+	local queues = mod.queues
+	local queue = queues[tick]
+	if queue == nil then
+		queue = {nil,nil,nil,nil}
+		queues[tick] = queue
 	end
-	local area = {
-		{ x - 0.5, y - 0.5 },
-		{ x + 0.5, y + 0.5 },
+	queue[#queue+1] = marker
+end
+
+local cellGetters = {
+	["logicarts-yield"] = function(cell, en)
+		cell.path = true
+		cell.yield = true
+		cell.direction = NORTH
+		cell.entity = en
+	end,
+	["logicarts-marker"] = function(cell, en)
+		cell.car_id = mod.markers[en.unit_number]
+	end,
+	["transport-belt"] = function(cell, en)
+		cell.belt = true
+	end,
+}
+
+local function cellGetterPath(cell, en)
+	cell.path = true
+	cell.direction = pathEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(pathEntities) do
+	cellGetters[name] = cellGetterPath
+end
+
+local function cellGetterStop(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.direction = stopEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopEntities) do
+	cellGetters[name] = cellGetterStop
+end
+
+local function cellGetterTurnClear(cell, en)
+	cell.path = true
+	cell.optional = true
+	cell.direction = turnClearEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(turnClearEntities) do
+	cellGetters[name] = cellGetterTurnClear
+end
+
+local function cellGetterTurnBlocked(cell, en)
+	cell.path = true
+	cell.alternate = true
+	cell.direction = turnBlockedEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(turnBlockedEntities) do
+	cellGetters[name] = cellGetterTurnBlocked
+end
+
+local function cellGet(x, y, surface)
+	local cell = {
+		x = floor(x),
+		y = floor(y),
+		path = false,
+		optional = false,
+		alternate = false,
+		stop = false,
+		yield = false,
+		belt = false,
+		entity = nil,
+		car_id = nil,
 	}
-	return car.surface.count_entities_filtered({ area = area, name = car.name }) > 0
-end
-
--- g.grid cells holds tables describing tiles with paths or cars, or both
--- cell = {
---	entity = <path entity>,
---	direction = <entity.direction pulled from logicarts-stop>,
---  is_path = bool,
---  is_turn = bool,
---  is_stop = bool,
---  is_yield = bool,
---	car_id = <car entity.unit_number>,
---	car_tick = <tick delay until car_id is assumed departed or invalid (removed)>,
---}
-
-local function gridCell(x, y)
-	local grid = mod.grid
-	local tile = gridKey(x, y)
-	local cell = grid[tile]
-	if cell == nil then
-		cell = {
-			is_path = false,
-			is_turn = false,
-			is_stop = false,
-			is_yield = false,
-		}
-		grid[tile] = cell
-	end
-	cell.x = floor(x)
-	cell.y = floor(y)
-	return cell
-end
-
-local function gridPeek(x, y)
-	local grid = mod.grid
-	local tile = gridKey(x, y)
-	local cell = grid[tile]
-	if cell ~= nil then
-		cell.x = x
-		cell.y = y
+	local entities = surface.find_entities_filtered({
+		position = cellCenterPos(x, y),
+	})
+	for i = 1,#entities,1 do
+		local en = entities[i]
+		if en.valid and cellGetters[en.name] ~= nil then
+			(cellGetters[en.name])(cell, en)
+		end
 	end
 	return cell
 end
 
-local function gridCellEmpty(cell)
-	return cell.entity == nil and not cellClaimed(cell)
-end
-
-local function updateEntityCell(entity)
-
-	if entity.name == "logicarts-yield" then
-		local cell = gridCell(entity.position.x, entity.position.y)
-		cell.entity = entity
-		cell.direction = NORTH -- actually none, but can't be nil
-		cell.is_path = true
-		cell.is_yield = true
-		mod.entities[entity.unit_number] = entity
-		return true
+local function cellClaim(cell, car, ticks)
+	local marker = car.surface.create_entity({
+		name = "logicarts-marker",
+		position = cellCenterPos(cell.x, cell.y),
+		force = car.force,
+	})
+	if marker ~= nil and marker.valid then
+		mod.markers[marker.unit_number] = car.unit_number
+		markerQueue(marker, ticks + 10)
 	end
-
-	if pathEntities[entity.name] ~= nil then
-		local cell = gridCell(entity.position.x, entity.position.y)
-		cell.entity = entity
-		cell.direction = pathEntities[entity.name]
-		cell.is_path = true
-		mod.entities[entity.unit_number] = entity
-		return true
-	end
-
-	if turnEntities[entity.name] ~= nil then
-		local cell = gridCell(entity.position.x, entity.position.y)
-		cell.entity = entity
-		cell.direction = turnEntities[entity.name]
-		cell.is_path = true
-		cell.is_turn = true
-		mod.entities[entity.unit_number] = entity
-		return true
-	end
-
-	if stopEntities[entity.name] ~= nil then
-		local cell = gridCell(entity.position.x, entity.position.y)
-		cell.entity = entity
-		cell.direction = stopEntities[entity.name]
-		cell.is_path = true
-		cell.is_stop = true
-		mod.entities[entity.unit_number] = entity
-		return true
-	end
-
-	return false
 end
 
 local function replaceEntityWith(entity, name)
@@ -279,47 +327,34 @@ local function OnEntityCreated(event)
 		return
 	end
 
-	if entity.name == "logicarts-car" or entity.name == "logicarts-car-electric" then
+	if entity.name == CAR_BURNER or entity.name == CAR_ELECTRIC then
 		entity.friction_modifier = 0
 		entity.consumption_modifier = 0
 
-		local cell = gridCell(entity.position.x, entity.position.y)
+		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
 		cellClaim(cell, entity, CAR_TICK_MARGIN)
 		carQueue(entity, CAR_TICK_PLACED)
-		mod.entities[entity.unit_number] = entity
-	end
-
-	if updateEntityCell(entity) then
-		return
 	end
 
 	if entity.name == "logicarts-path" then
-		entity = replaceEntityWith(entity, "logicarts-path-"..directionNames[entity.direction])
-		updateEntityCell(entity)
-		return
-	end
-
-	if entity.name == "logicarts-turn" then
-		entity = replaceEntityWith(entity, "logicarts-turn-"..directionNames[entity.direction])
-		updateEntityCell(entity)
+		replaceEntityWith(entity, "logicarts-path-"..directionNames[entity.direction])
 		return
 	end
 
 	if entity.name == "logicarts-stop" then
-		entity = replaceEntityWith(entity, "logicarts-stop-"..directionNames[entity.direction])
-		updateEntityCell(entity)
-		return
-	end
-end
-
-local function OnEntityRotated(event)
-	State()
-	local entity = event.entity
-	if entity == nil then
+		replaceEntityWith(entity, "logicarts-stop-"..directionNames[entity.direction])
 		return
 	end
 
-	updateEntityCell(event.entity)
+	if entity.name == "logicarts-turn" then
+		replaceEntityWith(entity, "logicarts-turn-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-turn-blocked" then
+		replaceEntityWith(entity, "logicarts-turn-blocked-"..directionNames[entity.direction])
+		return
+	end
 end
 
 local function OnPlayerDrivingStateChanged(event)
@@ -329,7 +364,7 @@ local function OnPlayerDrivingStateChanged(event)
 		return
 	end
 
-	if (entity.name == "logicarts-car" or entity.name == "logicarts-car-electric") and entity.get_driver() ~= nil then
+	if (entity.name == CAR_BURNER or entity.name == CAR_ELECTRIC) and entity.get_driver() ~= nil then
 		local player = entity.get_driver()
 		entity.set_driver(nil)
 		if entity.get_passenger() == nil then
@@ -345,81 +380,58 @@ local function OnEntityRemoved(event)
 		return
 	end
 
-	if mod.entities[entity.unit_number] ~= nil then
-		if entity.name ~= "logicarts-car" and entity.name ~= "logicarts-car-electric" then
-			local cell = gridCell(entity.position.x, entity.position.y)
-			cell.entity = nil
-			cell.direction = nil
-			cell.is_path = nil
-			cell.is_turn = nil
-			cell.is_yield = nil
-			if gridCellEmpty(cell) then
-				mod.grid[gridKey(entity.position.x, entity.position.y)] = nil
-			end
-		end
-		mod.entities[entity.unit_number] = nil
+	if entity.name == "logicarts-marker" then
+		mod.markers[entity.unit_number] = nil
+	end
+
+	if cartEntities[entity.name] ~= nil then
 		mod.carStates[entity.unit_number] = nil
 	end
 end
 
 local function checkDirection(car, direction, gate)
 
-	local x = car.position.x
-	local y = car.position.y
+	local x, y = cellCenter(car.position.x, car.position.y)
+	x, y = cellTranslate(direction, x, y)
 
-	if direction == NORTH then
-		y = y - 1
-	elseif direction == EAST then
-		x = x + 1
-	elseif direction == SOUTH then
-		y = y + 1
-	elseif direction == WEST then
-		x = x - 1
-	end
-
-	local cell = gridPeek(x, y)
+	local cell = cellGet(x, y, car.surface)
 
 	if cell ~= nil then
-
-		local isPath = cell.is_path
-		local isFree = not cellClaimed(cell)
-		local isClear = gate == nil or gate.is_opened()
-
-		if isFree then
-			-- double check
-			isFree = not carBlocked(car, direction)
-		end
-
-		return (isPath and isFree and isClear), cell
+		local free = cell.car_id == nil or cell.car_id == car.unit_number
+		local clear = gate == nil or gate.is_opened()
+		return (cell.path and free and clear), cell
 	end
 
 	return false, cell
 end
 
-local function getCombinator(neighbours, x, y)
-	local cx = floor(x)
-	local cy = floor(y)
+local function getCombinator(surface, position)
+	local entities = surface.find_entities_filtered({
+		type = "constant-combinator",
+		position = position,
+	})
+	return entities ~= nil and entities[1] or nil
+end
 
-	for i = 1,#neighbours,1 do
-		local en = neighbours[i]
-		if en.type == "constant-combinator" then
-			local ed = en.direction
-			local ex = floor(en.position.x)
-			local ey = floor(en.position.y)
-			local alignH = ey == cy
-			local alignV = ex == cx
-			local northOf = alignV and ey == cy-1
-			local southOf = alignV and ey == cy+1
-			local westOf  = alignH and ex == cx-1
-			local eastOf  = alignH and ex == cx+1
-			if   (northOf and ed == SOUTH)
-				or (southOf and ed == NORTH)
-				or (eastOf  and ed == WEST)
-				or (westOf  and ed == EAST)
-			then
-				return en
-			end
-		end
+local function getAdjacentCombinator(surface, x, y)
+	local pos = cellCenterPos(x, y)
+	local entity = nil
+
+	entity = getCombinator(surface, directionPosition(NORTH, pos))
+	if entity ~= nil and entity.direction == SOUTH then
+		return entity
+	end
+	entity = getCombinator(surface, directionPosition(SOUTH, pos))
+	if entity ~= nil and entity.direction == NORTH then
+		return entity
+	end
+	entity = getCombinator(surface, directionPosition(EAST, pos))
+	if entity ~= nil and entity.direction == WEST then
+		return entity
+	end
+	entity = getCombinator(surface, directionPosition(WEST, pos))
+	if entity ~= nil and entity.direction == EAST then
+		return entity
 	end
 	return nil
 end
@@ -463,7 +475,7 @@ end
 local function getCombinatorVirtuals(combinator)
 	local virtuals = {}
 	local signals = combinator.get_merged_signals()
-	if type(signals) == "table" then
+	if signals ~= nil then
 		for _, v in pairs(signals) do
 			if v.signal.type == "virtual" then
 				virtuals[v.signal.name] = true
@@ -473,49 +485,57 @@ local function getCombinatorVirtuals(combinator)
 	return virtuals
 end
 
-local function getGates(neighbours, car, pathDirection, carDirection)
+local function getGates(surface, x, y, pathDirection, carDirection)
+	local pos = cellCenterPos(x, y)
 
-	local cx = floor(car.position.x)
-	local cy = floor(car.position.y)
+	local gatesPath = nil
+	local gatesCar = nil
 
-	local stopGatePath = nil
-	local stopGateCar = nil
+	gatesPath = surface.find_entities_filtered({
+		type = "gate",
+		position = directionPosition(pathDirection, pos)
+	})
 
-	for i = 1,#neighbours,1 do
-		local continue = false
-		local en = neighbours[i]
-		if en.type == "gate" then
-			local ed = en.direction
-			local ex = en.position.x
-			local ey = en.position.y
-			local alignH = floor(ey) == cy
-			local alignV = floor(ex) == cx
-			if not continue and stopGatePath == nil
-				and (
-						 (alignV and pathDirection == NORTH and ey < cy)
-					or (alignV and pathDirection == SOUTH and ey > cy)
-					or (alignH and pathDirection == EAST and ex > cx)
-					or (alignH and pathDirection == WEST and ex < cx)
-				)
-			then
-				stopGatePath = en
-				continue = true
-			end
-			if not continue and stopGateCar == nil
-				and (
-						 (alignV and carDirection == NORTH and ey < cy)
-					or (alignV and carDirection == SOUTH and ey > cy)
-					or (alignH and carDirection == EAST and ex > cx)
-					or (alignH and carDirection == WEST and ex < cx)
-				)
-			then
-				stopGateCar = en
-				continue = true
+	if carDirection ~= pathDirection then
+		gatesCar = surface.find_entities_filtered({
+			type = "gate",
+			position = directionPosition(carDirection, pos)
+		})
+	else
+		gatesCar = gatesPath
+	end
+
+	return gatesPath and gatesPath[1] or nil, gatesCar and gatesCar[1] or nil
+end
+
+local function getLogisticChests(x, y, surface)
+	local pos = cellCenterPos(x, y)
+
+	local chests = {}
+	local directions = {}
+
+	local check = function(dir)
+		local entities = surface.find_entities_filtered({
+			type = "logistic-container",
+			position = directionPosition(dir, pos),
+		})
+		if entities ~= nil then
+			for i = 1,#entities,1 do
+				local en = entities[i]
+				if en.prototype.logistic_mode ~= nil then
+					chests[#chests+1] = en
+					directions[#directions+1] = dir
+				end
 			end
 		end
 	end
 
-	return stopGatePath, stopGateCar
+	check(NORTH)
+	check(SOUTH)
+	check(EAST)
+	check(WEST)
+
+	return chests, directions
 end
 
 local function carContents(car)
@@ -528,27 +548,183 @@ local function carContents(car)
 	end
 	-- If filtered trunk slots are in use, send the item shortfall as a negative value.
 	-- This allows loading station circuits to look for item < 0.
-	local reqs = {}
-	for i = 1,#trunk,1 do
-		local filter = trunk.get_filter(i)
-		if filter ~= nil then
-			reqs[filter] = (reqs[filter] or 0) + game.item_prototypes[filter].stack_size
+	if trunk.is_filtered() then
+		local reqs = {}
+		for i = 1,#trunk,1 do
+			local filter = trunk.get_filter(i)
+			if filter ~= nil then
+				reqs[filter] = (reqs[filter] or 0) + game.item_prototypes[filter].stack_size
+			end
 		end
-	end
-	for k,r in pairs(reqs) do
-		local c = contents[k] or 0
-		if r > c then
-			contents[k] = c - r
+		for k,r in pairs(reqs) do
+			local c = contents[k] or 0
+			if r > c then
+				contents[k] = c - r
+			end
 		end
 	end
 	return contents
 end
 
-local function runCar(car)
+local function carInteractChests(car, adjacentChests)
 
-	if not car.valid then
-		return 0
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+
+	-- yellow transport belt boosted by inserter-bonus research
+	local throughput = car.force.inserter_stack_size_bonus * 14
+	local activity = 0
+
+	-- Transfer items from the cart trunk to a requester or buffer chest.
+	local supply = function(chest)
+		local ops = throughput
+		for j = 1,chest.request_slot_count,1 do
+			if ops <= 0 then
+				break
+			end
+			local request = chest.get_request_slot(j)
+			if request ~= nil then
+				local shortfall = max(0, request.count - chest.get_item_count(request.name))
+				local moved = min(ops, min(shortfall, trunk.get_item_count(request.name)))
+				if moved > 0 then
+					local stack = { name = request.name, count = moved }
+					trunk.remove(stack)
+					chest.insert(stack)
+					ops = ops - moved
+				end
+			end
+		end
+		activity = activity + (throughput - ops)
 	end
+
+	-- Transfer items from a passive or storage or buffer chest to the cart trunk.
+	-- Filtered trunk slots are treated as logistic request slots.
+	local demand = function(chest)
+		local ops = throughput
+		-- Refuel first if necessary
+		if car.name == CAR_BURNER then
+			local burner = car.burner
+			local fueltank = burner.inventory
+			local item = burner.currently_burning
+			if item ~= nil then
+				local available = min(ops, chest.get_item_count(item.name))
+				if available > 0 then
+					local moved = fueltank.insert({ name = item.name, count = available })
+					if moved > 0 then
+						chest.remove_item({ name = item.name, count = moved })
+						ops = ops - moved
+					end
+				end
+			end
+		end
+		for j = 1,#trunk,1 do
+			if ops <= 0 then
+				break
+			end
+			local filter = trunk.get_filter(j)
+			if filter ~= nil then
+				local stack = trunk[j]
+				local count = (stack ~= nil and stack.valid_for_read and stack.count) or 0
+				local shortfall = max(0, game.item_prototypes[filter].stack_size - count)
+				local moved = min(ops, min(shortfall, chest.get_item_count(filter)))
+				if moved > 0 then
+					local tstack = { name = filter, count = moved }
+					chest.remove_item(tstack)
+					if stack ~= nil and stack.valid_for_read and stack.valid then
+						stack.count = stack.count + moved
+					else
+						trunk.insert(tstack)
+					end
+					ops = ops - moved
+				end
+			end
+		end
+		activity = activity + (throughput - ops)
+	end
+
+	-- Transfer items from an active provider to the cart trunk.
+	-- If trunk slots are filtered, they only fill if there's a match.
+	local accept = function(chest)
+		local ops = throughput
+		local inventory = chest.get_inventory(defines.inventory.chest)
+		local contents = inventory.get_contents()
+		local transfer = function(name)
+			local total = min(ops, contents[name] or 0)
+			if total > 0 then
+				local moved = trunk.insert({ name = name, count = total })
+				if moved > 0 then
+					inventory.remove({ name = name, count = moved })
+					contents[name] = (moved < total) and (total - moved) or nil
+					ops = ops - moved
+				end
+			end
+		end
+		-- first fill up existing stacks
+		for j = 1,#trunk,1 do
+			if ops <= 0 then
+				break
+			end
+			local stack = trunk[j]
+			if stack ~= nil and stack.valid_for_read then
+				transfer(stack.name)
+			end
+		end
+		-- now fill remaining slots
+		for k,_ in pairs(contents) do
+			if ops <= 0 then
+				break
+			end
+			transfer(k)
+		end
+		activity = activity + (throughput - ops)
+	end
+
+	-- Transfer items from unfiltered slots in the cart trunk to a storage chest.
+	local dump = function(chest)
+		local ops = throughput
+		local inventory = chest.get_inventory(defines.inventory.chest)
+		for j = 1,#trunk,1 do
+			if ops <= 0 then
+				break
+			end
+			if trunk.get_filter(j) == nil then
+				local stack = trunk[j]
+				if stack ~= nil and stack.valid_for_read then
+					local name = stack.name
+					local count = min(ops, stack.count)
+					if count > 0 then
+						local moved = chest.insert({ name = name, count = count })
+						if moved > 0 then
+							trunk.remove({ name = name, count = moved })
+							ops = ops - moved
+						end
+					end
+				end
+			end
+		end
+		activity = activity + (throughput - ops)
+	end
+
+	for i = 1,#adjacentChests,1 do
+		local chest = adjacentChests[i]
+		local mode = chest.prototype.logistic_mode
+
+		if mode == "requester" or mode == "buffer" then
+			supply(chest)
+		elseif mode == "passive-provider" then
+			demand(chest)
+		elseif mode == "active-provider" then
+			demand(chest)
+			accept(chest)
+		elseif mode == "storage" then
+			dump(chest)
+			demand(chest)
+		end
+	end
+
+	return activity
+end
+
+local function runCar(car)
 
 	local state = mod.carStates[car.unit_number]
 	if state == nil then
@@ -561,15 +737,11 @@ local function runCar(car)
 
 	local x = car.position.x
 	local y = car.position.y
-	local fx = floor(x)
-	local fy = floor(y)
-	local cell = gridPeek(x, y)
+	local cell = cellGet(x, y, car.surface)
 
 	-- have we strayed off the path, or perhaps had it deconstructed
 	-- out from underneath us while we were diligently delivering items?
-	local offPath = cell == nil or cell.entity == nil or cell.direction == nil or not cell.is_path
-
-	if offPath then --or blocked then
+	if not cell.path then
 		return CAR_TICK_BLOCKED
 	end
 
@@ -577,16 +749,16 @@ local function runCar(car)
 	local carDirection = quadrantDirections[floor(car.orientation*4+1)] or NORTH
 
 	-- Direction to exit the tile
-	local pathDirection = cell ~= nil and cell.direction or carDirection
+	local pathDirection = cell.direction or carDirection
 
 	-- Chemical or electric fuel types
 	local fueled = false
-	local consume = function() end
+	local consume = nil
 
-	if car.name == "logicarts-car" then
+	if car.name == CAR_BURNER then
 		local burner = car.burner
 		local fueltank = burner.inventory
-		local fuelstoke = burner.currently_burning == nil or burner.remaining_burning_fuel < CAR_CONSUMPTION
+		local fuelstoke = burner.currently_burning == nil or burner.remaining_burning_fuel < CAR_CONSUMPTION_BURNER
 		local fuelempty = fueltank.is_empty()
 		fueled = not fuelstoke or not fuelempty
 
@@ -602,17 +774,17 @@ local function runCar(car)
 		end
 
 		consume = function()
-			burner.remaining_burning_fuel = burner.remaining_burning_fuel - CAR_CONSUMPTION
+			burner.remaining_burning_fuel = burner.remaining_burning_fuel - CAR_CONSUMPTION_BURNER
 		end
 	end
 
-	if car.name == "logicarts-car-electric" then
+	if car.name == CAR_ELECTRIC then
 
-		fueled = car.grid.available_in_batteries >= CAR_CONSUMPTION
+		fueled = car.grid.available_in_batteries >= CAR_CONSUMPTION_ELECTRIC
 		local equipment = car.grid.equipment
 
 		consume = function()
-			local energy = CAR_CONSUMPTION
+			local energy = CAR_CONSUMPTION_ELECTRIC
 			for i = 1,#equipment,1 do
 				local battery = equipment[i]
 
@@ -630,7 +802,7 @@ local function runCar(car)
 	end
 
 	-- If on a belt we obviously can't stop, and can therefore skip some checks
-	if car.surface.count_entities_filtered({ position = car.position, type = "transport-belt" }) > 0 then
+	if cell.belt then
 		nextOK, nextCell = checkDirection(car, carDirection, nil)
 		if nextOK then
 			-- hope for the best; the added speed may screw up center alignment checks
@@ -651,30 +823,19 @@ local function runCar(car)
 
 	local centered = xc and yc
 
-	if not centered and carBlocked(car, carDirection) then
-		return CAR_TICK_BLOCKED
-	end
-
 	if not centered and fueled then
 		-- keep moving
 		car.speed = CAR_ENTITY_SPEED
-		cellClaim(cell, car, CAR_TICK_MARGIN)
 		return CAR_TICK_ARRIVING
 	end
 
 	-- Remove any accumulated error
 	if centered then
-		car.teleport({ x = fx+0.5, y = fy+0.5 })
+		car.teleport(cellCenterPos(x, y))
 	end
 
-	-- Adjacent entities we care about
-	local neighbours = car.surface.find_entities_filtered({
-		type = { "constant-combinator", "gate" },
-		area = { { fx-1, fy-1 }, { fx+2, fy+2 } },
-	})
-
 	-- Constant combinator as sensor
-	local adjacentCombinator = getCombinator(neighbours, x, y)
+	local adjacentCombinator = getAdjacentCombinator(car.surface, x, y)
 
 	-- Inventory + grid contents
 	local contents = carContents(car)
@@ -688,44 +849,56 @@ local function runCar(car)
 	-- Signals to control a car
 	local red = false
 	local green = false
-	local yellow = false
-	local left = false
-	local right = false
-	local straight = false
+	local yield = cell.yield
+	local optionalRoute = cell.optional
+	local alternateRoute = cell.alternate
 
 	if adjacentCombinator ~= nil then
 		local virtuals = getCombinatorVirtuals(adjacentCombinator)
-		green    = virtuals["signal-green"] or false
-		red      = virtuals["signal-red"] or false
-		yellow   = virtuals["signal-yellow"] or false
-		left     = virtuals["signal-L"] or false
-		right    = virtuals["signal-R"] or false
-		straight = virtuals["signal-S"] or false
+
+		green = virtuals["signal-green"] or false
+		red = virtuals["signal-red"] or false
+
+		if virtuals["signal-S"] then -- straight
+			pathDirection = carDirection
+		elseif virtuals["signal-L"] then -- left
+			pathDirection = leftDirections[pathDirection] or pathDirection
+		elseif virtuals["signal-R"] then -- right
+			pathDirection = rightDirections[pathDirection] or pathDirection
+		end
+
+		if virtuals["signal-yellow"] then
+			yield = true
+		end
+
+		if virtuals["signal-blue"] then
+			optionalRoute = true
+		end
 	end
 
-	if left then
-		pathDirection = leftDirections[pathDirection] or pathDirection
-	elseif right then
-		pathDirection = rightDirections[pathDirection] or pathDirection
-	elseif straight then
-		pathDirection = carDirection
-	end
+	local stopGatePath, stopGateCar = getGates(car.surface, x, y, pathDirection, carDirection)
 
-	-- Special control tiles
-	local yield = yellow or (cell.entity ~= nil and cell.is_yield)
-	local turn = cell.entity ~= nil and cell.is_turn
-
-	local stopGatePath, stopGateCar = getGates(neighbours, car, pathDirection, carDirection)
-
-	if turn and stopGatePath ~= nil and not stopGatePath.is_opened() then
+	if optionalRoute and stopGatePath ~= nil and not stopGatePath.is_opened() then
 		stopGatePath = stopGateCar
 		pathDirection = carDirection
 	end
 
-	local wouldStop = cell.is_stop or (stopGatePath ~= nil and not stopGatePath.is_opened())
+	local wouldStop = cell.stop or (stopGatePath ~= nil and not stopGatePath.is_opened())
 	local stop = red or (wouldStop and not green) or not fueled
 
 	if stop then
+
+		-- Participate in logistics network
+		local adjacentChests, chestDirections = getLogisticChests(x, y, car.surface)
+
+		if #adjacentChests > 0 then
+			-- Reverse up to the chest, like a delivery van
+			if carInteractChests(car, adjacentChests) > 0 then
+				car.orientation = directionOrientations[reverseDirections[chestDirections[1] or NORTH]]
+				contents = carContents(car)
+				state.stopCount = 0
+			end
+		end
 
 		if adjacentCombinator ~= nil and contents ~= nil and signals ~= nil then
 			setCombinatorSignals(adjacentCombinator, contents, signals)
@@ -766,6 +939,7 @@ local function runCar(car)
 	state.stopCount = nil
 	state.contents = nil
 
+	-- clear combinator on departure
 	if adjacentCombinator ~= nil then
 		adjacentCombinator.get_control_behavior().parameters = nil
 	end
@@ -773,28 +947,42 @@ local function runCar(car)
 	-- centered; claim the cell but figure out what to do next
 	cellClaim(cell, car, CAR_TICK_MARGIN)
 
-	-- yield reuse the car's current direction
-	local direction = yield and carDirection or pathDirection
-	local gate = yield and stopGateCar or stopGatePath
-	local nextOK, nextCell = checkDirection(car, direction, gate)
+	local direction = pathDirection
+	local nextOK, nextCell = checkDirection(car, pathDirection, stopGatePath)
 
-	if (turn and nextOK) or (not yield and not turn) then
-		car.orientation = directionOrientations[pathDirection] or NORTH
-		car.teleport({ x = fx+0.5, y = fy+0.5 })
-	end
-
-	if turn and not nextOK then
+	if yield then
+		direction = carDirection
 		nextOK, nextCell = checkDirection(car, carDirection, stopGateCar)
 	end
 
+	if optionalRoute then
+		if not nextOK then
+			direction = carDirection
+			nextOK, nextCell = checkDirection(car, carDirection, stopGateCar)
+		end
+	end
+
+	if alternateRoute then
+		local aheadOK, aheadCell = checkDirection(car, carDirection, stopGateCar)
+		if aheadOK then
+			nextOK = aheadOK
+			nextCell = aheadCell
+			direction = carDirection
+		end
+	end
+
+	-- animated pivot? UPS...
+	car.orientation = directionOrientations[direction]
+
 	if nextOK then
+
 		-- claim the next cell and go!
 		car.speed = CAR_ENTITY_SPEED
 		cellClaim(nextCell, car, CAR_TICK_MARGIN)
 		consume()
 
 		-- if approaching a combinator, update it in advance to allow circuits to change in time
-		local nextCombinator = getCombinator(neighbours, nextCell.x, nextCell.y)
+		local nextCombinator = getAdjacentCombinator(car.surface, nextCell.x, nextCell.y)
 
 		if nextCombinator ~= nil and contents ~= nil and signals ~= nil then
 			setCombinatorSignals(nextCombinator, contents, signals)
@@ -813,21 +1001,6 @@ end
 local function OnTick(event)
 	State()
 
-	-- Bugfix for saved games in <= 0.1.2
-	if mod.check == nil or mod.check < 2 then
-		for tick, queue in pairs(mod.queues) do
-			if tick < game.tick then
-				mod.queues[tick] = nil
-			end
-		end
-		for xy, cell in pairs(mod.grid) do
-			if gridCellEmpty(cell) then
-				mod.grid[xy] = nil
-			end
-		end
-		mod.check = 2
-	end
-
 	local queue = mod.queues[game.tick]
 
 	if queue == nil then
@@ -837,15 +1010,31 @@ local function OnTick(event)
 	mod.queues[game.tick] = nil
 
 	for i = 1,#queue,1 do
-		local car = queue[i]
+		local en = queue[i]
 		queue[i] = nil
-
-		local ticks = runCar(car)
-		-- reschedule
-		if ticks > 0 then
-			carQueue(car, ticks)
+		if en.valid then
+			if en.name == "logicarts-marker" then
+				mod.markers[en.unit_number] = nil
+				en.destroy()
+			else
+				local ticks = runCar(en)
+				-- reschedule
+				if ticks > 0 then
+					carQueue(en, ticks)
+				end
+			end
 		end
 	end
+end
+
+local function OnDebug(event)
+	game.print("debug"..serialize({
+		["CAR_SPEED"] = CAR_SPEED,
+		["CAR_ENTITY_SPEED"] = CAR_ENTITY_SPEED,
+		["CAR_TICK_STARTING"] = CAR_TICK_STARTING,
+		["CAR_TICK_ARRIVING"] = CAR_TICK_ARRIVING,
+		["CAR_TICK_BLOCKED"] = CAR_TICK_BLOCKED,
+	}))
 end
 
 script.on_init(function()
@@ -853,14 +1042,15 @@ script.on_init(function()
 	script.on_event(defines.events.on_tick, OnTick)
 	script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, OnEntityCreated)
 	script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died}, OnEntityRemoved)
-	script.on_event({defines.events.on_player_rotated_entity}, OnEntityRotated)
 	script.on_event({defines.events.on_player_driving_changed_state}, OnPlayerDrivingStateChanged)
+	script.on_event("logicarts-debug", OnDebug)
 end)
 
 script.on_load(function()
 	script.on_event(defines.events.on_tick, OnTick)
 	script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, OnEntityCreated)
 	script.on_event({defines.events.on_pre_player_mined_item, defines.events.on_robot_pre_mined, defines.events.on_entity_died}, OnEntityRemoved)
-	script.on_event({defines.events.on_player_rotated_entity}, OnEntityRotated)
 	script.on_event({defines.events.on_player_driving_changed_state}, OnPlayerDrivingStateChanged)
+	script.on_event("logicarts-debug", OnDebug)
 end)
+
