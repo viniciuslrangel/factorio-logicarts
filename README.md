@@ -130,6 +130,10 @@ Couple other links I can't find right now...
 
 ## Change Log
 
+0.1.15
+
+BUGFIX: check combinator signals_count (limit) before sending cart contents
+
 0.1.14
 
 Changed yellow *turn-if-clear* arrows to blue *optional routes* (cosmetic only; same item/entity in saves).

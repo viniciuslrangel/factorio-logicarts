@@ -186,6 +186,12 @@ local function State()
 	if mod.markers == nil then
 		mod.markers = {}
 	end
+	if mod.playerSticker == nil then
+		mod.playerSticker = {}
+	end
+	if mod.stickerDisplays == nil then
+		mod.stickerDisplays = {}
+	end
 end
 
 -- Schedule the next position check for a car in "ticks" time
@@ -224,6 +230,9 @@ local cellGetters = {
 	end,
 	["transport-belt"] = function(cell, en)
 		cell.belt = true
+	end,
+	["logicarts-sticker"] = function(cell, en)
+		cell.sticker = en
 	end,
 }
 
@@ -307,6 +316,51 @@ local function cellClaim(cell, car, ticks)
 	end
 end
 
+-- Stickers are transparent constant combinators positioned over path tiles,
+-- with a single signal slot. When the signal is set, show in the bottom right
+-- corner of the tile a simple-entity-with-force with the icon of the item.
+
+local function stickerUpdate(sticker)
+
+	local signal = sticker.get_control_behavior().get_signal(1)
+	local name = "logicarts-sticker-display"
+
+	if signal ~= nil and signal.signal ~= nil then
+		local iname = "logicarts-item-"..signal.signal.name
+		if game.entity_prototypes[iname] ~= nil then
+			name = iname
+		end
+	end
+
+	local state = mod.stickerDisplays[sticker.unit_number] or {}
+	mod.stickerDisplays[sticker.unit_number] = state
+
+	state.sticker = sticker
+
+	if state.display ~= nil then
+		state.display.destroy()
+	end
+
+	state.display = sticker.surface.create_entity({
+		name = name,
+		position = { sticker.position.x + 0.35, sticker.position.y + 0.35 },
+		force = sticker.force,
+	})
+end
+
+local function stickerItem(sticker)
+
+	local signal = sticker.get_control_behavior().get_signal(1)
+
+	if signal ~= nil and signal.signal ~= nil then
+		local name = signal.signal.name
+		if game.entity_prototypes[name] ~= nil then
+			return name
+		end
+	end
+	return nil
+end
+
 local function replaceEntityWith(entity, name)
 	local surface = entity.surface
 	local direction = entity.direction
@@ -327,6 +381,23 @@ local function OnEntityCreated(event)
 		return
 	end
 
+	if entity.name == "logicarts-sticker" then
+		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
+		if not cell.path then
+			entity.destroy()
+			-- Could be player or robot. Assume robots will only do sane placements...
+			if event.player_index ~= nil and game.players[event.player_index] ~= nil then
+				local inventory = game.players[event.player_index].get_main_inventory()
+				if inventory ~= nil then
+					inventory.insert({ name = entity.name, count = 1 })
+				end
+			end
+		else
+			stickerUpdate(entity)
+		end
+		return
+	end
+
 	if entity.name == CAR_BURNER or entity.name == CAR_ELECTRIC then
 		entity.friction_modifier = 0
 		entity.consumption_modifier = 0
@@ -334,6 +405,7 @@ local function OnEntityCreated(event)
 		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
 		cellClaim(cell, entity, CAR_TICK_MARGIN)
 		carQueue(entity, CAR_TICK_PLACED)
+		return
 	end
 
 	if entity.name == "logicarts-path" then
@@ -380,6 +452,10 @@ local function OnEntityRemoved(event)
 		return
 	end
 
+	if entity.name == "logicarts-sticker" then
+		mod.stickerDisplays[entity.unit_number].display.destroy()
+	end
+
 	if entity.name == "logicarts-marker" then
 		mod.markers[entity.unit_number] = nil
 	end
@@ -407,7 +483,7 @@ end
 
 local function getCombinator(surface, position)
 	local entities = surface.find_entities_filtered({
-		type = "constant-combinator",
+		name = "constant-combinator",
 		position = position,
 	})
 	return entities ~= nil and entities[1] or nil
@@ -438,10 +514,14 @@ end
 
 local function setCombinatorSignals(combinator, items, virtuals)
 	local parameters = {}
+	local limit = combinator.get_control_behavior().signals_count
 
 	if items ~= nil then
 		for item, count in pairs(items) do
 			local index = #parameters+1
+			if index >= limit then
+				break
+			end
 			parameters[index] = {
 				index = index,
 				signal = {
@@ -456,6 +536,9 @@ local function setCombinatorSignals(combinator, items, virtuals)
 	if virtuals ~= nil then
 		for item, count in pairs(virtuals) do
 			local index = #parameters+1
+			if index >= limit then
+				break
+			end
 			parameters[index] = {
 				index = index,
 				signal = {
@@ -947,6 +1030,17 @@ local function runCar(car)
 	-- centered; claim the cell but figure out what to do next
 	cellClaim(cell, car, CAR_TICK_MARGIN)
 
+	-- check sticker
+	if carDirection ~= pathDirection and cell.sticker ~= nil then
+		local name = stickerItem(cell.sticker)
+		if name ~= nil then
+			if contents == nil or contents[name] == nil then
+				pathDirection = carDirection
+				stopGatePath = stopGateCar
+			end
+		end
+	end
+
 	local direction = pathDirection
 	local nextOK, nextCell = checkDirection(car, pathDirection, stopGatePath)
 
@@ -1000,6 +1094,24 @@ end
 -- position checks as infrequently as possible.
 local function OnTick(event)
 	State()
+
+	if game.tick % 10 == 0 then
+		for _, player in pairs(game.players) do
+			if player.connected then
+				if player.opened_gui_type == defines.gui_type.entity then
+					if player.opened.name == "logicarts-sticker" then
+						mod.playerSticker[player.name] = player.opened
+					end
+				elseif player.opened_gui_type == defines.gui_type.none then
+					local sticker = mod.playerSticker[player.name]
+					mod.playerSticker[player.name] = nil
+					if sticker ~= nil and sticker.valid then
+						stickerUpdate(sticker)
+					end
+				end
+			end
+		end
+	end
 
 	local queue = mod.queues[game.tick]
 
