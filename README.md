@@ -28,3 +28,4 @@ Documentation and examples on the wiki: https://gitlab.com/aerosuidae/logicarts/
 
 ## Change Log
 
+https://gitlab.com/aerosuidae/logicarts/blob/master/changelog.md
