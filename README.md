@@ -10,8 +10,8 @@ Documentation and examples on the wiki: https://gitlab.com/aerosuidae/logicarts/
 
 ## Technology
 
-"Logistic Carts" tech (red + green science) is available after researching engines.
-"Electric Logistic Carts" tech (red + green + blue science) is available after researching electric engines.
+* *Logistic Carts* tech (red + green science) is available after researching engines.
+* *Electric Logistic Carts* tech (red + green + blue science) is available after researching electric engines.
 
 ## Carts
 
