@@ -1,8 +1,8 @@
-# Logistic Carts
+# Logistic Carts (WIP)
 
-POC WIP
+Documentation and examples on the wiki: https://gitlab.com/aerosuidae/logicarts/wikis/home
 
-Small carts (1x1 cars) that follow paths painted on the ground.
+*Small carts (1x1 cars) that follow paths painted on the ground.*
 
 * Pathing is not automatic -- networks must designed carefully to avoid collision!
 * Simple transport networks require only carts and paint and inserters.
@@ -21,108 +21,6 @@ Small carts (1x1 cars) that follow paths painted on the ground.
 * 10 trunk spaces, filterable
 * Small equipment grid
 * Interact with logistic network chests
-
-Riding in carts as passenger is possible, but driving is blocked because it messes up the on_tick handler.
-
-Electric carts work with solar panels or [induction charging](https://mods.factorio.com/mod/Induction%20Charging).
-
-## Paint
-
-Cart routing is done by painting paths and symbols on the ground, above ground tiles (concrete, bricks) and below other entities, including belts.
-
-* Green arrows are simply followed
-* Red octagons are stop points
-* Blue arrows are *optional routes* (turn if clear)
-* Orange arrows are *alternate routes* (turn if blocked)
-* Yellow triangles are a *yield* sign for crossing intersections
-
-## Stops
-
-Carts will stop when:
-
-* A path-stop symbol is encountered (see default stop behaviour below)
-* A closed gate is encountered on the path
-* A RED signal is received
-
-The default stop action is to wait for three seconds of inventory inactivity (similar to the base game train schedule condition).
-
-## Circuit Network
-
-When a cart detects a constant combinator *next to and facing* a stop, it changes the CC signals to show its inventory and equipment contents. It also adds virtual signals:
-
-* C as the cart number (currently entity.unit_number)
-* F as the unburnt fuel supply
-* E as the available energy in battery equipment
-
-The cart will check the constant combinator's circuit network for incoming signals too:
-
-* GREEN will make the cart depart the stop
-* RED will keep the cart stopped
-* L to turn left regardless of path
-* R to turn right regardless of path
-* S to continue straight regardless of path
-
-In the absense of incoming signals the cart will wait for the default 3s of inactivity.
-
-## Filtered Trunk Slots
-
-Cart inventory signals sent to constant combinators are affected by filters:
-
-* Unfiltered trunk items will be a normal positive count
-* Filtered trunk items will be negative counts *if there is a shortfall*, else positive
-
-This allows using a decider combinator to direct carts based on their filter states:
-
-* Loading station: *item < 0* (any filtered cart requiring item)
-* Unloading station: *item > 0* or *item > -N* (any cart with item)
-
-## Logistic Chest Interaction
-
-Carts detect logistic chests adjacent to stops and will load/unload with similar rules to logistic robots. The trunk *filtered slots* act like logistic request slots.
-
-* Requester or Buffer chest: supply chest from trunk
-* Passive provider chest: load trunk *filtered slots* from chest
-* Active provider chest: fill trunk from chest
-* Storage chest: passive behaviour, then dump all trunk *unfiltered slots* to chest
-
-Carts will reverse up to chests like little delivery vans. We simulate a built-in loader, with transfer speed eqivalent to a yellow belt multipled by current inserter capacity bonus. A basic cart can manage around 14 items/sec, climbing to 84 items/sec after fully researching inserter capacity bonus.
-
-Wait, why 14? Yellow belts do 13.33 items/sec, but to save UPS stopped carts only update once per second, so you get a free 2/3 of an item :)
-
-## Cart Groups
-
-Carts have a small equipment grid, the contents of which is included in the circuit signals sent at constant combinator stops. There are some cheap equipment group markers G1-G5 which can be inserted and used to identify carts via decider combinators. Not quite sure this is the best way forward... but it works for now.
-
-## Carts on Belts
-
-Carts fit perfectly on belts. By laying belts over long stretches of straight path carts will drive at 5km/h + belt speed. Think carefully about how they get on and off though: driving onto the side of a belt, or across belts, will probably mess up your network! Also, riding belts around corners will change cart orientation and probably prevent a clean exit.
-
-## Only 5km/h? Wtf?
-
-Yep. With the automatic logistic chest interaction (un)loading is relatively fast, so we can save some UPS and reduce queuing at stations by trundling around at a slower speed :-)
-
-Use belts for long straight runs if you must go fast.
-
-Probably going to add speed bonus research eventually.
-
-## UPS
-
-Obviously moving vehicles around with on_tick is a recipe for UPS death. To keep load down the mod does the following:
-
-Uses normal Factorio vehicle behaviour wherever possible. Sets cart speed via entity.speed and reduces friction_modifier. Ignores riding_state and just deducts a little fuel per tile. Does no automatic pathing at all.
-
-Cart speed is a constant 5km/h, so on_tick position checks need only run once or twice per tile (about every 43 ticks) while a cart is in motion. Carts waiting at stops or behind other traffic are re-checked only once per second.
-
-Note that the cheapest cart moving state is being stopped on a long straight belt. That means painting paths under the ends of belts for loading/unloading, but not under the whole length of the belt.
-
-Since UPS is dependent on the computer and the base, any UPS reports are welcome (see F5).
-
-## Previous Discussion on similar ideas:
-
-* Monorail https://forums.factorio.com/viewtopic.php?f=33&t=27829
-* MiniCarts https://forums.factorio.com/viewtopic.php?f=6&t=53116
-
-Couple other links I can't find right now...
 
 ## Thanks to:
 
