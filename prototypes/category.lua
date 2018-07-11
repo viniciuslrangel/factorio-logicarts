@@ -29,4 +29,16 @@ data:extend({
 		group = "logicarts-group",
 		order = "c"
 	},
+	{
+		type = "item-subgroup",
+		name = "logicarts-subgroup-signal-path",
+		group = "logicarts-group",
+		order = "d"
+	},
+	{
+		type = "item-subgroup",
+		name = "logicarts-subgroup-signal-turn",
+		group = "logicarts-group",
+		order = "e"
+	},
 })

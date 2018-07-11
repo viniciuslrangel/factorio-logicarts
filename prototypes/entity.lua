@@ -90,8 +90,37 @@ data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-sou
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-west",
 	128, 0.25, "__logicarts__/turn-blocked.png", 3)})
 
+data:extend({logicartsPath("logicarts-continue", "logicarts-continue-north",
+	128, 0.25, "__logicarts__/continue.png", 0)})
+data:extend({logicartsPath("logicarts-continue", "logicarts-continue-east",
+	128, 0.25, "__logicarts__/continue.png", 1)})
+data:extend({logicartsPath("logicarts-continue", "logicarts-continue-south",
+	128, 0.25, "__logicarts__/continue.png", 2)})
+data:extend({logicartsPath("logicarts-continue", "logicarts-continue-west",
+	128, 0.25, "__logicarts__/continue.png", 3)})
+
 data:extend({logicartsPath("logicarts-yield", "logicarts-yield",
 	128, 0.25, "__logicarts__/yield.png", 0)})
+
+local function groupTiles(t, n)
+	for i,d in ipairs({ "north", "east", "south", "west" }) do
+		local x = i-1
+		data:extend({logicartsPath("logicarts-"..t.."-G"..n, "logicarts-"..t.."-G"..n.."-"..d,
+			128, 0.25, "__logicarts__/"..t.."-G"..n..".png", x)})
+	end
+end
+
+groupTiles("path", 1)
+groupTiles("path", 2)
+groupTiles("path", 3)
+groupTiles("path", 4)
+groupTiles("path", 5)
+
+groupTiles("turn", 1)
+groupTiles("turn", 2)
+groupTiles("turn", 3)
+groupTiles("turn", 4)
+groupTiles("turn", 5)
 
 -- The placer entity is only used to make path placement with the mouse look normal,
 -- and to make blueprints work. It's never actually placed on the ground itself.
@@ -140,6 +169,19 @@ logicartsPathPlacer("logicarts-path", 128, 0.25, "__logicarts__/path.png", 0, 1,
 logicartsPathPlacer("logicarts-stop", 128, 0.25, "__logicarts__/stop.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts__/turn.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/turn-blocked.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/continue.png", 0, 1, 2, 3)
+
+logicartsPathPlacer("logicarts-path-G1", 128, 0.25, "__logicarts__/path-G1.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-G2", 128, 0.25, "__logicarts__/path-G2.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-G3", 128, 0.25, "__logicarts__/path-G3.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-G4", 128, 0.25, "__logicarts__/path-G4.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-G5", 128, 0.25, "__logicarts__/path-G5.png", 0, 1, 2, 3)
+
+logicartsPathPlacer("logicarts-turn-G1", 128, 0.25, "__logicarts__/turn-G1.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-G2", 128, 0.25, "__logicarts__/turn-G2.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-G3", 128, 0.25, "__logicarts__/turn-G3.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-G4", 128, 0.25, "__logicarts__/turn-G4.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-G5", 128, 0.25, "__logicarts__/turn-G5.png", 0, 1, 2, 3)
 
 -- A mini car with sprites that are part 1x1 scaled car and part rail wagon...
 -- As direction_count=4, these look terible if you try to drive one around, but

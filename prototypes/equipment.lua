@@ -7,7 +7,6 @@ data:extend({
 		equipment_categories = {"armor"}
 	},
 })
-
 local function signalEquipment(n)
 	local name = "logicarts-equipment-"..n
 	local icon = "__logicarts__/icon-G"..n..".png"
@@ -50,7 +49,7 @@ local function signalEquipment(n)
 		{
 			type = "recipe",
 			name = name,
-			category = "advanced-crafting",
+			category = "crafting",
 			subgroup = "logicarts-subgroup-signal",
 			enabled = false,
 			icon = icon,
@@ -73,4 +72,3 @@ signalEquipment(2)
 signalEquipment(3)
 signalEquipment(4)
 signalEquipment(5)
-

@@ -9,4 +9,5 @@ for i, force in pairs(game.forces) do
   force.reset_recipes()
   force.reset_technologies()
   check(force, "logicarts-tech1")
+  check(force, "logicarts-tech2")
 end

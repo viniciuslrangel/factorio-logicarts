@@ -41,7 +41,7 @@ local CAR_TICK_PLACED = CAR_TICK_BLOCKED
 -- the fuel consumption needs to be deducted manually once per tile https://wiki.factorio.com/Types/Energy
 local CAR_CONSUMPTION = 18*1000
 local CAR_CONSUMPTION_ELECTRIC = CAR_CONSUMPTION
-local CAR_CONSUMPTION_BURNER = CAR_CONSUMPTION * 3
+local CAR_CONSUMPTION_BURNER = CAR_CONSUMPTION * 10
 
 -- Tick delay between signal updates when a car is at a logicarts-stop.
 local CAR_TICK_STOPPED = 60
@@ -106,6 +106,52 @@ local pathEntities = {
 	["logicarts-path-west"] = WEST,
 }
 
+local pathGroupEntities = {
+	["logicarts-path-G1-north"] = NORTH,
+	["logicarts-path-G1-south"] = SOUTH,
+	["logicarts-path-G1-east"]  = EAST,
+	["logicarts-path-G1-west"]  = WEST,
+	["logicarts-path-G2-north"] = NORTH,
+	["logicarts-path-G2-south"] = SOUTH,
+	["logicarts-path-G2-east"]  = EAST,
+	["logicarts-path-G2-west"]  = WEST,
+	["logicarts-path-G3-north"] = NORTH,
+	["logicarts-path-G3-south"] = SOUTH,
+	["logicarts-path-G3-east"]  = EAST,
+	["logicarts-path-G3-west"]  = WEST,
+	["logicarts-path-G4-north"] = NORTH,
+	["logicarts-path-G4-south"] = SOUTH,
+	["logicarts-path-G4-east"]  = EAST,
+	["logicarts-path-G4-west"]  = WEST,
+	["logicarts-path-G5-north"] = NORTH,
+	["logicarts-path-G5-south"] = SOUTH,
+	["logicarts-path-G5-east"]  = EAST,
+	["logicarts-path-G5-west"]  = WEST,
+}
+
+local pathGroupEntitiesN = {
+	["logicarts-path-G1-north"] = 1,
+	["logicarts-path-G1-south"] = 1,
+	["logicarts-path-G1-east"]  = 1,
+	["logicarts-path-G1-west"]  = 1,
+	["logicarts-path-G2-north"] = 2,
+	["logicarts-path-G2-south"] = 2,
+	["logicarts-path-G2-east"]  = 2,
+	["logicarts-path-G2-west"]  = 2,
+	["logicarts-path-G3-north"] = 3,
+	["logicarts-path-G3-south"] = 3,
+	["logicarts-path-G3-east"]  = 3,
+	["logicarts-path-G3-west"]  = 3,
+	["logicarts-path-G4-north"] = 4,
+	["logicarts-path-G4-south"] = 4,
+	["logicarts-path-G4-east"]  = 4,
+	["logicarts-path-G4-west"]  = 4,
+	["logicarts-path-G5-north"] = 5,
+	["logicarts-path-G5-south"] = 5,
+	["logicarts-path-G5-east"]  = 5,
+	["logicarts-path-G5-west"]  = 5,
+}
+
 local turnClearEntities = {
 	["logicarts-turn-north"] = NORTH,
 	["logicarts-turn-south"] = SOUTH,
@@ -113,11 +159,64 @@ local turnClearEntities = {
 	["logicarts-turn-west"] = WEST,
 }
 
+local turnClearGroupEntities = {
+	["logicarts-turn-G1-north"] = NORTH,
+	["logicarts-turn-G1-south"] = SOUTH,
+	["logicarts-turn-G1-east"]  = EAST,
+	["logicarts-turn-G1-west"]  = WEST,
+	["logicarts-turn-G2-north"] = NORTH,
+	["logicarts-turn-G2-south"] = SOUTH,
+	["logicarts-turn-G2-east"]  = EAST,
+	["logicarts-turn-G2-west"]  = WEST,
+	["logicarts-turn-G3-north"] = NORTH,
+	["logicarts-turn-G3-south"] = SOUTH,
+	["logicarts-turn-G3-east"]  = EAST,
+	["logicarts-turn-G3-west"]  = WEST,
+	["logicarts-turn-G4-north"] = NORTH,
+	["logicarts-turn-G4-south"] = SOUTH,
+	["logicarts-turn-G4-east"]  = EAST,
+	["logicarts-turn-G4-west"]  = WEST,
+	["logicarts-turn-G5-north"] = NORTH,
+	["logicarts-turn-G5-south"] = SOUTH,
+	["logicarts-turn-G5-east"]  = EAST,
+	["logicarts-turn-G5-west"]  = WEST,
+}
+
+local turnClearGroupEntitiesN = {
+	["logicarts-turn-G1-north"] = 1,
+	["logicarts-turn-G1-south"] = 1,
+	["logicarts-turn-G1-east"]  = 1,
+	["logicarts-turn-G1-west"]  = 1,
+	["logicarts-turn-G2-north"] = 2,
+	["logicarts-turn-G2-south"] = 2,
+	["logicarts-turn-G2-east"]  = 2,
+	["logicarts-turn-G2-west"]  = 2,
+	["logicarts-turn-G3-north"] = 3,
+	["logicarts-turn-G3-south"] = 3,
+	["logicarts-turn-G3-east"]  = 3,
+	["logicarts-turn-G3-west"]  = 3,
+	["logicarts-turn-G4-north"] = 4,
+	["logicarts-turn-G4-south"] = 4,
+	["logicarts-turn-G4-east"]  = 4,
+	["logicarts-turn-G4-west"]  = 4,
+	["logicarts-turn-G5-north"] = 5,
+	["logicarts-turn-G5-south"] = 5,
+	["logicarts-turn-G5-east"]  = 5,
+	["logicarts-turn-G5-west"]  = 5,
+}
+
 local turnBlockedEntities = {
 	["logicarts-turn-blocked-north"] = NORTH,
 	["logicarts-turn-blocked-south"] = SOUTH,
 	["logicarts-turn-blocked-east"] = EAST,
 	["logicarts-turn-blocked-west"] = WEST,
+}
+
+local continueEntities = {
+	["logicarts-continue-north"] = NORTH,
+	["logicarts-continue-south"] = SOUTH,
+	["logicarts-continue-east"] = EAST,
+	["logicarts-continue-west"] = WEST,
 }
 
 local stopEntities = {
@@ -237,6 +336,17 @@ for name,_ in pairs(pathEntities) do
 	cellGetters[name] = cellGetterPath
 end
 
+local function cellGetterPathGroup(cell, en)
+	cell.path = true
+	cell.group = pathGroupEntitiesN[en.name]
+	cell.direction = pathGroupEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(pathGroupEntities) do
+	cellGetters[name] = cellGetterPathGroup
+end
+
 local function cellGetterStop(cell, en)
 	cell.path = true
 	cell.stop = true
@@ -259,6 +369,18 @@ for name,_ in pairs(turnClearEntities) do
 	cellGetters[name] = cellGetterTurnClear
 end
 
+local function cellGetterTurnClearGroup(cell, en)
+	cell.path = true
+	cell.optional = true
+	cell.group = turnClearGroupEntitiesN[en.name]
+	cell.direction = turnClearGroupEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(turnClearGroupEntities) do
+	cellGetters[name] = cellGetterTurnClearGroup
+end
+
 local function cellGetterTurnBlocked(cell, en)
 	cell.path = true
 	cell.alternate = true
@@ -270,13 +392,27 @@ for name,_ in pairs(turnBlockedEntities) do
 	cellGetters[name] = cellGetterTurnBlocked
 end
 
+local function cellGetterContinue(cell, en)
+	cell.path = true
+	cell.continue = true
+	cell.direction = continueEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(continueEntities) do
+	cellGetters[name] = cellGetterContinue
+end
+
 local function cellGet(x, y, surface)
 	local cell = {
 		x = floor(x),
 		y = floor(y),
 		path = false,
+		group = nil,
+		direction = nil,
 		optional = false,
 		alternate = false,
+		continue = false,
 		stop = false,
 		yield = false,
 		belt = false,
@@ -356,6 +492,25 @@ local function OnEntityCreated(event)
 		replaceEntityWith(entity, "logicarts-turn-blocked-"..directionNames[entity.direction])
 		return
 	end
+
+	if entity.name == "logicarts-continue" then
+		replaceEntityWith(entity, "logicarts-continue-"..directionNames[entity.direction])
+		return
+	end
+
+	for i = 1,5,1 do
+		if entity.name == "logicarts-path-G"..i then
+			replaceEntityWith(entity, "logicarts-path-G"..i.."-"..directionNames[entity.direction])
+			return
+		end
+	end
+
+	for i = 1,5,1 do
+		if entity.name == "logicarts-turn-G"..i then
+			replaceEntityWith(entity, "logicarts-turn-G"..i.."-"..directionNames[entity.direction])
+			return
+		end
+	end
 end
 
 local function OnPlayerDrivingStateChanged(event)
@@ -390,7 +545,7 @@ local function OnEntityRemoved(event)
 	end
 end
 
-local function checkDirection(car, direction, gate)
+local function checkDirection(car, state, direction, gate)
 
 	local x, y = cellCenter(car.position.x, car.position.y)
 	x, y = cellTranslate(direction, x, y)
@@ -398,9 +553,10 @@ local function checkDirection(car, direction, gate)
 	local cell = cellGet(x, y, car.surface)
 
 	if cell ~= nil then
+		local path = cell.path or state.continue or false
 		local free = cell.car_id == nil or cell.car_id == car.unit_number
 		local clear = gate == nil or gate.is_opened()
-		return (cell.path and free and clear), cell
+		return (path and free and clear), cell
 	end
 
 	return false, cell
@@ -716,7 +872,7 @@ local function carInteractChests(car, adjacentChests)
 		local chest = adjacentChests[i]
 		local mode = chest.prototype.logistic_mode
 
-		if mode == "requester" or mode == "buffer" then
+		if mode == "requester" then
 			supply(chest)
 		elseif mode == "passive-provider" then
 			demand(chest)
@@ -725,6 +881,8 @@ local function carInteractChests(car, adjacentChests)
 			accept(chest)
 		elseif mode == "storage" then
 			dump(chest)
+			demand(chest)
+		elseif mode == "buffer" then
 			demand(chest)
 		end
 	end
@@ -749,8 +907,14 @@ local function runCar(car)
 
 	-- have we strayed off the path, or perhaps had it deconstructed
 	-- out from underneath us while we were diligently delivering items?
-	if not cell.path then
+	if not cell.path and not state.continue then
+		cellClaim(cell, car, CAR_TICK_MARGIN)
 		return CAR_TICK_BLOCKED
+	end
+
+	-- Back on road
+	if cell.path and state.continue then
+		state.continue = nil
 	end
 
 	-- Current direction
@@ -758,6 +922,11 @@ local function runCar(car)
 
 	-- Direction to exit the tile
 	local pathDirection = cell.direction or carDirection
+
+	-- Legitimately off-road
+	if state.continue then
+		pathDirection = carDirection
+	end
 
 	-- Chemical or electric fuel types
 	local fueled = false
@@ -811,7 +980,7 @@ local function runCar(car)
 
 	-- If on a belt we obviously can't stop, and can therefore skip some checks
 	if cell.belt then
-		nextOK, nextCell = checkDirection(car, carDirection, nil)
+		nextOK, nextCell = checkDirection(car, state, carDirection, nil)
 		if nextOK then
 			-- hope for the best; the added speed may screw up center alignment checks
 			car.speed = CAR_ENTITY_SPEED
@@ -853,6 +1022,16 @@ local function runCar(car)
 		["signal-F"] = car.get_fuel_inventory().get_item_count(),
 		["signal-E"] = car.grid.available_in_batteries,
 	}
+
+	-- Restrict group paths
+	if cell.group ~= nil and (car.grid.get_contents())["logicarts-equipment-"..cell.group] == nil then
+		pathDirection = carDirection
+	end
+
+	-- Going off road?
+	if cell.continue then
+		state.continue = true
+	end
 
 	-- Signals to control a car
 	local red = false
@@ -956,22 +1135,22 @@ local function runCar(car)
 	cellClaim(cell, car, CAR_TICK_MARGIN)
 
 	local direction = pathDirection
-	local nextOK, nextCell = checkDirection(car, pathDirection, stopGatePath)
+	local nextOK, nextCell = checkDirection(car, state, pathDirection, stopGatePath)
 
 	if yield then
 		direction = carDirection
-		nextOK, nextCell = checkDirection(car, carDirection, stopGateCar)
+		nextOK, nextCell = checkDirection(car, state, carDirection, stopGateCar)
 	end
 
 	if optionalRoute then
 		if not nextOK then
 			direction = carDirection
-			nextOK, nextCell = checkDirection(car, carDirection, stopGateCar)
+			nextOK, nextCell = checkDirection(car, state, carDirection, stopGateCar)
 		end
 	end
 
 	if alternateRoute then
-		local aheadOK, aheadCell = checkDirection(car, carDirection, stopGateCar)
+		local aheadOK, aheadCell = checkDirection(car, state, carDirection, stopGateCar)
 		if aheadOK then
 			nextOK = aheadOK
 			nextCell = aheadCell

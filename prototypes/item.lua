@@ -224,4 +224,94 @@ data:extend({
 		order = "logicarts-a",
 		stack_size = 200,
 	},
+	{
+		type = "item",
+		name = "logicarts-continue",
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		flags = {"goes-to-quickbar"},
+		place_result = "logicarts-continue",
+		order = "logicarts-a-b",
+		stack_size = 200,
+	},
+	{
+		type = "item",
+		name = "logicarts-continue-north",
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		flags = {"hidden"},
+		order = "logicarts-a",
+		stack_size = 200,
+	},
+	{
+		type = "item",
+		name = "logicarts-continue-east",
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		flags = {"hidden"},
+		order = "logicarts-a",
+		stack_size = 200,
+	},
+	{
+		type = "item",
+		name = "logicarts-continue-south",
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		flags = {"hidden"},
+		order = "logicarts-a",
+		stack_size = 200,
+	},
+	{
+		type = "item",
+		name = "logicarts-continue-west",
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		flags = {"hidden"},
+		order = "logicarts-a",
+		stack_size = 200,
+	},
+
 })
+
+local function groupTile(t, n, d)
+	return {
+		type = "item",
+		name = "logicarts-"..t.."-G"..n.."-"..d,
+		icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
+		icon_size = 128,
+		flags = {"hidden"},
+		order = "logicarts-a-"..n,
+		stack_size = 200,
+	}
+end
+
+local function groupTiles(t, n)
+	data:extend({
+		{
+			type = "item",
+			name = "logicarts-"..t.."-G"..n,
+			icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
+			icon_size = 128,
+			flags = {"goes-to-quickbar"},
+			place_result = "logicarts-"..t.."-G"..n,
+			order = "logicarts-a-c",
+			stack_size = 200,
+		},
+		groupTile(t, n, "north"),
+		groupTile(t, n, "south"),
+		groupTile(t, n, "east"),
+		groupTile(t, n, "west"),
+	})
+end
+
+groupTiles("path", 1)
+groupTiles("path", 2)
+groupTiles("path", 3)
+groupTiles("path", 4)
+groupTiles("path", 5)
+
+groupTiles("turn", 1)
+groupTiles("turn", 2)
+groupTiles("turn", 3)
+groupTiles("turn", 4)
+groupTiles("turn", 5)

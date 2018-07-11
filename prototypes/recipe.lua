@@ -2,7 +2,7 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-car",
-		category = "advanced-crafting",
+		category = "crafting",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
 		icon = "__logicarts__/graphics/cart-ico.png",
@@ -22,7 +22,7 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-car-electric",
-		category = "advanced-crafting",
+		category = "crafting",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
 		icon = "__logicarts__/graphics/e-cart-ico.png",
@@ -117,6 +117,25 @@ data:extend({
 	},
 	{
 		type = "recipe",
+		name = "logicarts-continue",
+		category = "crafting-with-fluid",
+		subgroup = "logicarts-subgroup-path",
+		enabled = false,
+		icon = "__logicarts__/continue-icon.png",
+		icon_size = 128,
+		ingredients = {
+			{ type = "item", name = "copper-ore", amount = 1 },
+			{ type = "fluid", name = "water", amount = 10 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-continue", amount = 10 },
+		},
+		hidden = false,
+		energy_required = 1.0,
+		order = "logicarts-e",
+	},
+	{
+		type = "recipe",
 		name = "logicarts-yield",
 		category = "crafting-with-fluid",
 		subgroup = "logicarts-subgroup-path",
@@ -134,4 +153,39 @@ data:extend({
 		energy_required = 1.0,
 		order = "logicarts-e",
 	},
+})
+
+local function tileGroup(t, n)
+	return {
+		type = "recipe",
+		name = "logicarts-"..t.."-G"..n,
+		category = "crafting",
+		subgroup = "logicarts-subgroup-signal-"..t.."",
+		enabled = false,
+		icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
+		icon_size = 128,
+		ingredients = {
+			{ type = "item", name = "logicarts-"..t, amount = 1 },
+			{ type = "item", name = "iron-plate",     amount = 1 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-"..t.."-G"..n, amount = 10 },
+		},
+		hidden = false,
+		energy_required = 1.0,
+		order = "logicarts-a-"..n,
+	}
+end
+
+data:extend({
+	tileGroup("path", 1),
+	tileGroup("path", 2),
+	tileGroup("path", 3),
+	tileGroup("path", 4),
+	tileGroup("path", 5),
+	tileGroup("turn", 1),
+	tileGroup("turn", 2),
+	tileGroup("turn", 3),
+	tileGroup("turn", 4),
+	tileGroup("turn", 5),
 })

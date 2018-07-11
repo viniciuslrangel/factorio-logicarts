@@ -1,3 +1,15 @@
+0.1.17
+
+* Added *continue off road* light green paint tile. Carts will continue straight until another path is encountered.
+* Added trial group-specific *optional route* tiles, to allow directing cart groups using only paint.
+* Further reduce burner cart fuel efficiency.
+
+0.1.16
+
+* Changed cart recipe category to allow hand-crafting.
+* Added trial group-specific path tiles, to allow directing cart groups using only paint.
+* BEHAVIOUR CHANGE: carts now only load from buffer chests. This seems more useful, without a modal option like requester "request from buffer chests".
+
 0.1.15
 
 * BUGFIX: check combinator signals_count (limit) before sending cart contents
