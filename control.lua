@@ -1011,18 +1011,6 @@ local function runCar(car)
 		car.teleport(cellCenterPos(x, y))
 	end
 
-	-- Constant combinator as sensor
-	local adjacentCombinator = getAdjacentCombinator(car.surface, x, y)
-
-	-- Inventory + grid contents
-	local contents = carContents(car)
-
-	local signals = {
-		["signal-C"] = car.unit_number,
-		["signal-F"] = car.get_fuel_inventory().get_item_count(),
-		["signal-E"] = car.grid.available_in_batteries,
-	}
-
 	-- Restrict group paths
 	if cell.group ~= nil and (car.grid.get_contents())["logicarts-equipment-"..cell.group] == nil then
 		pathDirection = carDirection
@@ -1033,6 +1021,11 @@ local function runCar(car)
 		state.continue = true
 	end
 
+	-- Constant combinator as sensor
+	local adjacentCombinator = nil
+	local contents = nil
+	local signals = nil
+
 	-- Signals to control a car
 	local red = false
 	local green = false
@@ -1040,26 +1033,40 @@ local function runCar(car)
 	local optionalRoute = cell.optional
 	local alternateRoute = cell.alternate
 
-	if adjacentCombinator ~= nil then
-		local virtuals = getCombinatorVirtuals(adjacentCombinator)
+	-- Circuit network intraction only happens on paths
+	if cell.path then
+		adjacentCombinator = getAdjacentCombinator(car.surface, x, y)
 
-		green = virtuals["signal-green"] or false
-		red = virtuals["signal-red"] or false
+		-- Inventory + grid contents
+		contents = carContents(car)
 
-		if virtuals["signal-S"] then -- straight
-			pathDirection = carDirection
-		elseif virtuals["signal-L"] then -- left
-			pathDirection = leftDirections[pathDirection] or pathDirection
-		elseif virtuals["signal-R"] then -- right
-			pathDirection = rightDirections[pathDirection] or pathDirection
-		end
+		signals = {
+			["signal-C"] = car.unit_number,
+			["signal-F"] = car.get_fuel_inventory().get_item_count(),
+			["signal-E"] = car.grid.available_in_batteries,
+		}
 
-		if virtuals["signal-yellow"] then
-			yield = true
-		end
+		if adjacentCombinator ~= nil then
+			local virtuals = getCombinatorVirtuals(adjacentCombinator)
 
-		if virtuals["signal-blue"] then
-			optionalRoute = true
+			green = virtuals["signal-green"] or false
+			red = virtuals["signal-red"] or false
+
+			if virtuals["signal-S"] then -- straight
+				pathDirection = carDirection
+			elseif virtuals["signal-L"] then -- left
+				pathDirection = leftDirections[pathDirection] or pathDirection
+			elseif virtuals["signal-R"] then -- right
+				pathDirection = rightDirections[pathDirection] or pathDirection
+			end
+
+			if virtuals["signal-yellow"] then
+				yield = true
+			end
+
+			if virtuals["signal-blue"] then
+				optionalRoute = true
+			end
 		end
 	end
 
@@ -1168,11 +1175,13 @@ local function runCar(car)
 		cellClaim(nextCell, car, CAR_TICK_MARGIN)
 		consume()
 
-		-- if approaching a combinator, update it in advance to allow circuits to change in time
-		local nextCombinator = getAdjacentCombinator(car.surface, nextCell.x, nextCell.y)
+		if nextCell.path then
+			-- if approaching a combinator, update it in advance to allow circuits to change in time
+			local nextCombinator = getAdjacentCombinator(car.surface, nextCell.x, nextCell.y)
 
-		if nextCombinator ~= nil and contents ~= nil and signals ~= nil then
-			setCombinatorSignals(nextCombinator, contents, signals)
+			if nextCombinator ~= nil and contents ~= nil and signals ~= nil then
+				setCombinatorSignals(nextCombinator, contents, signals)
+			end
 		end
 
 		return CAR_TICK_STARTING

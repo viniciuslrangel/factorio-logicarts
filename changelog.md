@@ -1,3 +1,7 @@
+0.1.18
+
+* UPS savings when off-road.
+
 0.1.17
 
 * Added *continue off road* light green paint tile. Carts will continue straight until another path is encountered.
