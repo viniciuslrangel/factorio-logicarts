@@ -1,6 +1,11 @@
 0.1.18
 
+* Base tile recipes on untinted paint.
+* Virtual signal T sets trunk filtered slots from other signals.
+* Virtual signal G sets grid group equipment from other signals.
+* Added *optional route (fuel)* tiles.
 * UPS savings when off-road.
+* Recipe cost balancing.
 
 0.1.17
 

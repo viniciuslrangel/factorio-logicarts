@@ -1,6 +1,26 @@
 data:extend({
 	{
 		type = "recipe",
+		name = "logicarts-paint",
+		category = "crafting-with-fluid",
+		subgroup = "logicarts-subgroup",
+		enabled = false,
+		icon = "__logicarts__/paint-icon.png",
+		icon_size = 128,
+		ingredients = {
+			{ type = "item",  name = "stone", amount = 1 },
+			{ type = "item",  name = "coal",  amount = 1 },
+			{ type = "fluid", name = "water", amount = 11 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-paint", amount = 1 },
+		},
+		hidden = false,
+		energy_required = 5.0,
+		order = "logicarts-a",
+	},
+	{
+		type = "recipe",
 		name = "logicarts-car",
 		category = "crafting",
 		subgroup = "logicarts-subgroup",
@@ -17,7 +37,7 @@ data:extend({
 		},
 		hidden = false,
 		energy_required = 5.0,
-		order = "logicarts-a",
+		order = "logicarts-b",
 	},
 	{
 		type = "recipe",
@@ -37,22 +57,22 @@ data:extend({
 		},
 		hidden = false,
 		energy_required = 5.0,
-		order = "logicarts-b",
+		order = "logicarts-c",
 	},
 	{
 		type = "recipe",
 		name = "logicarts-path",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/path-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-path", amount = 10 },
+			{ type = "item", name = "logicarts-path", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -61,17 +81,17 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-stop",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/stop-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-stop", amount = 10 },
+			{ type = "item", name = "logicarts-stop", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -80,17 +100,17 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-turn",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/turn-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-turn", amount = 10 },
+			{ type = "item", name = "logicarts-turn", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -99,17 +119,17 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-turn-blocked",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/turn-blocked-icon.png",
 		icon_size = 128,
 		ingredients = {
-			{ type = "item", name = "copper-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "iron-ore", amount = 1 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-turn-blocked", amount = 10 },
+			{ type = "item", name = "logicarts-turn-blocked", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -118,17 +138,17 @@ data:extend({
 	{
 		type = "recipe",
 		name = "logicarts-continue",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/continue-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-continue", amount = 10 },
+			{ type = "item", name = "logicarts-continue", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -136,26 +156,45 @@ data:extend({
 	},
 	{
 		type = "recipe",
+		name = "logicarts-turn-fuel",
+		category = "crafting",
+		subgroup = "logicarts-subgroup-path",
+		enabled = false,
+		icon = "__logicarts__/turn-fuel-icon.png",
+		icon_size = 128,
+		ingredients = {
+			{ type = "item", name = "iron-ore", amount = 1 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-turn-fuel", amount = 1 },
+		},
+		hidden = false,
+		energy_required = 1.0,
+		order = "logicarts-f",
+	},
+	{
+		type = "recipe",
 		name = "logicarts-yield",
-		category = "crafting-with-fluid",
+		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
 		icon = "__logicarts__/yield-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
-			{ type = "fluid", name = "water", amount = 10 },
+			{ type = "item", name = "logicarts-paint", amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-yield", amount = 10 },
+			{ type = "item", name = "logicarts-yield", amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
-		order = "logicarts-e",
+		order = "logicarts-g",
 	},
 })
 
-local function tileGroup(t, n)
+local function tileGroup(t, n, i)
 	return {
 		type = "recipe",
 		name = "logicarts-"..t.."-G"..n,
@@ -166,10 +205,10 @@ local function tileGroup(t, n)
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "logicarts-"..t, amount = 1 },
-			{ type = "item", name = "iron-plate",     amount = 1 },
+			{ type = "item", name = i, amount = 1 },
 		},
 		results = {
-			{ type = "item", name = "logicarts-"..t.."-G"..n, amount = 10 },
+			{ type = "item", name = "logicarts-"..t.."-G"..n, amount = 1 },
 		},
 		hidden = false,
 		energy_required = 1.0,
@@ -178,14 +217,14 @@ local function tileGroup(t, n)
 end
 
 data:extend({
-	tileGroup("path", 1),
-	tileGroup("path", 2),
-	tileGroup("path", 3),
-	tileGroup("path", 4),
-	tileGroup("path", 5),
-	tileGroup("turn", 1),
-	tileGroup("turn", 2),
-	tileGroup("turn", 3),
-	tileGroup("turn", 4),
-	tileGroup("turn", 5),
+	tileGroup("path", 1, "iron-plate"),
+	tileGroup("path", 2, "iron-plate"),
+	tileGroup("path", 3, "iron-plate"),
+	tileGroup("path", 4, "iron-plate"),
+	tileGroup("path", 5, "iron-plate"),
+	tileGroup("turn", 1, "copper-plate"),
+	tileGroup("turn", 2, "copper-plate"),
+	tileGroup("turn", 3, "copper-plate"),
+	tileGroup("turn", 4, "copper-plate"),
+	tileGroup("turn", 5, "copper-plate"),
 })

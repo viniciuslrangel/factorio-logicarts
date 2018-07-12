@@ -5,11 +5,13 @@ data:extend({
 		icon = "__logicarts__/graphics/cart-tech.png",
 		icon_size = 128,
 		effects = {
+			{ type = "unlock-recipe", recipe = "logicarts-paint" },
 			{ type = "unlock-recipe", recipe = "logicarts-car" },
 			{ type = "unlock-recipe", recipe = "logicarts-path" },
 			{ type = "unlock-recipe", recipe = "logicarts-turn" },
 			{ type = "unlock-recipe", recipe = "logicarts-stop" },
 			{ type = "unlock-recipe", recipe = "logicarts-turn-blocked" },
+			{ type = "unlock-recipe", recipe = "logicarts-turn-fuel" },
 			{ type = "unlock-recipe", recipe = "logicarts-continue" },
 			{ type = "unlock-recipe", recipe = "logicarts-yield" },
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-1" },

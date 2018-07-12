@@ -20,6 +20,7 @@ local function signalEquipment(n)
 			placed_as_equipment_result = name,
 			order = "logicarts-b-"..n,
 			stack_size = 200,
+			subgroup = "logicarts-subgroup-signal",
 		},
 		{
 			name = name,
@@ -54,9 +55,7 @@ local function signalEquipment(n)
 			enabled = false,
 			icon = icon,
 			icon_size = 128,
-			ingredients = {
-				{ type = "item", name = "iron-plate", amount = 1 },
-			},
+			ingredients = {},
 			results = {
 				{ type = "item", name = name, amount = 1 },
 			},

@@ -99,6 +99,15 @@ data:extend({logicartsPath("logicarts-continue", "logicarts-continue-south",
 data:extend({logicartsPath("logicarts-continue", "logicarts-continue-west",
 	128, 0.25, "__logicarts__/continue.png", 3)})
 
+data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-north",
+	128, 0.25, "__logicarts__/turn-fuel.png", 0)})
+data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-east",
+	128, 0.25, "__logicarts__/turn-fuel.png", 1)})
+data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-south",
+	128, 0.25, "__logicarts__/turn-fuel.png", 2)})
+data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-west",
+	128, 0.25, "__logicarts__/turn-fuel.png", 3)})
+
 data:extend({logicartsPath("logicarts-yield", "logicarts-yield",
 	128, 0.25, "__logicarts__/yield.png", 0)})
 
@@ -170,6 +179,7 @@ logicartsPathPlacer("logicarts-stop", 128, 0.25, "__logicarts__/stop.png", 0, 1,
 logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts__/turn.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/turn-blocked.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/continue.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-fuel", 128, 0.25, "__logicarts__/turn-fuel.png", 0, 1, 2, 3)
 
 logicartsPathPlacer("logicarts-path-G1", 128, 0.25, "__logicarts__/path-G1.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-path-G2", 128, 0.25, "__logicarts__/path-G2.png", 0, 1, 2, 3)
