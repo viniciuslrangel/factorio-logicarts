@@ -233,6 +233,41 @@ local stopEntities = {
 	["logicarts-stop-west"] = WEST,
 }
 
+local stopLoadEntities = {
+	["logicarts-stop-load-north"] = NORTH,
+	["logicarts-stop-load-south"] = SOUTH,
+	["logicarts-stop-load-east"] = EAST,
+	["logicarts-stop-load-west"] = WEST,
+}
+
+local stopUnloadEntities = {
+	["logicarts-stop-unload-north"] = NORTH,
+	["logicarts-stop-unload-south"] = SOUTH,
+	["logicarts-stop-unload-east"] = EAST,
+	["logicarts-stop-unload-west"] = WEST,
+}
+
+local stopSupplyEntities = {
+	["logicarts-stop-supply-north"] = NORTH,
+	["logicarts-stop-supply-south"] = SOUTH,
+	["logicarts-stop-supply-east"] = EAST,
+	["logicarts-stop-supply-west"] = WEST,
+}
+
+local stopDumpEntities = {
+	["logicarts-stop-dump-north"] = NORTH,
+	["logicarts-stop-dump-south"] = SOUTH,
+	["logicarts-stop-dump-east"] = EAST,
+	["logicarts-stop-dump-west"] = WEST,
+}
+
+local stopAcceptEntities = {
+	["logicarts-stop-accept-north"] = NORTH,
+	["logicarts-stop-accept-south"] = SOUTH,
+	["logicarts-stop-accept-east"] = EAST,
+	["logicarts-stop-accept-west"] = WEST,
+}
+
 local equipmentGroups = {
 	["logicarts-equipment-1"] = 1,
 	["logicarts-equipment-2"] = 2,
@@ -290,6 +325,8 @@ local function State()
 	mod = global
 	mod.grid = nil
 	mod.entities = nil
+	mod.sensors = nil
+	mod.controllers = nil
 
 	if mod.queues == nil then
 		mod.queues = {}
@@ -377,6 +414,66 @@ for name,_ in pairs(stopEntities) do
 	cellGetters[name] = cellGetterStop
 end
 
+local function cellGetterStopLoad(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.load = true
+	cell.direction = stopLoadEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopLoadEntities) do
+	cellGetters[name] = cellGetterStopLoad
+end
+
+local function cellGetterStopUnload(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.unload = true
+	cell.direction = stopUnloadEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopUnloadEntities) do
+	cellGetters[name] = cellGetterStopUnload
+end
+
+local function cellGetterStopSupply(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.supply = true
+	cell.direction = stopSupplyEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopSupplyEntities) do
+	cellGetters[name] = cellGetterStopSupply
+end
+
+local function cellGetterStopDump(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.dump = true
+	cell.direction = stopDumpEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopDumpEntities) do
+	cellGetters[name] = cellGetterStopDump
+end
+
+local function cellGetterStopAccept(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.accept = true
+	cell.direction = stopAcceptEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopAcceptEntities) do
+	cellGetters[name] = cellGetterStopAccept
+end
+
 local function cellGetterTurnClear(cell, en)
 	cell.path = true
 	cell.optional = true
@@ -434,6 +531,7 @@ for name,_ in pairs(continueEntities) do
 end
 
 local function cellGet(x, y, surface)
+	local pos = cellCenterPos(x, y)
 	local cell = {
 		x = floor(x),
 		y = floor(y),
@@ -444,6 +542,11 @@ local function cellGet(x, y, surface)
 		alternate = false,
 		continue = false,
 		stop = false,
+		load = false,
+		unload = false,
+		supply = false,
+		dump = false,
+		accept = false,
 		yield = false,
 		belt = false,
 		gate = false,
@@ -451,9 +554,10 @@ local function cellGet(x, y, surface)
 		fuel = false,
 		entity = nil,
 		car_id = nil,
+		tile = surface.get_tile(floor(pos.x), floor(pos.y)),
 	}
 	local entities = surface.find_entities_filtered({
-		position = cellCenterPos(x, y),
+		position = pos
 	})
 	for i = 1,#entities,1 do
 		local en = entities[i]
@@ -464,15 +568,47 @@ local function cellGet(x, y, surface)
 	return cell
 end
 
+local grassNames = {
+	["grass-1"] = true,
+	["grass-2"] = true,
+	["grass-3"] = true,
+}
+
 local function cellClaim(cell, car, ticks)
+	local pos = cellCenterPos(cell.x, cell.y)
+
 	local marker = car.surface.create_entity({
 		name = "logicarts-marker",
-		position = cellCenterPos(cell.x, cell.y),
+		position = pos,
 		force = car.force,
 	})
+
 	if marker ~= nil and marker.valid then
 		mod.markers[marker.unit_number] = car.unit_number
 		markerQueue(marker, ticks + 10)
+	end
+
+	if cell.tile ~= nil and grassNames[cell.tile.name] ~= nil
+		and settings.global["logicarts-grass-wearing"].value
+	then
+
+		local entities = car.surface.find_entities_filtered({
+			name = "logicarts-wear",
+			position = pos,
+		})
+
+		if entities ~= nil and #entities > 3 then
+			car.surface.set_tiles({{ name = "grass-4", position = pos }})
+			for _,en in ipairs(entities) do
+				en.destroy()
+			end
+			return
+		end
+
+		car.surface.create_entity({
+			name = "logicarts-wear",
+			position = pos,
+		})
 	end
 end
 
@@ -513,6 +649,31 @@ local function OnEntityCreated(event)
 
 	if entity.name == "logicarts-stop" then
 		replaceEntityWith(entity, "logicarts-stop-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-load" then
+		replaceEntityWith(entity, "logicarts-stop-load-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-unload" then
+		replaceEntityWith(entity, "logicarts-stop-unload-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-supply" then
+		replaceEntityWith(entity, "logicarts-stop-supply-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-dump" then
+		replaceEntityWith(entity, "logicarts-stop-dump-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-accept" then
+		replaceEntityWith(entity, "logicarts-stop-accept-"..directionNames[entity.direction])
 		return
 	end
 
@@ -698,7 +859,7 @@ local function getCombinatorSignals(combinator)
 end
 
 local function restrictedVirtuals(virtuals)
-	return virtuals ~= nil and (virtuals["signal-T"] or virtuals["signal-G"] or virtuals["signal-I"]) or false
+	return virtuals ~= nil and (virtuals["signal-T"] or virtuals["signal-G"]) or false
 end
 
 local function getLogisticChests(x, y, surface)
@@ -816,142 +977,232 @@ local function carGroupFromSignals(car, items)
 	end
 end
 
-local function carInteractLogisticChests(car, chests)
+-- Transfer items from a chest to the cart trunk filtered slots
+local function carLoad(car, chest, ops)
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+	local inventory = chest.get_inventory(defines.inventory.chest)
 
+	-- Refuel first if necessary
+	if car.name == CAR_BURNER then
+		local burner = car.burner
+		local fueltank = burner.inventory
+		local item = burner.currently_burning
+		if item ~= nil then
+			local available = min(ops, inventory.get_item_count(item.name))
+			if available > 0 then
+				local moved = fueltank.insert({ name = item.name, count = available })
+				if moved > 0 then
+					inventory.remove({ name = item.name, count = moved })
+					ops = ops - moved
+				end
+			end
+		end
+	end
+
+	for j = 1,#trunk,1 do
+		if ops <= 0 then
+			break
+		end
+		local filter = trunk.get_filter(j)
+		if filter ~= nil then
+			local stack = trunk[j]
+			local count = (stack ~= nil and stack.valid_for_read and stack.count) or 0
+			local shortfall = max(0, game.item_prototypes[filter].stack_size - count)
+			local moved = min(ops, min(shortfall, inventory.get_item_count(filter)))
+			if moved > 0 then
+				local tstack = { name = filter, count = moved }
+				inventory.remove(tstack)
+				if stack ~= nil and stack.valid_for_read and stack.valid then
+					stack.count = stack.count + moved
+				else
+					trunk.insert(tstack)
+				end
+				ops = ops - moved
+			end
+		end
+	end
+	return ops
+end
+
+-- Transfer cart filtered slots to a chest.
+local function carUnload(car, chest, ops)
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+	local inventory = chest.get_inventory(defines.inventory.chest)
+
+	for j = 1,#trunk,1 do
+		if ops <= 0 then
+			break
+		end
+		if trunk.get_filter(j) ~= nil then
+			local stack = trunk[j]
+			if stack ~= nil and stack.valid_for_read then
+				local name = stack.name
+				local count = min(ops, stack.count)
+				if count > 0 then
+					local moved = inventory.insert({ name = name, count = count })
+					if moved > 0 then
+						trunk.remove({ name = name, count = moved })
+						ops = ops - moved
+					end
+				end
+			end
+		end
+	end
+	return ops
+end
+
+-- Transfer items, if available, from cart to chest.
+local function carSupply(car, chest, items, ops)
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+	local inventory = chest.get_inventory(defines.inventory.chest)
+
+	for name,count in pairs(items) do
+		if ops <= 0 then
+			break
+		end
+		local moved = min(ops, min(count, trunk.get_item_count(name)))
+		if moved > 0 then
+			local stack = { name = name, count = moved }
+			trunk.remove(stack)
+			inventory.insert(stack)
+			ops = ops - moved
+		end
+	end
+	return ops
+end
+
+-- Fill trunk from chest.
+local function carAccept(car, chest, ops)
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+	local inventory = chest.get_inventory(defines.inventory.chest)
+
+	-- Priority to filtered slots
+	ops = carLoad(car, chest, ops)
+
+	-- Fill partial stacks
+	if ops > 0 then
+		for i = 1,#trunk,1 do
+			if ops <= 0 then
+				break
+			end
+			local stack = trunk[i]
+			if stack ~= nil and stack.valid_for_read then
+				local name = stack.name
+				local move = min(ops, inventory.get_item_count(name))
+				if move > 0 then
+					local moved = trunk.insert({ name = name, count = move })
+					if moved > 0 then
+						inventory.remove({ name = name, count = moved })
+						ops = ops - moved
+					end
+				end
+			end
+		end
+	end
+
+	-- Fill empty slots
+	if ops > 0 then
+		for name,count in pairs(inventory.get_contents()) do
+			if ops <= 0 then
+				break
+			end
+			local move = min(ops, count)
+			local moved = trunk.insert({ name = name, count = move })
+			if moved > 0 then
+				inventory.remove({ name = name, count = moved })
+				ops = ops - moved
+			end
+		end
+	end
+
+	return ops
+end
+
+-- Dump unfiltered items to chest.
+local function carDump(car, chest, ops)
+	local trunk = car.get_inventory(defines.inventory.car_trunk)
+	local inventory = chest.get_inventory(defines.inventory.chest)
+
+	for j = 1,#trunk,1 do
+		if ops <= 0 then
+			break
+		end
+		if trunk.get_filter(j) == nil then
+			local stack = trunk[j]
+			if stack ~= nil and stack.valid_for_read then
+				local name = stack.name
+				local count = min(ops, stack.count)
+				if count > 0 then
+					local moved = inventory.insert({ name = name, count = count })
+					if moved > 0 then
+						trunk.remove({ name = name, count = moved })
+						ops = ops - moved
+					end
+				end
+			end
+		end
+	end
+	return ops
+end
+
+-- A requester or buffer's requests as [name] = count
+local function logisticChestRequests(chest)
+	local requests = {}
+	for i = 1,chest.request_slot_count,1 do
+		local request = chest.get_request_slot(i)
+		if request ~= nil then
+			local count = request.count - chest.get_item_count(request.name)
+			if count > 0 then
+				requests[request.name] = count
+			end
+		end
+	end
+	return requests
+end
+
+-- A chest requests as [name] = count
+local function chestRequests(chest)
+	if chest.prototype.logistic_mode == "requester" or chest.prototype.logistic_mode == "buffer" then
+		return logisticChestRequests(chest)
+	end
+	local requests = {}
+	local signals = chest.get_merged_signals()
+	if signals ~= nil then
+		for _, v in pairs(signals) do
+			if v.signal.name ~= nil and v.signal.type == "item" and v.count < 0 then
+				requests[v.signal.name] = abs(v.count)
+			end
+		end
+	end
+	return requests
+end
+
+local function carInteractLogisticChests(car, chests)
 	local trunk = car.get_inventory(defines.inventory.car_trunk)
 
 	-- yellow transport belt boosted by inserter-bonus research
 	local throughput = car.force.inserter_stack_size_bonus * 14
 	local activity = 0
 
-	-- Transfer items from the cart trunk to a requester or buffer chest.
 	local supply = function(chest)
-		local ops = throughput
-		for j = 1,chest.request_slot_count,1 do
-			if ops <= 0 then
-				break
-			end
-			local request = chest.get_request_slot(j)
-			if request ~= nil then
-				local shortfall = max(0, request.count - chest.get_item_count(request.name))
-				local moved = min(ops, min(shortfall, trunk.get_item_count(request.name)))
-				if moved > 0 then
-					local stack = { name = request.name, count = moved }
-					trunk.remove(stack)
-					chest.insert(stack)
-					ops = ops - moved
-				end
-			end
-		end
-		activity = activity + (throughput - ops)
+		local items = logisticChestRequests(chest)
+		local done = carSupply(car, chest, items, throughput)
+		activity = activity + (throughput - done)
 	end
 
-	-- Transfer items from a passive or storage or buffer chest to the cart trunk.
-	-- Filtered trunk slots are treated as logistic request slots.
 	local demand = function(chest)
-		local ops = throughput
-		-- Refuel first if necessary
-		if car.name == CAR_BURNER then
-			local burner = car.burner
-			local fueltank = burner.inventory
-			local item = burner.currently_burning
-			if item ~= nil then
-				local available = min(ops, chest.get_item_count(item.name))
-				if available > 0 then
-					local moved = fueltank.insert({ name = item.name, count = available })
-					if moved > 0 then
-						chest.remove_item({ name = item.name, count = moved })
-						ops = ops - moved
-					end
-				end
-			end
-		end
-		for j = 1,#trunk,1 do
-			if ops <= 0 then
-				break
-			end
-			local filter = trunk.get_filter(j)
-			if filter ~= nil then
-				local stack = trunk[j]
-				local count = (stack ~= nil and stack.valid_for_read and stack.count) or 0
-				local shortfall = max(0, game.item_prototypes[filter].stack_size - count)
-				local moved = min(ops, min(shortfall, chest.get_item_count(filter)))
-				if moved > 0 then
-					local tstack = { name = filter, count = moved }
-					chest.remove_item(tstack)
-					if stack ~= nil and stack.valid_for_read and stack.valid then
-						stack.count = stack.count + moved
-					else
-						trunk.insert(tstack)
-					end
-					ops = ops - moved
-				end
-			end
-		end
-		activity = activity + (throughput - ops)
+		local done = carLoad(car, chest, throughput)
+		activity = activity + (throughput - done)
 	end
 
-	-- Transfer items from an active provider to the cart trunk.
-	-- If trunk slots are filtered, they only fill if there's a match.
 	local accept = function(chest)
-		local ops = throughput
-		local inventory = chest.get_inventory(defines.inventory.chest)
-		local contents = inventory.get_contents()
-		local transfer = function(name)
-			local total = min(ops, contents[name] or 0)
-			if total > 0 then
-				local moved = trunk.insert({ name = name, count = total })
-				if moved > 0 then
-					inventory.remove({ name = name, count = moved })
-					contents[name] = (moved < total) and (total - moved) or nil
-					ops = ops - moved
-				end
-			end
-		end
-		-- first fill up existing stacks
-		for j = 1,#trunk,1 do
-			if ops <= 0 then
-				break
-			end
-			local stack = trunk[j]
-			if stack ~= nil and stack.valid_for_read then
-				transfer(stack.name)
-			end
-		end
-		-- now fill remaining slots
-		for k,_ in pairs(contents) do
-			if ops <= 0 then
-				break
-			end
-			transfer(k)
-		end
-		activity = activity + (throughput - ops)
+		local done = carAccept(car, chest, throughput)
+		activity = activity + (throughput - done)
 	end
 
-	-- Transfer items from unfiltered slots in the cart trunk to a storage chest.
 	local dump = function(chest)
-		local ops = throughput
-		local inventory = chest.get_inventory(defines.inventory.chest)
-		for j = 1,#trunk,1 do
-			if ops <= 0 then
-				break
-			end
-			if trunk.get_filter(j) == nil then
-				local stack = trunk[j]
-				if stack ~= nil and stack.valid_for_read then
-					local name = stack.name
-					local count = min(ops, stack.count)
-					if count > 0 then
-						local moved = chest.insert({ name = name, count = count })
-						if moved > 0 then
-							trunk.remove({ name = name, count = moved })
-							ops = ops - moved
-						end
-					end
-				end
-			end
-		end
-		activity = activity + (throughput - ops)
+		local done = carDump(car, chest, throughput)
+		activity = activity + (throughput - done)
 	end
 
 	for i = 1,#chests,1 do
@@ -976,96 +1227,68 @@ local function carInteractLogisticChests(car, chests)
 	return activity
 end
 
-local function carInteractAllChests(car, chests, items)
-
-	local trunk = car.get_inventory(defines.inventory.car_trunk)
+local function carInteractChests(car, chests, cell)
 
 	-- yellow transport belt boosted by inserter-bonus research
 	local throughput = car.force.inserter_stack_size_bonus * 14
-	local activity = 0
 
-	-- trunk requirements
-	local trunkReqs = {}
-	for i = 1,#trunk,1 do
-		local filter = trunk.get_filter(i)
-		if filter ~= nil then
-			local stack = trunk[i]
-			local count = (stack ~= nil and stack.valid_for_read and stack.count) or 0
-			local shortfall = game.item_prototypes[filter].stack_size - count
-			trunkReqs[filter] = (trunkReqs[filter] or 0) + shortfall
-		end
-	end
-
-	local fuel = nil
-	-- check fuel in case it's available
-	if car.name == CAR_BURNER then
-		local burner = car.burner
-		local fueltank = burner.inventory
-		local item = burner.currently_burning
-		if item ~= nil then
-			fuel = item.name
-			local count = fueltank.get_item_count(fuel)
-			local shortfall = game.item_prototypes[fuel].stack_size - count
-			trunkReqs[fuel] = (trunkReqs[fuel] or 0) + shortfall
-		end
-	end
-
-	-- Transfer items between cart trunk and chest
-	local interact = function(chest)
+	if cell.load then
 		local ops = throughput
-
-		for name,count in pairs(items) do
-
+		for _,chest in ipairs(chests) do
 			if ops <= 0 then
 				break
 			end
-
-			local chestCount = chest.get_item_count(name)
-			local trunkCount = trunk.get_item_count(name)
-
-			if count > chestCount and trunkCount > 0 then
-				-- supply
-				local shortfall = count - chestCount
-				local available = min(shortfall, trunkCount)
-				local moved = min(ops, available)
-				if moved > 0 then
-					local stack = { name = name, count = moved }
-					trunk.remove(stack)
-					chest.insert(stack)
-					ops = ops - moved
-				end
-			end
-
-			if ops <= 0 then
-				break
-			end
-
-			if count < chestCount and trunkReqs[name] ~= nil and trunkReqs[name] > 0 then
-				-- demand
-				local available = min(chestCount - max(0, count))
-				local moved = min(ops, min(trunkReqs[name], available))
-				if moved > 0 then
-					local tstack = { name = name, count = moved }
-					chest.remove_item(tstack)
-					if fuel == name then
-						tstack.count = tstack.count - car.get_fuel_inventory().insert(tstack)
-					end
-					if tstack.count > 0 then
-						trunk.insert(tstack)
-					end
-					ops = ops - moved
-				end
-			end
+			ops = carLoad(car, chest, ops)
 		end
-
-		activity = activity + (throughput - ops)
+		return throughput - ops
 	end
 
-	for _,chest in ipairs(chests) do
-		interact(chest)
+	if cell.unload then
+		local ops = throughput
+		for _,chest in ipairs(chests) do
+			if ops <= 0 then
+				break
+			end
+			ops = carUnload(car, chest, ops)
+		end
+		return throughput - ops
 	end
 
-	return activity
+	if cell.supply then
+		local ops = throughput
+		for _,chest in ipairs(chests) do
+			if ops <= 0 then
+				break
+			end
+			local reqs = chestRequests(chest)
+			ops = carSupply(car, chest, reqs, ops)
+		end
+		return throughput - ops
+	end
+
+	if cell.dump then
+		local ops = throughput
+		for _,chest in ipairs(chests) do
+			if ops <= 0 then
+				break
+			end
+			ops = carDump(car, chest, ops)
+		end
+		return throughput - ops
+	end
+
+	if cell.accept then
+		local ops = throughput
+		for _,chest in ipairs(chests) do
+			if ops <= 0 then
+				break
+			end
+			ops = carAccept(car, chest, ops)
+		end
+		return throughput - ops
+	end
+
+	return 0
 end
 
 local function carNeedFuel(car)
@@ -1134,13 +1357,13 @@ local function runCar(car)
 
 	if car.name == CAR_BURNER then
 		local burner = car.burner
+		fueled = burner.remaining_burning_fuel > 0
+
 		local fueltank = burner.inventory
 		local fuelstoke = burner.currently_burning == nil or burner.remaining_burning_fuel < CAR_CONSUMPTION_BURNER
-		local fuelempty = fueltank.is_empty()
-		fueled = not fuelstoke or not fuelempty
 
 		-- since we don't use riding_state, manually stoke the burner
-		if fuelstoke and not fuelempty then
+		if fuelstoke and not fueltank.is_empty() then
 			for item, count in pairs(fueltank.get_contents()) do
 				burner.currently_burning = game.item_prototypes[item]
 				burner.remaining_burning_fuel = burner.currently_burning.fuel_value
@@ -1226,13 +1449,17 @@ local function runCar(car)
 	local CCarray = nil -- array of CC items ordered per control parameters
 
 	-- Inventory + grid contents
-	local contents = carContents(car)
+	local contents = nil
+	local signals = nil
 
-	local signals = {
-		["signal-C"] = car.unit_number,
-		["signal-F"] = car.get_fuel_inventory().get_item_count(),
-		["signal-E"] = car.grid.available_in_batteries,
-	}
+	local contentsAndSignals = function()
+		contents = carContents(car)
+		signals = {
+			["signal-C"] = car.unit_number,
+			["signal-F"] = car.get_fuel_inventory().get_item_count(),
+			["signal-E"] = car.grid.available_in_batteries,
+		}
+	end
 
 	-- Signals to control a car
 	local red = false
@@ -1259,8 +1486,10 @@ local function runCar(car)
 
 			if CCvirtuals["signal-S"] then -- straight
 				pathDirection = carDirection
+
 			elseif CCvirtuals["signal-L"] then -- left
 				pathDirection = leftDirections[pathDirection] or pathDirection
+
 			elseif CCvirtuals["signal-R"] then -- right
 				pathDirection = rightDirections[pathDirection] or pathDirection
 			end
@@ -1269,7 +1498,7 @@ local function runCar(car)
 				carFiltersFromSignals(car, CCarray)
 			end
 
-			if CCvirtuals["signal-G"] then
+			if CCvirtuals["signal-G"] and car.force.technolgies["logicarts-tech-groups"].researched then
 				carGroupFromSignals(car, CCarray)
 			end
 
@@ -1282,25 +1511,24 @@ local function runCar(car)
 	local stop = red or (cell.stop and not green)
 
 	if stop then
+		contentsAndSignals()
 
-		if CCvirtuals ~= nil and CCvirtuals["signal-I"] ~= nil then
-			-- Follow explicit combinator directives
-			local allChests, allChestDirections = getAllChests(x, y, car.surface)
-
-			if #allChests > 0 then
-				if carInteractAllChests(car, allChests, CCitems) > 0 then
-					car.orientation = directionOrientations[reverseDirections[allChestDirections[1] or NORTH]]
+		if cell.load or cell.unload or cell.supply or cell.dump or cell.accept then
+			-- Interact with chests according to stop mode
+			local chests, chestDirections = getAllChests(x, y, car.surface)
+			if #chests > 0 then
+				if carInteractChests(car, chests, cell) > 0 then
+					car.orientation = directionOrientations[reverseDirections[chestDirections[1] or NORTH]]
 					contents = carContents(car)
 					state.stopCount = 0
 				end
 			end
 		else
 			-- Participate automatically in logistics network
-			local logisticChests, logisticChestDirections = getLogisticChests(x, y, car.surface)
-
-			if #logisticChests > 0 then
-				if carInteractLogisticChests(car, logisticChests) > 0 then
-					car.orientation = directionOrientations[reverseDirections[logisticChestDirections[1] or NORTH]]
+			local chests, chestDirections = getLogisticChests(x, y, car.surface)
+			if #chests > 0 then
+				if carInteractLogisticChests(car, chests) > 0 then
+					car.orientation = directionOrientations[reverseDirections[chestDirections[1] or NORTH]]
 					contents = carContents(car)
 					state.stopCount = 0
 				end
@@ -1308,7 +1536,7 @@ local function runCar(car)
 		end
 
 		-- Default is to broadcast our contents. Various signals disable this
-		if adjacentCombinator ~= nil and contents ~= nil and signals ~= nil then
+		if adjacentCombinator ~= nil then
 			setCombinatorSignals(adjacentCombinator, contents, signals)
 		end
 
@@ -1400,7 +1628,8 @@ local function runCar(car)
 			-- if approaching a combinator, update it in advance to allow circuits to change in time
 			local nextCombinator = getAdjacentCombinator(car.surface, nextCell.x, nextCell.y)
 
-			if nextCombinator ~= nil and contents ~= nil and signals ~= nil then
+			if nextCombinator ~= nil then
+				contentsAndSignals()
 				local virtuals, _, _ = getCombinatorSignals(nextCombinator)
 				if not restrictedVirtuals(virtuals) then
 					setCombinatorSignals(nextCombinator, contents, signals)

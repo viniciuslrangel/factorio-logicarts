@@ -1,341 +1,101 @@
-data:extend({
-	{
+local prototypes = {}
+local subgroups = {}
+
+local function subgroupSpot(subgroup)
+	subgroups[subgroup] = (subgroups[subgroup] or 0) + 1
+	return subgroups[subgroup]
+end
+
+local function placeableItem(name, stack, subgroup, size, icon)
+	prototypes[#prototypes+1] = {
 		type = "item",
-		name = "logicarts-car",
-		icon = "__logicarts__/graphics/cart-ico.png",
-		icon_size = 32,
+		name = name,
+		icon = icon,
+		icon_size = size,
 		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-car",
-		order = "logicarts-a-a",
+		place_result = name,
+		order = subgroupSpot(subgroup),
+		stack_size = stack,
+		subgroup = subgroup,
+	}
+end
+
+local function ingredientItem(name, stack, subgroup, size, icon)
+	prototypes[#prototypes+1] = {
+		type = "item",
+		name = name,
+		icon = icon,
+		icon_size = size,
+		flags = {"goes-to-main-inventory"},
+		order = subgroupSpot(subgroup),
+		stack_size = stack,
+		subgroup = subgroup,
+	}
+end
+
+local function hiddenItem(name, size, icon)
+	prototypes[#prototypes+1] = {
+		type = "item",
+		name = name,
+		icon = icon,
+		icon_size = size,
+		flags = {"hidden"},
+		order = "z",
 		stack_size = 50,
-		subgroup = "logicarts-subgroup",
-	},
-	{
-		type = "item",
-		name = "logicarts-car-electric",
-		icon = "__logicarts__/graphics/e-cart-ico.png",
-		icon_size = 32,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-car-electric",
-		order = "logicarts-a-a",
-		stack_size = 50,
-		subgroup = "logicarts-subgroup",
-	},
-	{
-		type = "item",
-		name = "logicarts-paint",
-		icon = "__logicarts__/paint-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		order = "logicarts-a-a",
-		stack_size = 50,
-		subgroup = "logicarts-subgroup",
-	},
-	{
-		type = "item",
-		name = "logicarts-path",
-		icon = "__logicarts__/path-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-path",
-		order = "logicarts-a-b",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-path-north",
-		icon = "__logicarts__/path-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-path-east",
-		icon = "__logicarts__/path-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-path-south",
-		icon = "__logicarts__/path-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-path-west",
-		icon = "__logicarts__/path-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn",
-		icon = "__logicarts__/turn-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-turn",
-		order = "logicarts-a-c",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-north",
-		icon = "__logicarts__/turn-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-east",
-		icon = "__logicarts__/turn-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-south",
-		icon = "__logicarts__/turn-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-west",
-		icon = "__logicarts__/turn-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-stop",
-		icon = "__logicarts__/stop-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-stop",
-		order = "logicarts-a-c",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-stop-north",
-		icon = "__logicarts__/stop-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-stop-east",
-		icon = "__logicarts__/stop-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-stop-south",
-		icon = "__logicarts__/stop-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-stop-west",
-		icon = "__logicarts__/stop-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-yield",
-		icon = "__logicarts__/yield-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-yield",
-		order = "logicarts-a-c",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-marker",
-		icon = "__logicarts__/nothing.png",
-		icon_size = 32,
-		flags = {"hidden"},
-		place_result = "logicarts-marker",
-		order = "logicarts-z",
-		stack_size = 200,
-	},
-	-- turn-blocked
-	{
-		type = "item",
-		name = "logicarts-turn-blocked",
-		icon = "__logicarts__/turn-blocked-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-turn-blocked",
-		order = "logicarts-a-c",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-blocked-north",
-		icon = "__logicarts__/turn-blocked-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-blocked-east",
-		icon = "__logicarts__/turn-blocked-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-blocked-south",
-		icon = "__logicarts__/turn-blocked-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-blocked-west",
-		icon = "__logicarts__/turn-blocked-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-continue",
-		icon = "__logicarts__/continue-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-continue",
-		order = "logicarts-a-b",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-continue-north",
-		icon = "__logicarts__/continue-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-continue-east",
-		icon = "__logicarts__/continue-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-continue-south",
-		icon = "__logicarts__/continue-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-continue-west",
-		icon = "__logicarts__/continue-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-fuel",
-		icon = "__logicarts__/turn-fuel-icon.png",
-		icon_size = 128,
-		flags = {"goes-to-quickbar"},
-		place_result = "logicarts-turn-fuel",
-		order = "logicarts-a-b",
-		stack_size = 200,
-		subgroup = "logicarts-subgroup-path",
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-fuel-north",
-		icon = "__logicarts__/turn-fuel-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-fuel-east",
-		icon = "__logicarts__/turn-fuel-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-fuel-south",
-		icon = "__logicarts__/turn-fuel-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-	{
-		type = "item",
-		name = "logicarts-turn-fuel-west",
-		icon = "__logicarts__/turn-fuel-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a",
-		stack_size = 200,
-	},
-})
+	}
+end
+
+local function invisibleItem(name, size, icon)
+	hiddenItem(name, 32, "__logicarts__/nothing.png")
+end
+
+local function directionItems(name, size, icon)
+	return {
+		hiddenItem(name.."-north", size, icon),
+		hiddenItem(name.."-east", size, icon),
+		hiddenItem(name.."-south", size, icon),
+		hiddenItem(name.."-west", size, icon),
+	}
+end
+
+local path_stack_size = 1000
+
+local function pathItem(name, icon)
+	placeableItem(name, path_stack_size, "logicarts-subgroup-path", 128, icon)
+	directionItems(name, 128, icon)
+end
+
+local function stopItem(name, icon)
+	placeableItem(name, path_stack_size, "logicarts-subgroup-stop", 128, icon)
+	directionItems(name, 128, icon)
+end
+
+invisibleItem("logicarts-marker")
+invisibleItem("logicarts-wear")
+
+-- ROW 1
+ingredientItem("logicarts-paint", 50, "logicarts-subgroup", 128, "__logicarts__/paint-icon.png")
+placeableItem("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/cart-ico.png")
+placeableItem("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/e-cart-ico.png")
+
+-- ROW 2
+pathItem("logicarts-path",  "__logicarts__/path-icon.png")
+pathItem("logicarts-turn",  "__logicarts__/turn-icon.png")
+pathItem("logicarts-stop",  "__logicarts__/stop-icon.png")
+pathItem("logicarts-turn-fuel",  "__logicarts__/turn-fuel-icon.png")
+pathItem("logicarts-turn-blocked",  "__logicarts__/turn-blocked-icon.png")
+pathItem("logicarts-continue",  "__logicarts__/continue-icon.png")
+
+placeableItem("logicarts-yield", path_stack_size, "logicarts-subgroup-path", 128, "__logicarts__/stop-icon.png")
+
+-- ROW 3
+stopItem("logicarts-stop-load",   "__logicarts__/stop-load-icon.png")
+stopItem("logicarts-stop-unload", "__logicarts__/stop-unload-icon.png")
+stopItem("logicarts-stop-supply", "__logicarts__/stop-supply-icon.png")
+stopItem("logicarts-stop-dump",   "__logicarts__/stop-dump-icon.png")
+stopItem("logicarts-stop-accept", "__logicarts__/stop-accept-icon.png")
+
+data:extend(prototypes)
 
 local function groupTile(t, n, d)
 	return {

@@ -81,6 +81,51 @@ data:extend({logicartsPath("logicarts-stop", "logicarts-stop-south",
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-west",
 	128, 0.25, "__logicarts__/stop.png", 3)})
 
+data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-north",
+	128, 0.25, "__logicarts__/stop-load.png", 0)})
+data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-east",
+	128, 0.25, "__logicarts__/stop-load.png", 1)})
+data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-south",
+	128, 0.25, "__logicarts__/stop-load.png", 2)})
+data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-west",
+	128, 0.25, "__logicarts__/stop-load.png", 3)})
+
+data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-north",
+	128, 0.25, "__logicarts__/stop-unload.png", 0)})
+data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-east",
+	128, 0.25, "__logicarts__/stop-unload.png", 1)})
+data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-south",
+	128, 0.25, "__logicarts__/stop-unload.png", 2)})
+data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-west",
+	128, 0.25, "__logicarts__/stop-unload.png", 3)})
+
+data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-north",
+	128, 0.25, "__logicarts__/stop-supply.png", 0)})
+data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-east",
+	128, 0.25, "__logicarts__/stop-supply.png", 1)})
+data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-south",
+	128, 0.25, "__logicarts__/stop-supply.png", 2)})
+data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-west",
+	128, 0.25, "__logicarts__/stop-supply.png", 3)})
+
+data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-north",
+	128, 0.25, "__logicarts__/stop-dump.png", 0)})
+data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-east",
+	128, 0.25, "__logicarts__/stop-dump.png", 1)})
+data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-south",
+	128, 0.25, "__logicarts__/stop-dump.png", 2)})
+data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-west",
+	128, 0.25, "__logicarts__/stop-dump.png", 3)})
+
+data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-north",
+	128, 0.25, "__logicarts__/stop-accept.png", 0)})
+data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-east",
+	128, 0.25, "__logicarts__/stop-accept.png", 1)})
+data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-south",
+	128, 0.25, "__logicarts__/stop-accept.png", 2)})
+data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-west",
+	128, 0.25, "__logicarts__/stop-accept.png", 3)})
+
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-north",
 	128, 0.25, "__logicarts__/turn-blocked.png", 0)})
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-east",
@@ -176,6 +221,11 @@ end
 
 logicartsPathPlacer("logicarts-path", 128, 0.25, "__logicarts__/path.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-stop", 128, 0.25, "__logicarts__/stop.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-load", 128, 0.25, "__logicarts__/stop-load.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-unload", 128, 0.25, "__logicarts__/stop-unload.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-supply", 128, 0.25, "__logicarts__/stop-supply.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-dump", 128, 0.25, "__logicarts__/stop-dump.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-accept", 128, 0.25, "__logicarts__/stop-accept.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts__/turn.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/turn-blocked.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/continue.png", 0, 1, 2, 3)
@@ -412,5 +462,43 @@ data:extend({
 		render_layer = "air-object",
 		tile_width = 1,
 		tile_height = 1,
+		order = "z",
+	}
+})
+
+-- Wearign of grass to dirt.
+data:extend({
+	{
+		type = "simple-entity",
+		name = "logicarts-wear",
+		flags = {
+			"placeable-neutral",
+			"not-rotatable",
+			"not-repairable",
+			"not-on-map",
+			"not-deconstructable",
+			"not-blueprintable",
+			"not-flammable",
+		},
+		selectable_in_game = false,
+		build_sound = nil,
+		mined_sound = nil,
+		created_smoke = nil,
+		minable = nil,
+		collision_mask = {},
+		collision_box = {{-0.5,-0.5},{0.5,0.5}},
+		selection_box = {{0,0},{0,0}},
+		icon = "__logicarts__/nothing.png",
+		icon_size = 32,
+		picture = {
+			x = 0,
+			filename = "__logicarts__/nothing.png",
+			width = 32,
+			height = 32,
+		},
+		render_layer = "air-object",
+		tile_width = 1,
+		tile_height = 1,
+		order = "z",
 	}
 })

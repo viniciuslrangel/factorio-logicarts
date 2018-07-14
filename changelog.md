@@ -1,3 +1,11 @@
+0.1.19
+
+* BUGFIX: Burner carts now actually run out of fuel, rather than stopping with slightly >0 supply.
+* Added stop types to perform logistics-chest-like operations on normal chests.
+* Grass paths eventually wear down to grass-4 (mod setting).
+* Split out conditional stops and turns research.
+* Increased tile stack sizes.
+
 0.1.18
 
 * Base tile recipes on untinted paint.
