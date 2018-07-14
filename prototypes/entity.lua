@@ -288,7 +288,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "low",
+		priority = "extra-high",
 		scale = 0.25,
 		shift = {
 			0,
@@ -310,7 +310,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "low",
+		priority = "extra-high",
 		scale = 0.25,
 		shift = {
 			0,
@@ -388,7 +388,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "low",
+		priority = "extra-high",
 		scale = 0.25,
 		shift = {
 			0,
@@ -410,7 +410,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "low",
+		priority = "extra-high",
 		scale = 0.25,
 		shift = {
 			0,
