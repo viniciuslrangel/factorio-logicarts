@@ -1,4 +1,4 @@
-0.1.19
+0.1.20
 
 * BUGFIX: nil mod.players reference
 * BUGFIX: yield icon broken in 0.1.19
