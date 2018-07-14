@@ -1,5 +1,5 @@
 local cc = data.raw["constant-combinator"]["constant-combinator"]
-cc.item_slot_count = math.max(32, cc.item_slot_count)
+cc.item_slot_count = math.max(36, cc.item_slot_count)
 
 local enableDataItems = {
 	"ammo",

@@ -323,9 +323,6 @@ end
 
 local function State()
 	mod = global
-	mod.grid = nil
-	mod.entities = nil
-
 	if mod.queues == nil then
 		mod.queues = {}
 	end
@@ -1736,9 +1733,11 @@ end
 -- car.speed deterministically and scheduling individual car
 -- position checks as infrequently as possible.
 local function OnTick(event)
-	State()
+	mod = global
 
 	if game.tick % 30 == 1 then
+		State()
+
 		for _, player in pairs(game.players) do
 			if player.connected then
 
@@ -1766,6 +1765,7 @@ local function OnTick(event)
 	end
 
 	mod.queues[game.tick] = nil
+	State()
 
 	for i = 1,#queue,1 do
 		local en = queue[i]

@@ -1,3 +1,7 @@
+0.1.21
+
+* Path graphics update.
+
 0.1.20
 
 * BUGFIX: nil mod.players reference
