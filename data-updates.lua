@@ -28,7 +28,14 @@ local entities = {}
 for _, list in ipairs(enableDataItems) do
 	if data.raw[list] ~= nil then
 		for name, item in pairs(data.raw[list]) do
-			if item.icon ~= nil then
+			local icon = item.icon
+			local icon_size = item.icon_size
+			-- can't handle barrels and tints yet
+			if string.sub(item.name, -string.len("-barrel")) == "-barrel" then
+				icon = "__base__/graphics/icons/fluid/barreling/empty-barrel.png"
+				icon_size = 32
+			end
+			if icon ~= nil then
 				items[#items+1] = {
 					type = "item",
 					name = "logicarts-item-"..name,
@@ -59,10 +66,10 @@ for _, list in ipairs(enableDataItems) do
 					icon = "__logicarts__/sticker-icon.png",
 					icon_size = 32,
 					picture = {
-						filename = item.icon,
-						width = item.icon_size,
-						height = item.icon_size,
-						scale = (32/item.icon_size)*0.3,
+						filename = icon,
+						width = icon_size,
+						height = icon_size,
+						scale = (32/icon_size)*0.3,
 						priority = "low",
 					},
 					render_layer = "higher-object-above",
