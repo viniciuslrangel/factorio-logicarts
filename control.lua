@@ -325,8 +325,6 @@ local function State()
 	mod = global
 	mod.grid = nil
 	mod.entities = nil
-	mod.sensors = nil
-	mod.controllers = nil
 
 	if mod.queues == nil then
 		mod.queues = {}
@@ -336,6 +334,12 @@ local function State()
 	end
 	if mod.markers == nil then
 		mod.markers = {}
+	end
+	if mod.stickers == nil then
+		mod.stickers = {}
+	end
+	if mod.players == nil then
+		mod.players = {}
 	end
 end
 
@@ -372,6 +376,9 @@ local cellGetters = {
 	end,
 	["logicarts-marker"] = function(cell, en)
 		cell.car_id = mod.markers[en.unit_number]
+	end,
+	["logicarts-sticker"] = function(cell, en)
+		cell.sticker = en
 	end,
 	["transport-belt"] = function(cell, en)
 		cell.belt = true
@@ -553,6 +560,7 @@ local function cellGet(x, y, surface)
 		opened = false,
 		fuel = false,
 		entity = nil,
+		sticker = nil,
 		car_id = nil,
 		tile = surface.get_tile(floor(pos.x), floor(pos.y)),
 	}
@@ -612,6 +620,50 @@ local function cellClaim(cell, car, ticks)
 	end
 end
 
+-- Stickers are transparent constant combinators positioned over path tiles,
+-- with a single signal slot. When the signal is set, show in the bottom right
+-- corner of the tile a simple-entity-with-force with the icon of the item.
+
+local function stickerUpdate(sticker)
+	local signal = sticker.get_control_behavior().get_signal(1)
+	local name = "logicarts-sticker-display"
+
+	if signal ~= nil and signal.signal ~= nil then
+		local iname = "logicarts-item-"..signal.signal.name
+		if game.entity_prototypes[iname] ~= nil then
+			name = iname
+		end
+	end
+
+	local state = mod.stickers[sticker.unit_number] or {}
+	mod.stickers[sticker.unit_number] = state
+
+	state.sticker = sticker
+
+	if state.display ~= nil then
+		state.display.destroy()
+	end
+
+	state.display = sticker.surface.create_entity({
+		name = name,
+		position = { sticker.position.x + 0.35, sticker.position.y + 0.35 },
+		force = sticker.force,
+	})
+end
+
+local function stickerItem(sticker)
+
+	local signal = sticker.get_control_behavior().get_signal(1)
+
+	if signal ~= nil and signal.signal ~= nil then
+		local name = signal.signal.name
+		if game.entity_prototypes[name] ~= nil then
+			return name
+		end
+	end
+	return nil
+end
+
 local function replaceEntityWith(entity, name)
 	local surface = entity.surface
 	local direction = entity.direction
@@ -639,6 +691,23 @@ local function OnEntityCreated(event)
 		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
 		cellClaim(cell, entity, CAR_TICK_MARGIN)
 		carQueue(entity, CAR_TICK_PLACED)
+		return
+	end
+
+	if entity.name == "logicarts-sticker" then
+		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
+		if not cell.path then
+			-- Could be player or robot. Assume robots will only do sane placements...
+			if event.player_index ~= nil and game.players[event.player_index] ~= nil then
+				local inventory = game.players[event.player_index].get_main_inventory()
+				if inventory ~= nil then
+					inventory.insert({ name = entity.name, count = 1 })
+				end
+			end
+			entity.destroy()
+		else
+			stickerUpdate(entity)
+		end
 		return
 	end
 
@@ -737,6 +806,10 @@ local function OnEntityRemoved(event)
 
 	if entity.name == "logicarts-marker" then
 		mod.markers[entity.unit_number] = nil
+	end
+
+	if entity.name == "logicarts-sticker" then
+		mod.stickers[entity.unit_number].display.destroy()
 	end
 
 	if cartEntities[entity.name] ~= nil then
@@ -1469,6 +1542,21 @@ local function runCar(car)
 	local optionalRoute = cell.optional
 	local alternateRoute = cell.alternate
 
+	-- Check tile sitcker for re-direction
+	if cell.sticker ~= nil then
+		local control = cell.sticker.get_control_behavior()
+		if control.enabled then
+			local signal = control.get_signal(1)
+			if signal ~= nil and signal.signal ~= nil then
+				contentsAndSignals()
+				local name = signal.signal.name
+				if contents[name] == nil or contents[name] == 0 then
+					pathDirection = carDirection
+				end
+			end
+		end
+	end
+
 	-- Restrict group paths
 	if cell.group ~= nil and (car.grid.get_contents())["logicarts-equipment-"..cell.group] == nil then
 		pathDirection = carDirection
@@ -1648,15 +1736,34 @@ end
 -- car.speed deterministically and scheduling individual car
 -- position checks as infrequently as possible.
 local function OnTick(event)
-	mod = global
+	State()
+
+	if game.tick % 30 == 1 then
+		for _, player in pairs(game.players) do
+			if player.connected then
+
+				local state = mod.players[player.name] or {}
+				mod.players[player.name] = state
+
+				if player.opened_gui_type == defines.gui_type.entity then
+					if player.opened.name == "logicarts-sticker" then
+						state.sticker = player.opened
+					end
+				elseif player.opened_gui_type == defines.gui_type.none then
+					if state.sticker ~= nil and state.sticker.valid then
+						stickerUpdate(state.sticker)
+						state.sticker = nil
+					end
+				end
+			end
+		end
+	end
 
 	local queue = mod.queues ~= nil and mod.queues[game.tick]
 
 	if queue == nil then
 		return
 	end
-
-	State()
 
 	mod.queues[game.tick] = nil
 
@@ -1679,13 +1786,10 @@ local function OnTick(event)
 end
 
 local function OnDebug(event)
-	game.print("debug"..serialize({
-		["CAR_SPEED"] = CAR_SPEED,
-		["CAR_ENTITY_SPEED"] = CAR_ENTITY_SPEED,
-		["CAR_TICK_STARTING"] = CAR_TICK_STARTING,
-		["CAR_TICK_ARRIVING"] = CAR_TICK_ARRIVING,
-		["CAR_TICK_BLOCKED"] = CAR_TICK_BLOCKED,
-	}))
+	local entities = game.surfaces["nauvis"].find_entities_filtered({
+		name = { "logicarts-marker", "logicarts-wear", "logicarts-sticker-display" },
+	})
+	game.print("debug"..#entities)
 end
 
 script.on_init(function()

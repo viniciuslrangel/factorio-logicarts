@@ -78,6 +78,9 @@ ingredientItem("logicarts-paint", 50, "logicarts-subgroup", 128, "__logicarts__/
 placeableItem("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/cart-ico.png")
 placeableItem("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/e-cart-ico.png")
 
+placeableItem("logicarts-sticker", 1000, "logicarts-subgroup", 32, "__logicarts__/sticker-icon.png")
+hiddenItem("logicarts-sticker-display", 32, "__logicarts__/sticker-icon.png")
+
 -- ROW 2
 pathItem("logicarts-path",  "__logicarts__/path-icon.png")
 pathItem("logicarts-turn",  "__logicarts__/turn-icon.png")
@@ -86,7 +89,7 @@ pathItem("logicarts-turn-fuel",  "__logicarts__/turn-fuel-icon.png")
 pathItem("logicarts-turn-blocked",  "__logicarts__/turn-blocked-icon.png")
 pathItem("logicarts-continue",  "__logicarts__/continue-icon.png")
 
-placeableItem("logicarts-yield", path_stack_size, "logicarts-subgroup-path", 128, "__logicarts__/stop-icon.png")
+placeableItem("logicarts-yield", path_stack_size, "logicarts-subgroup-path", 128, "__logicarts__/yield-icon.png")
 
 -- ROW 3
 stopItem("logicarts-stop-load",   "__logicarts__/stop-load-icon.png")
@@ -96,47 +99,3 @@ stopItem("logicarts-stop-dump",   "__logicarts__/stop-dump-icon.png")
 stopItem("logicarts-stop-accept", "__logicarts__/stop-accept-icon.png")
 
 data:extend(prototypes)
-
-local function groupTile(t, n, d)
-	return {
-		type = "item",
-		name = "logicarts-"..t.."-G"..n.."-"..d,
-		icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
-		icon_size = 128,
-		flags = {"hidden"},
-		order = "logicarts-a-"..n,
-		stack_size = 200,
-	}
-end
-
-local function groupTiles(t, n)
-	data:extend({
-		{
-			type = "item",
-			name = "logicarts-"..t.."-G"..n,
-			icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
-			icon_size = 128,
-			flags = {"goes-to-quickbar"},
-			place_result = "logicarts-"..t.."-G"..n,
-			order = "logicarts-a-c",
-			stack_size = 200,
-			subgroup = "logicarts-subgroup-signal-"..t,
-		},
-		groupTile(t, n, "north"),
-		groupTile(t, n, "south"),
-		groupTile(t, n, "east"),
-		groupTile(t, n, "west"),
-	})
-end
-
-groupTiles("path", 1)
-groupTiles("path", 2)
-groupTiles("path", 3)
-groupTiles("path", 4)
-groupTiles("path", 5)
-
-groupTiles("turn", 1)
-groupTiles("turn", 2)
-groupTiles("turn", 3)
-groupTiles("turn", 4)
-groupTiles("turn", 5)

@@ -80,6 +80,27 @@ data:extend({
 	},
 	{
 		type = "technology",
+		name = "logicarts-tech-stickers",
+		icon = "__logicarts__/tech-stickers.png",
+		icon_size = 128,
+		effects = {
+			{ type = "unlock-recipe", recipe = "logicarts-sticker" },
+		},
+		prerequisites = {
+			"logicarts-tech1",
+		},
+		unit = {
+			count = 150,
+			ingredients = {
+				{"science-pack-1", 1},
+				{"science-pack-2", 1}
+			},
+			time = 30
+		},
+		order = "c-o-a",
+	},
+	{
+		type = "technology",
 		name = "logicarts-tech-groups",
 		icon = "__logicarts__/tech-groups.png",
 		icon_size = 128,
@@ -89,16 +110,6 @@ data:extend({
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-3" },
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-4" },
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-5" },
-			{ type = "unlock-recipe", recipe = "logicarts-path-G1" },
-			{ type = "unlock-recipe", recipe = "logicarts-path-G2" },
-			{ type = "unlock-recipe", recipe = "logicarts-path-G3" },
-			{ type = "unlock-recipe", recipe = "logicarts-path-G4" },
-			{ type = "unlock-recipe", recipe = "logicarts-path-G5" },
-			{ type = "unlock-recipe", recipe = "logicarts-turn-G1" },
-			{ type = "unlock-recipe", recipe = "logicarts-turn-G2" },
-			{ type = "unlock-recipe", recipe = "logicarts-turn-G3" },
-			{ type = "unlock-recipe", recipe = "logicarts-turn-G4" },
-			{ type = "unlock-recipe", recipe = "logicarts-turn-G5" },
 		},
 		prerequisites = {
 			"logicarts-tech1",

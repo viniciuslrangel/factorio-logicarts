@@ -1,9 +1,16 @@
 0.1.19
 
-* BUGFIX: Burner carts now actually run out of fuel, rather than stopping with slightly >0 supply.
+* BUGFIX: nil mod.players reference
+* BUGFIX: yield icon broken in 0.1.19
+
+0.1.19
+
+* BEHAVIOUR CHANGE: Removed group-specific paths and turns. See stickers for the same result.
+* BUGFIX: Burner carts now always run out of fuel, rather than sometimes stopping with slightly >0 supply.
 * Added stop types to perform logistics-chest-like operations on normal chests.
+* Added tile stickers to direct carts based on contents and equipment.
 * Grass paths eventually wear down to grass-4 (mod setting).
-* Split out conditional stops and turns research.
+* Split out stops, stickers and turns research.
 * Increased tile stack sizes.
 
 0.1.18

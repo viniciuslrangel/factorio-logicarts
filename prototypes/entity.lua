@@ -156,25 +156,6 @@ data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-west",
 data:extend({logicartsPath("logicarts-yield", "logicarts-yield",
 	128, 0.25, "__logicarts__/yield.png", 0)})
 
-local function groupTiles(t, n)
-	for i,d in ipairs({ "north", "east", "south", "west" }) do
-		local x = i-1
-		data:extend({logicartsPath("logicarts-"..t.."-G"..n, "logicarts-"..t.."-G"..n.."-"..d,
-			128, 0.25, "__logicarts__/"..t.."-G"..n..".png", x)})
-	end
-end
-
-groupTiles("path", 1)
-groupTiles("path", 2)
-groupTiles("path", 3)
-groupTiles("path", 4)
-groupTiles("path", 5)
-
-groupTiles("turn", 1)
-groupTiles("turn", 2)
-groupTiles("turn", 3)
-groupTiles("turn", 4)
-groupTiles("turn", 5)
 
 -- The placer entity is only used to make path placement with the mouse look normal,
 -- and to make blueprints work. It's never actually placed on the ground itself.
@@ -231,18 +212,6 @@ logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/turn-blo
 logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/continue.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn-fuel", 128, 0.25, "__logicarts__/turn-fuel.png", 0, 1, 2, 3)
 
-logicartsPathPlacer("logicarts-path-G1", 128, 0.25, "__logicarts__/path-G1.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-G2", 128, 0.25, "__logicarts__/path-G2.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-G3", 128, 0.25, "__logicarts__/path-G3.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-G4", 128, 0.25, "__logicarts__/path-G4.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-G5", 128, 0.25, "__logicarts__/path-G5.png", 0, 1, 2, 3)
-
-logicartsPathPlacer("logicarts-turn-G1", 128, 0.25, "__logicarts__/turn-G1.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-G2", 128, 0.25, "__logicarts__/turn-G2.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-G3", 128, 0.25, "__logicarts__/turn-G3.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-G4", 128, 0.25, "__logicarts__/turn-G4.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-G5", 128, 0.25, "__logicarts__/turn-G5.png", 0, 1, 2, 3)
-
 -- A mini car with sprites that are part 1x1 scaled car and part rail wagon...
 -- As direction_count=4, these look terible if you try to drive one around, but
 -- it's an easy way of getting carts to be actual vehicles (for on_tick UPS
@@ -288,7 +257,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "extra-high",
+		priority = "low",
 		scale = 0.25,
 		shift = {
 			0,
@@ -310,7 +279,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "extra-high",
+		priority = "low",
 		scale = 0.25,
 		shift = {
 			0,
@@ -388,7 +357,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "extra-high",
+		priority = "low",
 		scale = 0.25,
 		shift = {
 			0,
@@ -410,7 +379,7 @@ car.animation.layers = {
 		frame_count = 2,
 		height = 192,
 		max_advance = 0.2,
-		priority = "extra-high",
+		priority = "low",
 		scale = 0.25,
 		shift = {
 			0,
@@ -501,4 +470,111 @@ data:extend({
 		tile_height = 1,
 		order = "z",
 	}
+})
+
+-- Experimental path stickers.
+
+-- A "sticker" is placed on a path tile to add meaning to the basic turn signal.
+-- Stickers are invisible constant combinators with a single signal slot. The
+-- visible bit is a simple-entity-with-force created by setting the CC signal
+-- to an item. See data-updates for how the latter are created.
+
+-- The reason for using a CC is to make stickers blue-printable including the
+-- signal. The drawback is that, since the CC is transparent, it's hard to place
+-- with the mouse :) Can only see the item count text beside the mouse cursor....
+
+local cc = table.deepcopy(data.raw["constant-combinator"]["constant-combinator"])
+
+data:extend({
+	{
+		type = "simple-entity-with-force",
+		name = "logicarts-sticker-display",
+		flags = {
+			"player-creation",
+			"not-rotatable",
+			"not-flammable",
+			"not-blueprintable",
+			"placeable-off-grid",
+		},
+		selectable_in_game = false,
+		build_sound = nil,
+		mined_sound = nil,
+		created_smoke = nil,
+		minable = nil,
+		collision_mask = {"layer-14"},
+		collision_box = {{-0.4,-0.4},{0.4,0.4}},
+		selection_box = {{-0.25,-0.25},{0.25,0.25}},
+		icon = "__logicarts__/sticker-icon.png",
+		icon_size = 32,
+		pictures = variations,
+		render_layer = "higher-object-above",
+		tile_width = 1,
+		tile_height = 1,
+		picture = {
+			filename = "__logicarts__/sticker-icon.png",
+			width = 32,
+			height = 32,
+			scale = 0.25,
+		}
+	},
+	{
+		type = "constant-combinator",
+		name = "logicarts-sticker",
+		flags = {
+			"player-creation",
+			"not-flammable",
+			"not-rotatable",
+		},
+		selectable_in_game = true,
+		build_sound = nil,
+		mined_sound = nil,
+		created_smoke = nil,
+		minable = {
+			mining_time = 1,
+			result = "logicarts-sticker",
+		},
+		collision_mask = {"layer-15"},
+		collision_box = {{-0.25,-0.25},{0.25,0.25}},
+		--selection_box = {{-0.25,-0.25},{0.25,0.25}},
+		selection_box = {{0.1,0.1},{0.6,0.6}},
+		icon = "__logicarts__/sticker-icon.png",
+		icon_size = 32,
+		tile_width = 1,
+		tile_height = 1,
+		item_slot_count = 1,
+		sprites = {
+			north = {
+				filename = "__logicarts__/sticker.png",
+				width = 128,
+				height = 128,
+				priority = "low",
+				scale = 0.25,
+			},
+			south = {
+				filename = "__logicarts__/sticker.png",
+				width = 128,
+				height = 128,
+				priority = "low",
+				scale = 0.25,
+			},
+			east = {
+				filename = "__logicarts__/sticker.png",
+				width = 128,
+				height = 128,
+				priority = "low",
+				scale = 0.25,
+			},
+			west = {
+				filename = "__logicarts__/sticker.png",
+				width = 128,
+				height = 128,
+				priority = "low",
+				scale = 0.25,
+			},
+		},
+		activity_led_sprites = cc.activity_led_sprites,
+    activity_led_light = { intensity = 0.8, size = 1 },
+    activity_led_light_offsets = cc.activity_led_light_offsets,
+    circuit_wire_connection_points = cc.circuit_wire_connection_points,
+	},
 })

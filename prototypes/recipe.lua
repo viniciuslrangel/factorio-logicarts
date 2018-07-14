@@ -61,6 +61,25 @@ data:extend({
 	},
 	{
 		type = "recipe",
+		name = "logicarts-sticker",
+		category = "crafting",
+		subgroup = "logicarts-subgroup",
+		enabled = false,
+		icon = "__logicarts__/sticker-icon.png",
+		icon_size = 32,
+		ingredients = {
+			{ type = "item", name = "logicarts-paint", amount = 1 },
+			{ type = "item", name = "constant-combinator", amount = 1 },
+		},
+		results = {
+			{ type = "item", name = "logicarts-sticker", amount = 1 },
+		},
+		hidden = false,
+		energy_required = 5.0,
+		order = "logicarts-d",
+	},
+	{
+		type = "recipe",
 		name = "logicarts-path",
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
@@ -289,37 +308,3 @@ data:extend({
 	},
 })
 
-local function tileGroup(t, n, i)
-	return {
-		type = "recipe",
-		name = "logicarts-"..t.."-G"..n,
-		category = "crafting",
-		subgroup = "logicarts-subgroup-signal-"..t.."",
-		enabled = false,
-		icon = "__logicarts__/"..t.."-G"..n.."-icon.png",
-		icon_size = 128,
-		ingredients = {
-			{ type = "item", name = "logicarts-"..t, amount = 1 },
-			{ type = "item", name = i, amount = 1 },
-		},
-		results = {
-			{ type = "item", name = "logicarts-"..t.."-G"..n, amount = 1 },
-		},
-		hidden = false,
-		energy_required = 1.0,
-		order = "logicarts-a-"..n,
-	}
-end
-
-data:extend({
-	tileGroup("path", 1, "iron-plate"),
-	tileGroup("path", 2, "iron-plate"),
-	tileGroup("path", 3, "iron-plate"),
-	tileGroup("path", 4, "iron-plate"),
-	tileGroup("path", 5, "iron-plate"),
-	tileGroup("turn", 1, "copper-plate"),
-	tileGroup("turn", 2, "copper-plate"),
-	tileGroup("turn", 3, "copper-plate"),
-	tileGroup("turn", 4, "copper-plate"),
-	tileGroup("turn", 5, "copper-plate"),
-})
