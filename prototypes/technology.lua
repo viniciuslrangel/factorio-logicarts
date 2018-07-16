@@ -124,4 +124,28 @@ data:extend({
 		},
 		order = "c-o-a",
 	},
+	{
+		type = "technology",
+		name = "logicarts-tech-dual",
+		icon = "__logicarts__/tech-dual.png",
+		icon_size = 128,
+		effects = {
+			{ type = "unlock-recipe", recipe = "logicarts-path-dual-straight" },
+			{ type = "unlock-recipe", recipe = "logicarts-path-dual-turn" },
+			{ type = "unlock-recipe", recipe = "logicarts-continue-dual-straight" },
+			{ type = "unlock-recipe", recipe = "logicarts-continue-dual-turn" },
+		},
+		prerequisites = {
+			"logicarts-tech1",
+		},
+		unit = {
+			count = 150,
+			ingredients = {
+				{"science-pack-1", 1},
+				{"science-pack-2", 1}
+			},
+			time = 30
+		},
+		order = "c-o-a",
+	},
 })

@@ -31,20 +31,26 @@ data:extend({
 	},
 	{
 		type = "item-subgroup",
-		name = "logicarts-subgroup-signal",
+		name = "logicarts-subgroup-dual",
 		group = "logicarts-group",
 		order = "d"
 	},
 	{
 		type = "item-subgroup",
-		name = "logicarts-subgroup-signal-path",
+		name = "logicarts-subgroup-signal",
 		group = "logicarts-group",
 		order = "e"
 	},
 	{
 		type = "item-subgroup",
-		name = "logicarts-subgroup-signal-turn",
+		name = "logicarts-subgroup-signal-path",
 		group = "logicarts-group",
 		order = "f"
+	},
+	{
+		type = "item-subgroup",
+		name = "logicarts-subgroup-signal-turn",
+		group = "logicarts-group",
+		order = "g"
 	},
 })

@@ -13,4 +13,5 @@ for i, force in pairs(game.forces) do
   check(force, "logicarts-tech-stops")
   check(force, "logicarts-tech-stickers")
   check(force, "logicarts-tech-groups")
+  check(force, "logicarts-tech-dual")
 end

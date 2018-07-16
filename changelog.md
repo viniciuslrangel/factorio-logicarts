@@ -1,7 +1,11 @@
+0.1.22
+
+* Dual Carriageway research and tiles.
+
 0.1.21
 
 * Path graphics update.
-* Default to empt barrel icon for stickers. Can't handle tints yet.
+* Default to empty barrel icon for stickers. Can't handle tints yet.
 
 0.1.20
 

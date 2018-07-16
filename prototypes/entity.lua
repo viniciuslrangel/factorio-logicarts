@@ -153,9 +153,44 @@ data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-south",
 data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-west",
 	128, 0.25, "__logicarts__/turn-fuel.png", 3)})
 
+data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-north",
+	128, 0.25, "__logicarts__/path-dual-straight.png", 0)})
+data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-east",
+	128, 0.25, "__logicarts__/path-dual-straight.png", 1)})
+data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-south",
+	128, 0.25, "__logicarts__/path-dual-straight.png", 2)})
+data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-west",
+	128, 0.25, "__logicarts__/path-dual-straight.png", 3)})
+
+data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-north",
+	128, 0.25, "__logicarts__/path-dual-turn.png", 0)})
+data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-east",
+	128, 0.25, "__logicarts__/path-dual-turn.png", 1)})
+data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-south",
+	128, 0.25, "__logicarts__/path-dual-turn.png", 2)})
+data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-west",
+	128, 0.25, "__logicarts__/path-dual-turn.png", 3)})
+
+data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-north",
+	128, 0.25, "__logicarts__/continue-dual-straight.png", 0)})
+data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-east",
+	128, 0.25, "__logicarts__/continue-dual-straight.png", 1)})
+data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-south",
+	128, 0.25, "__logicarts__/continue-dual-straight.png", 2)})
+data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-west",
+	128, 0.25, "__logicarts__/continue-dual-straight.png", 3)})
+
+data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-north",
+	128, 0.25, "__logicarts__/continue-dual-turn.png", 0)})
+data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-east",
+	128, 0.25, "__logicarts__/continue-dual-turn.png", 1)})
+data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-south",
+	128, 0.25, "__logicarts__/continue-dual-turn.png", 2)})
+data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-west",
+	128, 0.25, "__logicarts__/continue-dual-turn.png", 3)})
+
 data:extend({logicartsPath("logicarts-yield", "logicarts-yield",
 	128, 0.25, "__logicarts__/yield.png", 0)})
-
 
 -- The placer entity is only used to make path placement with the mouse look normal,
 -- and to make blueprints work. It's never actually placed on the ground itself.
@@ -211,6 +246,10 @@ logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts__/turn.png", 0, 1,
 logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/turn-blocked.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/continue.png", 0, 1, 2, 3)
 logicartsPathPlacer("logicarts-turn-fuel", 128, 0.25, "__logicarts__/turn-fuel.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-dual-straight", 128, 0.25, "__logicarts__/path-dual-straight.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-dual-turn", 128, 0.25, "__logicarts__/path-dual-turn.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue-dual-straight", 128, 0.25, "__logicarts__/continue-dual-straight.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue-dual-turn", 128, 0.25, "__logicarts__/continue-dual-turn.png", 0, 1, 2, 3)
 
 -- A mini car with sprites that are part 1x1 scaled car and part rail wagon...
 -- As direction_count=4, these look terible if you try to drive one around, but

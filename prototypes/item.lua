@@ -70,6 +70,11 @@ local function stopItem(name, icon)
 	directionItems(name, 128, icon)
 end
 
+local function dualItem(name, icon)
+	placeableItem(name, path_stack_size, "logicarts-subgroup-dual", 128, icon)
+	directionItems(name, 128, icon)
+end
+
 invisibleItem("logicarts-marker")
 invisibleItem("logicarts-wear")
 
@@ -97,5 +102,11 @@ stopItem("logicarts-stop-unload", "__logicarts__/stop-unload-icon.png")
 stopItem("logicarts-stop-supply", "__logicarts__/stop-supply-icon.png")
 stopItem("logicarts-stop-dump",   "__logicarts__/stop-dump-icon.png")
 stopItem("logicarts-stop-accept", "__logicarts__/stop-accept-icon.png")
+
+-- ROW 4
+dualItem("logicarts-path-dual-straight",  "__logicarts__/path-dual-straight-icon.png")
+dualItem("logicarts-path-dual-turn",  "__logicarts__/path-dual-turn-icon.png")
+dualItem("logicarts-continue-dual-straight",  "__logicarts__/continue-dual-straight-icon.png")
+dualItem("logicarts-continue-dual-turn",  "__logicarts__/continue-dual-turn-icon.png")
 
 data:extend(prototypes)

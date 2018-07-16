@@ -110,52 +110,6 @@ local pathEntities = {
 	["logicarts-path-west"] = WEST,
 }
 
-local pathGroupEntities = {
-	["logicarts-path-G1-north"] = NORTH,
-	["logicarts-path-G1-south"] = SOUTH,
-	["logicarts-path-G1-east"]  = EAST,
-	["logicarts-path-G1-west"]  = WEST,
-	["logicarts-path-G2-north"] = NORTH,
-	["logicarts-path-G2-south"] = SOUTH,
-	["logicarts-path-G2-east"]  = EAST,
-	["logicarts-path-G2-west"]  = WEST,
-	["logicarts-path-G3-north"] = NORTH,
-	["logicarts-path-G3-south"] = SOUTH,
-	["logicarts-path-G3-east"]  = EAST,
-	["logicarts-path-G3-west"]  = WEST,
-	["logicarts-path-G4-north"] = NORTH,
-	["logicarts-path-G4-south"] = SOUTH,
-	["logicarts-path-G4-east"]  = EAST,
-	["logicarts-path-G4-west"]  = WEST,
-	["logicarts-path-G5-north"] = NORTH,
-	["logicarts-path-G5-south"] = SOUTH,
-	["logicarts-path-G5-east"]  = EAST,
-	["logicarts-path-G5-west"]  = WEST,
-}
-
-local pathGroupEntitiesN = {
-	["logicarts-path-G1-north"] = 1,
-	["logicarts-path-G1-south"] = 1,
-	["logicarts-path-G1-east"]  = 1,
-	["logicarts-path-G1-west"]  = 1,
-	["logicarts-path-G2-north"] = 2,
-	["logicarts-path-G2-south"] = 2,
-	["logicarts-path-G2-east"]  = 2,
-	["logicarts-path-G2-west"]  = 2,
-	["logicarts-path-G3-north"] = 3,
-	["logicarts-path-G3-south"] = 3,
-	["logicarts-path-G3-east"]  = 3,
-	["logicarts-path-G3-west"]  = 3,
-	["logicarts-path-G4-north"] = 4,
-	["logicarts-path-G4-south"] = 4,
-	["logicarts-path-G4-east"]  = 4,
-	["logicarts-path-G4-west"]  = 4,
-	["logicarts-path-G5-north"] = 5,
-	["logicarts-path-G5-south"] = 5,
-	["logicarts-path-G5-east"]  = 5,
-	["logicarts-path-G5-west"]  = 5,
-}
-
 local turnClearEntities = {
 	["logicarts-turn-north"] = NORTH,
 	["logicarts-turn-south"] = SOUTH,
@@ -229,6 +183,35 @@ local continueEntities = {
 	["logicarts-continue-east"] = EAST,
 	["logicarts-continue-west"] = WEST,
 }
+
+local dualPathStraightEntities = {
+	["logicarts-path-dual-straight-north"] = NORTH,
+	["logicarts-path-dual-straight-south"] = SOUTH,
+	["logicarts-path-dual-straight-east"] = EAST,
+	["logicarts-path-dual-straight-west"] = WEST,
+}
+
+local dualPathTurnEntities = {
+	["logicarts-path-dual-turn-north"] = NORTH,
+	["logicarts-path-dual-turn-south"] = SOUTH,
+	["logicarts-path-dual-turn-east"] = EAST,
+	["logicarts-path-dual-turn-west"] = WEST,
+}
+
+local dualContinueStraightEntities = {
+	["logicarts-continue-dual-straight-north"] = NORTH,
+	["logicarts-continue-dual-straight-south"] = SOUTH,
+	["logicarts-continue-dual-straight-east"] = EAST,
+	["logicarts-continue-dual-straight-west"] = WEST,
+}
+
+local dualContinueTurnEntities = {
+	["logicarts-continue-dual-turn-north"] = NORTH,
+	["logicarts-continue-dual-turn-south"] = SOUTH,
+	["logicarts-continue-dual-turn-east"] = EAST,
+	["logicarts-continue-dual-turn-west"] = WEST,
+}
+
 
 local stopEntities = {
 	["logicarts-stop-north"] = NORTH,
@@ -400,17 +383,6 @@ for name,_ in pairs(pathEntities) do
 	cellGetters[name] = cellGetterPath
 end
 
-local function cellGetterPathGroup(cell, en)
-	cell.path = true
-	cell.group = pathGroupEntitiesN[en.name]
-	cell.direction = pathGroupEntities[en.name]
-	cell.entity = en
-end
-
-for name,_ in pairs(pathGroupEntities) do
-	cellGetters[name] = cellGetterPathGroup
-end
-
 local function cellGetterStop(cell, en)
 	cell.path = true
 	cell.stop = true
@@ -538,6 +510,52 @@ for name,_ in pairs(continueEntities) do
 	cellGetters[name] = cellGetterContinue
 end
 
+local function cellGetterPathDualStraight(cell, en)
+	cell.path = true
+	cell.dual_straight = true
+	cell.direction = dualPathStraightEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(dualPathStraightEntities) do
+	cellGetters[name] = cellGetterPathDualStraight
+end
+
+local function cellGetterPathDualTurn(cell, en)
+	cell.path = true
+	cell.dual_turn = true
+	cell.direction = dualPathTurnEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(dualPathTurnEntities) do
+	cellGetters[name] = cellGetterPathDualTurn
+end
+
+local function cellGetterContinueDualStraight(cell, en)
+	cell.path = true
+	cell.continue = true
+	cell.dual_straight = true
+	cell.direction = dualContinueStraightEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(dualContinueStraightEntities) do
+	cellGetters[name] = cellGetterContinueDualStraight
+end
+
+local function cellGetterContinueDualTurn(cell, en)
+	cell.path = true
+	cell.continue = true
+	cell.dual_turn = true
+	cell.direction = dualContinueTurnEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(dualContinueTurnEntities) do
+	cellGetters[name] = cellGetterContinueDualTurn
+end
+
 local function cellGet(x, y, surface)
 	local pos = cellCenterPos(x, y)
 	local cell = {
@@ -562,6 +580,8 @@ local function cellGet(x, y, surface)
 		fuel = false,
 		entity = nil,
 		sticker = nil,
+		dual_straight = false,
+		dual_turn = false,
 		car_id = nil,
 		tile = surface.get_tile(floor(pos.x), floor(pos.y)),
 	}
@@ -767,18 +787,24 @@ local function OnEntityCreated(event)
 		return
 	end
 
-	for i = 1,5,1 do
-		if entity.name == "logicarts-path-G"..i then
-			replaceEntityWith(entity, "logicarts-path-G"..i.."-"..directionNames[entity.direction])
-			return
-		end
+	if entity.name == "logicarts-path-dual-straight" then
+		replaceEntityWith(entity, "logicarts-path-dual-straight-"..directionNames[entity.direction])
+		return
 	end
 
-	for i = 1,5,1 do
-		if entity.name == "logicarts-turn-G"..i then
-			replaceEntityWith(entity, "logicarts-turn-G"..i.."-"..directionNames[entity.direction])
-			return
-		end
+	if entity.name == "logicarts-path-dual-turn" then
+		replaceEntityWith(entity, "logicarts-path-dual-turn-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-continue-dual-straight" then
+		replaceEntityWith(entity, "logicarts-continue-dual-straight-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-continue-dual-turn" then
+		replaceEntityWith(entity, "logicarts-continue-dual-turn-"..directionNames[entity.direction])
+		return
 	end
 end
 
@@ -1382,6 +1408,33 @@ local function carNeedFuel(car)
 	return false
 end
 
+local dualTurns = {
+	[NORTH] = {
+		[NORTH] = NORTH,
+		[EAST] = EAST,
+		[SOUTH] = EAST,
+		[WEST] = NORTH,
+	},
+	[EAST] = {
+		[NORTH] = EAST,
+		[EAST] = EAST,
+		[SOUTH] = SOUTH,
+		[WEST] = SOUTH,
+	},
+	[SOUTH] = {
+		[NORTH] = WEST,
+		[EAST] = SOUTH,
+		[SOUTH] = SOUTH,
+		[WEST] = WEST,
+	},
+	[WEST] = {
+		[NORTH] = NORTH,
+		[EAST] = NORTH,
+		[SOUTH] = WEST,
+		[WEST] = WEST,
+	},
+}
+
 local function runCar(car)
 
 	local state = mod.carStates[car.unit_number]
@@ -1419,6 +1472,21 @@ local function runCar(car)
 
 	-- Direction to exit the tile
 	local pathDirection = cell.direction or carDirection
+
+	-- Continue two-way
+	if cell.dual_straight then
+		if (cell.direction == NORTH or cell.direction == SOUTH) and (carDirection == NORTH or carDirection == SOUTH) then
+			pathDirection = carDirection
+		end
+		if (cell.direction == EAST or cell.direction == WEST) and (carDirection == EAST or carDirection == WEST) then
+			pathDirection = carDirection
+		end
+	end
+
+	-- Continue dual turn
+	if cell.dual_turn then
+		pathDirection = dualTurns[cell.direction][carDirection]
+	end
 
 	-- Legitimately off-road
 	if state.continue then
