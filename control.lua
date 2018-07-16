@@ -51,6 +51,10 @@ local CAR_TICK_ACTIVITY = 60
 
 local CAR_BURNER = "logicarts-car"
 local CAR_ELECTRIC = "logicarts-car-electric"
+local MARKER = "logicarts-marker"
+local WEAR = "logicarts-wear"
+local STICKER = "logicarts-sticker"
+local DISPLAY = "logicarts-sticker-display"
 
 local quadrantDirections = {
 	NORTH,
@@ -371,10 +375,10 @@ local cellGetters = {
 		cell.direction = NORTH
 		cell.entity = en
 	end,
-	["logicarts-marker"] = function(cell, en)
+	[MARKER] = function(cell, en)
 		cell.car_id = mod.markers[en.unit_number]
 	end,
-	["logicarts-sticker"] = function(cell, en)
+	[STICKER] = function(cell, en)
 		cell.sticker = en
 	end,
 	["transport-belt"] = function(cell, en)
@@ -583,7 +587,7 @@ local function cellClaim(cell, car, ticks)
 	local pos = cellCenterPos(cell.x, cell.y)
 
 	local marker = car.surface.create_entity({
-		name = "logicarts-marker",
+		name = MARKER,
 		position = pos,
 		force = car.force,
 	})
@@ -598,7 +602,7 @@ local function cellClaim(cell, car, ticks)
 	then
 
 		local entities = car.surface.find_entities_filtered({
-			name = "logicarts-wear",
+			name = WEAR,
 			position = pos,
 		})
 
@@ -611,7 +615,7 @@ local function cellClaim(cell, car, ticks)
 		end
 
 		car.surface.create_entity({
-			name = "logicarts-wear",
+			name = WEAR,
 			position = pos,
 		})
 	end
@@ -623,7 +627,7 @@ end
 
 local function stickerUpdate(sticker)
 	local signal = sticker.get_control_behavior().get_signal(1)
-	local name = "logicarts-sticker-display"
+	local name = DISPLAY
 
 	if signal ~= nil and signal.signal ~= nil then
 		local iname = "logicarts-item-"..signal.signal.name
@@ -691,7 +695,7 @@ local function OnEntityCreated(event)
 		return
 	end
 
-	if entity.name == "logicarts-sticker" then
+	if entity.name == STICKER then
 		local cell = cellGet(entity.position.x, entity.position.y, entity.surface)
 		if not cell.path then
 			-- Could be player or robot. Assume robots will only do sane placements...
@@ -801,11 +805,11 @@ local function OnEntityRemoved(event)
 		return
 	end
 
-	if entity.name == "logicarts-marker" then
+	if entity.name == MARKER then
 		mod.markers[entity.unit_number] = nil
 	end
 
-	if entity.name == "logicarts-sticker" then
+	if entity.name == STICKER then
 		mod.stickers[entity.unit_number].display.destroy()
 	end
 
@@ -1671,31 +1675,34 @@ local function runCar(car)
 	local direction = pathDirection
 	local nextOK, nextCell = checkDirection(car, state, pathDirection)
 
-	if yield then
-		direction = carDirection
-		nextOK, nextCell = checkDirection(car, state, carDirection)
-	end
+	if cell.path then
 
-	if optionalRoute then
-		if not nextOK then
+		if yield then
 			direction = carDirection
 			nextOK, nextCell = checkDirection(car, state, carDirection)
 		end
-	end
 
-	if alternateRoute then
-		local aheadOK, aheadCell = checkDirection(car, state, carDirection)
-		if aheadOK then
-			nextOK = aheadOK
-			nextCell = aheadCell
-			direction = carDirection
+		if optionalRoute then
+			if not nextOK then
+				direction = carDirection
+				nextOK, nextCell = checkDirection(car, state, carDirection)
+			end
 		end
-	end
 
-	if optionalFuel then
-		if not nextOK or not carNeedFuel(car) then
-			direction = carDirection
-			nextOK, nextCell = checkDirection(car, state, carDirection)
+		if alternateRoute then
+			local aheadOK, aheadCell = checkDirection(car, state, carDirection)
+			if aheadOK then
+				nextOK = aheadOK
+				nextCell = aheadCell
+				direction = carDirection
+			end
+		end
+
+		if optionalFuel then
+			if not nextOK or not carNeedFuel(car) then
+				direction = carDirection
+				nextOK, nextCell = checkDirection(car, state, carDirection)
+			end
 		end
 	end
 
@@ -1745,7 +1752,7 @@ local function OnTick(event)
 				mod.players[player.name] = state
 
 				if player.opened_gui_type == defines.gui_type.entity then
-					if player.opened.name == "logicarts-sticker" then
+					if player.opened.name == STICKER then
 						state.sticker = player.opened
 					end
 				elseif player.opened_gui_type == defines.gui_type.none then
@@ -1771,7 +1778,7 @@ local function OnTick(event)
 		local en = queue[i]
 		queue[i] = nil
 		if en.valid then
-			if en.name == "logicarts-marker" then
+			if en.name == MARKER then
 				mod.markers[en.unit_number] = nil
 				en.destroy()
 			else
@@ -1787,7 +1794,7 @@ end
 
 local function OnDebug(event)
 	local entities = game.surfaces["nauvis"].find_entities_filtered({
-		name = { "logicarts-marker", "logicarts-wear", "logicarts-sticker-display" },
+		name = { MARKER, WEAR, DISPLAY },
 	})
 	game.print("debug"..#entities)
 end
