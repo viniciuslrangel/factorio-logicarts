@@ -262,7 +262,7 @@ car.minable.result = "logicarts-car"
 car.inventory_size = 10
 car.guns = nil
 car.consumption = "50kW"
-car.equipment_grid = "logicarts-equipment-grid"
+car.equipment_grid = "logicarts-equipment-grid-burner"
 car.turret_animation = nil
 car.flags = {
 	"player-creation",
@@ -349,7 +349,7 @@ car.minable.result = "logicarts-car-electric"
 car.inventory_size = 10
 car.consumption = "50kW"
 car.guns = nil
-car.equipment_grid = "logicarts-equipment-grid"
+car.equipment_grid = "logicarts-equipment-grid-electric"
 car.turret_animation = nil
 car.flags = {
 	"player-creation",

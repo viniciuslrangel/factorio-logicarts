@@ -1,12 +1,24 @@
 data:extend({
+  {
+    type = "equipment-category",
+    name = "logicarts-equipment-groups",
+  },
 	{
 		type = "equipment-grid",
-		name = "logicarts-equipment-grid",
+		name = "logicarts-equipment-grid-burner",
 		width = 4,
 		height = 4,
-		equipment_categories = {"armor"}
+		equipment_categories = {"armor", "logicarts-equipment-groups"}
+	},
+	{
+		type = "equipment-grid",
+		name = "logicarts-equipment-grid-electric",
+		width = 6,
+		height = 6,
+		equipment_categories = {"armor", "logicarts-equipment-groups"}
 	},
 })
+
 local function signalEquipment(n)
 	local name = "logicarts-equipment-"..n
 	local icon = "__logicarts__/icon-G"..n..".png"
@@ -26,7 +38,7 @@ local function signalEquipment(n)
 			name = name,
 			type = "battery-equipment",
 			categories = {
-				"armor"
+				"logicarts-equipment-groups",
 			},
 			energy_source = {
 				buffer_capacity = "1J",

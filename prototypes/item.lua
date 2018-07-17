@@ -20,6 +20,20 @@ local function placeableItem(name, stack, subgroup, size, icon)
 	}
 end
 
+local function placeableItemWithEntityData(name, stack, subgroup, size, icon)
+	prototypes[#prototypes+1] = {
+		type = "item-with-entity-data",
+		name = name,
+		icon = icon,
+		icon_size = size,
+		flags = {"goes-to-quickbar"},
+		place_result = name,
+		order = subgroupSpot(subgroup),
+		stack_size = stack,
+		subgroup = subgroup,
+	}
+end
+
 local function ingredientItem(name, stack, subgroup, size, icon)
 	prototypes[#prototypes+1] = {
 		type = "item",
@@ -80,8 +94,8 @@ invisibleItem("logicarts-wear")
 
 -- ROW 1
 ingredientItem("logicarts-paint", 50, "logicarts-subgroup", 128, "__logicarts__/paint-icon.png")
-placeableItem("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/cart-ico.png")
-placeableItem("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/e-cart-ico.png")
+placeableItemWithEntityData("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/cart-ico.png")
+placeableItemWithEntityData("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/e-cart-ico.png")
 
 placeableItem("logicarts-sticker", 1000, "logicarts-subgroup", 32, "__logicarts__/sticker-icon.png")
 hiddenItem("logicarts-sticker-display", 32, "__logicarts__/sticker-icon.png")

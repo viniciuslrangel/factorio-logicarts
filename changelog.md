@@ -1,3 +1,9 @@
+0.1.23
+
+* Rename Dual Carriageway as it's technically wrong.
+* Change cart items to item-with-entity-data to retain grid equipment if present.
+* Split out groups equipment category, but retain option for vanilla "armor" equipment.
+
 0.1.22
 
 * Dual Carriageway research and tiles.
