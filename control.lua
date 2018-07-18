@@ -117,52 +117,6 @@ local turnClearEntities = {
 	["logicarts-turn-west"] = WEST,
 }
 
-local turnClearGroupEntities = {
-	["logicarts-turn-G1-north"] = NORTH,
-	["logicarts-turn-G1-south"] = SOUTH,
-	["logicarts-turn-G1-east"]  = EAST,
-	["logicarts-turn-G1-west"]  = WEST,
-	["logicarts-turn-G2-north"] = NORTH,
-	["logicarts-turn-G2-south"] = SOUTH,
-	["logicarts-turn-G2-east"]  = EAST,
-	["logicarts-turn-G2-west"]  = WEST,
-	["logicarts-turn-G3-north"] = NORTH,
-	["logicarts-turn-G3-south"] = SOUTH,
-	["logicarts-turn-G3-east"]  = EAST,
-	["logicarts-turn-G3-west"]  = WEST,
-	["logicarts-turn-G4-north"] = NORTH,
-	["logicarts-turn-G4-south"] = SOUTH,
-	["logicarts-turn-G4-east"]  = EAST,
-	["logicarts-turn-G4-west"]  = WEST,
-	["logicarts-turn-G5-north"] = NORTH,
-	["logicarts-turn-G5-south"] = SOUTH,
-	["logicarts-turn-G5-east"]  = EAST,
-	["logicarts-turn-G5-west"]  = WEST,
-}
-
-local turnClearGroupEntitiesN = {
-	["logicarts-turn-G1-north"] = 1,
-	["logicarts-turn-G1-south"] = 1,
-	["logicarts-turn-G1-east"]  = 1,
-	["logicarts-turn-G1-west"]  = 1,
-	["logicarts-turn-G2-north"] = 2,
-	["logicarts-turn-G2-south"] = 2,
-	["logicarts-turn-G2-east"]  = 2,
-	["logicarts-turn-G2-west"]  = 2,
-	["logicarts-turn-G3-north"] = 3,
-	["logicarts-turn-G3-south"] = 3,
-	["logicarts-turn-G3-east"]  = 3,
-	["logicarts-turn-G3-west"]  = 3,
-	["logicarts-turn-G4-north"] = 4,
-	["logicarts-turn-G4-south"] = 4,
-	["logicarts-turn-G4-east"]  = 4,
-	["logicarts-turn-G4-west"]  = 4,
-	["logicarts-turn-G5-north"] = 5,
-	["logicarts-turn-G5-south"] = 5,
-	["logicarts-turn-G5-east"]  = 5,
-	["logicarts-turn-G5-west"]  = 5,
-}
-
 local turnBlockedEntities = {
 	["logicarts-turn-blocked-north"] = NORTH,
 	["logicarts-turn-blocked-south"] = SOUTH,
@@ -463,18 +417,6 @@ end
 
 for name,_ in pairs(turnClearEntities) do
 	cellGetters[name] = cellGetterTurnClear
-end
-
-local function cellGetterTurnClearGroup(cell, en)
-	cell.path = true
-	cell.optional = true
-	cell.group = turnClearGroupEntitiesN[en.name]
-	cell.direction = turnClearGroupEntities[en.name]
-	cell.entity = en
-end
-
-for name,_ in pairs(turnClearGroupEntities) do
-	cellGetters[name] = cellGetterTurnClearGroup
 end
 
 local function cellGetterTurnBlocked(cell, en)
