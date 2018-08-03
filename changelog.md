@@ -1,3 +1,8 @@
+0.1.24
+
+* BUGFIX: load/unload stops wouldn't trigger until researching first inserter stack size bonus.
+* Grammar in en locale.
+
 0.1.23
 
 * Rename Dual Carriageway as it's technically wrong.

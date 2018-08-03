@@ -1223,7 +1223,7 @@ local function carInteractLogisticChests(car, chests)
 	local trunk = car.get_inventory(defines.inventory.car_trunk)
 
 	-- yellow transport belt boosted by inserter-bonus research
-	local throughput = car.force.inserter_stack_size_bonus * 14
+	local throughput = max(1, car.force.inserter_stack_size_bonus) * 14
 	local activity = 0
 
 	local supply = function(chest)
@@ -1272,7 +1272,7 @@ end
 local function carInteractChests(car, chests, cell)
 
 	-- yellow transport belt boosted by inserter-bonus research
-	local throughput = car.force.inserter_stack_size_bonus * 14
+	local throughput = max(1, car.force.inserter_stack_size_bonus) * 14
 
 	if cell.load then
 		local ops = throughput
@@ -1613,6 +1613,7 @@ local function runCar(car)
 		contentsAndSignals()
 
 		if cell.load or cell.unload or cell.supply or cell.dump or cell.accept then
+			log("hi")
 			-- Interact with chests according to stop mode
 			local chests, chestDirections = getAllChests(x, y, car.surface)
 			if #chests > 0 then
@@ -1655,10 +1656,12 @@ local function runCar(car)
 					break
 				end
 			end
-			for item, count in pairs(state.contents) do
-				if contents[item] ~= count then
-					autoWait = true
-					break
+			if not autoWait then
+				for item, count in pairs(state.contents) do
+					if contents[item] ~= count then
+						autoWait = true
+						break
+					end
 				end
 			end
 		end
