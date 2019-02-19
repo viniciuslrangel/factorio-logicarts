@@ -1558,10 +1558,16 @@ local function runCar(car)
 		local control = cell.sticker.get_control_behavior()
 		if control.enabled then
 			local signal = control.get_signal(1)
-			if signal ~= nil and signal.signal ~= nil then
-				contentsAndSignals()
-				local name = signal.signal.name
-				if contents[name] == nil or contents[name] == 0 then
+			if signal ~= nil then
+				if signal.signal ~= nil then
+					-- sticker is set; check arrow
+					contentsAndSignals()
+					local name = signal.signal.name
+					if contents[name] == nil or contents[name] == 0 then
+						pathDirection = carDirection
+					end
+				else
+					-- sticker is not set; ignore arrow
 					pathDirection = carDirection
 				end
 			end
@@ -1597,7 +1603,7 @@ local function runCar(car)
 				carFiltersFromSignals(car, CCarray)
 			end
 
-			if CCvirtuals["signal-G"] and car.force.technolgies["logicarts-tech-groups"].researched then
+			if CCvirtuals["signal-G"] and car.force.technologies["logicarts-tech-groups"].researched then
 				carGroupFromSignals(car, CCarray)
 			end
 
@@ -1613,7 +1619,6 @@ local function runCar(car)
 		contentsAndSignals()
 
 		if cell.load or cell.unload or cell.supply or cell.dump or cell.accept then
-			log("hi")
 			-- Interact with chests according to stop mode
 			local chests, chestDirections = getAllChests(x, y, car.surface)
 			if #chests > 0 then
