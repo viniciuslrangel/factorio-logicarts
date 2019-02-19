@@ -1,3 +1,7 @@
+0.1.25
+
+* RU locale (Oceanel51)
+
 0.1.24
 
 * BUGFIX: load/unload stops wouldn't trigger until researching first inserter stack size bonus.
