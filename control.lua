@@ -37,6 +37,10 @@ local CAR_TICK_MARGIN = CAR_TICK_BLOCKED
 -- This allows the player to rapidly place cars while running without causing concertina crashes
 local CAR_TICK_PLACED = CAR_TICK_BLOCKED
 
+-- Tick delay for position checks on belts
+-- Needs to be frequent enough to detect underground belts in time
+local CAR_TICK_BELT = CAR_TICK_STARTING/2
+
 -- Since cars are using zero friction and constant speed, without touching entity.riding_state,
 -- the fuel consumption needs to be deducted manually once per tile https://wiki.factorio.com/Types/Energy
 local CAR_CONSUMPTION = 18*1000
@@ -321,6 +325,24 @@ local cellGetters = {
 	["transport-belt"] = function(cell, en)
 		cell.belt = true
 	end,
+	["fast-transport-belt"] = function(cell, en)
+		cell.belt = true
+	end,
+	["express-transport-belt"] = function(cell, en)
+		cell.belt = true
+	end,
+	["underground-belt"] = function(cell, en)
+		cell.tunnel = true
+		cell.entity = en
+	end,
+	["fast-underground-belt"] = function(cell, en)
+		cell.tunnel = true
+		cell.entity = en
+	end,
+	["express-underground-belt"] = function(cell, en)
+		cell.tunnel = true
+		cell.entity = en
+	end,
 	["gate"] = function(cell, en)
 		cell.gate = true
 		cell.opened = en.is_opened()
@@ -517,6 +539,7 @@ local function cellGet(x, y, surface)
 		accept = false,
 		yield = false,
 		belt = false,
+		tunnel = false,
 		gate = false,
 		opened = false,
 		fuel = false,
@@ -1493,13 +1516,13 @@ local function runCar(car)
 	-- If on a belt we obviously can't stop, and can therefore skip some checks
 	if cell.belt then
 		nextOK, nextCell = checkDirection(car, state, carDirection, nil)
+		-- hope for the best; the added speed may screw up center alignment checks
 		if nextOK then
-			-- hope for the best; the added speed may screw up center alignment checks
 			car.speed = CAR_ENTITY_SPEED
 			cellClaim(nextCell, car, CAR_TICK_MARGIN)
 			consume()
 		end
-		return CAR_TICK_STARTING
+		return CAR_TICK_BELT
 	end
 
 	local n = abs(y)
@@ -1520,6 +1543,35 @@ local function runCar(car)
 
 	-- Remove any accumulated error
 	car.teleport(cellCenterPos(x, y))
+
+	-- Exiting a tunnel
+	if state.teleport then
+		local tcell = cellGet(state.teleport.x, state.teleport.y, car.surface)
+
+		if tcell.car_id == nil then
+			cellClaim(tcell, car, CAR_TICK_BLOCKED)
+			car.teleport(state.teleport)
+			state.teleport = nil
+		else
+			cellClaim(cell, car, CAR_TICK_BLOCKED)
+		end
+
+		return CAR_TICK_BLOCKED
+	end
+
+	-- Entering a tunnel
+	if cell.tunnel and cell.entity.belt_to_ground_type == "input" then
+
+		if cell.entity.neighbours == nil then
+			cellClaim(cell, car, CAR_TICK_MARGIN)
+			return CAR_TICK_BLOCKED
+		end
+
+		local fake_travel = CAR_TICK_STARTING * 4
+		state.teleport = cell.entity.neighbours.position
+		cellClaim(cell, car, fake_travel)
+		return fake_travel
+	end
 
 	-- Going off road?
 	if cell.continue then
