@@ -1223,7 +1223,7 @@ local function carInteractLogisticChests(car, chests)
 	local trunk = car.get_inventory(defines.inventory.car_trunk)
 
 	-- yellow transport belt boosted by inserter-bonus research
-	local throughput = max(1, car.force.inserter_stack_size_bonus) * 14
+	local throughput = (1 + car.force.stack_inserter_capacity_bonus) * 7
 	local activity = 0
 
 	local supply = function(chest)
@@ -1272,7 +1272,7 @@ end
 local function carInteractChests(car, chests, cell)
 
 	-- yellow transport belt boosted by inserter-bonus research
-	local throughput = max(1, car.force.inserter_stack_size_bonus) * 14
+	local throughput = (1 + car.force.stack_inserter_capacity_bonus) * 7
 
 	if cell.load then
 		local ops = throughput
