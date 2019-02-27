@@ -18,6 +18,8 @@ mod="logicarts_${version}"
 rm -rf $factorio/mods/logicarts*
 cp -r $(pwd) $factorio/mods/$mod
 rm -rf $factorio/mods/$mod/.git
+rm -rf $factorio/mods/$mod/templates
+rm -rf $factorio/mods/$mod/Makefile
 
 pushd $factorio/mods
 zip -r $mod.zip $mod

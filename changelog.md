@@ -1,3 +1,7 @@
+0.1.27
+
+* 0.17 compat, item prototype flags, science pack names
+
 0.1.26
 
 * Carts will ignore paths with empty stickers. [report](https://forums.factorio.com/viewtopic.php?f=190&t=61053&start=20#p382496).
