@@ -238,6 +238,44 @@ local function serialize(t)
 	return "{ "..table.concat(s, ", ").." }"
 end
 
+local function notify(car, state, msg)
+
+	if state.notify_msg == msg
+		and state.notify_tick > game.tick - 60*5
+	then
+		return
+	end
+
+	state.notify_msg = msg
+	state.notify_tick = game.tick
+
+	car.surface.create_entity({
+		name = "flying-text",
+		position = car.position,
+		color = {r=0.8,g=0.8,b=0.8},
+		text = msg,
+	})
+end
+
+local function warning(car, state, msg)
+
+	if state.warning_msg == msg
+		and state.warning_tick > game.tick - 60*5
+	then
+		return
+	end
+
+	state.warning_msg = msg
+	state.warning_tick = game.tick
+
+	car.surface.create_entity({
+		name = "flying-text",
+		position = car.position,
+		color = {r=1,g=0.6,b=0.6},
+		text = msg,
+	})
+end
+
 local function cellCenter(x, y)
 	return floor(x) + 0.5, floor(y) + 0.5
 end
@@ -1544,29 +1582,38 @@ local function runCar(car)
 	-- Remove any accumulated error
 	car.teleport(cellCenterPos(x, y))
 
+	-- Entering a tunnel the wrong way
+	if cell.tunnel
+		and cell.entity.direction ~= carDirection
+	then
+		warning(car, state, "wrong tunnel direction?")
+		return CAR_TICK_BLOCKED
+	end
+
 	-- Exiting a tunnel
 	if state.teleport then
 		local tcell = cellGet(state.teleport.x, state.teleport.y, car.surface)
 
 		if tcell.car_id == nil then
-			cellClaim(tcell, car, CAR_TICK_BLOCKED)
 			car.teleport(state.teleport)
 			state.teleport = nil
-		else
-			cellClaim(cell, car, CAR_TICK_BLOCKED)
 		end
 
+		cellClaim(cell, car, CAR_TICK_BLOCKED)
 		return CAR_TICK_BLOCKED
 	end
 
 	-- Entering a tunnel
-	if cell.tunnel and cell.entity.belt_to_ground_type == "input" then
-
+	if cell.tunnel
+		and cell.entity.belt_to_ground_type == "input"
+	then
 		if cell.entity.neighbours == nil then
+			warning(car, state, "no tunnel exit?")
 			cellClaim(cell, car, CAR_TICK_MARGIN)
 			return CAR_TICK_BLOCKED
 		end
 
+		notify(car, state, "entering tunnel...")
 		local fake_travel = CAR_TICK_STARTING * 4
 		state.teleport = cell.entity.neighbours.position
 		cellClaim(cell, car, fake_travel)
