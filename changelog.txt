@@ -1,0 +1,183 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.1.28
+Date: 01. 03. 2019
+  Changes:
+    - Switch to factorio changelog format
+    - Experimental support for undeground belts as cart tunnels
+---------------------------------------------------------------------------------------------------
+Version: 0.1.27
+Date: 27. 02. 2019
+  Changes:
+    - 0.17 compat, item prototype flags, science pack names
+---------------------------------------------------------------------------------------------------
+Version: 0.1.26
+Date: Yore
+  Changes:
+    - Carts will ignore paths with empty stickers. [report](https://forums.factorio.com/viewtopic.php?f=190&t=61053&start=20#p382496).
+    - Invalid key caused crash (spelling "technolgies" -> "technologies"). [report](https://forums.factorio.com/viewtopic.php?f=190&t=61053&start=20#p387476).
+    - Reduce cart selection box size to allow easier access to path tile underneath.
+    - Link cart loading speed to stack inserter bonus [report](https://mods.factorio.com/mod/logicarts/discussion/5c72a70426cc3c000bae6506)
+---------------------------------------------------------------------------------------------------
+Version: 0.1.25
+Date: Yore
+  Changes:
+    - RU locale (Oceanel51)
+---------------------------------------------------------------------------------------------------
+Version: 0.1.24
+Date: Yore
+  Changes:
+    - BUGFIX: load/unload stops wouldn't trigger until researching first inserter stack size bonus.
+    - Grammar in en locale.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.23
+Date: Yore
+  Changes:
+    - Rename Dual Carriageway as it's technically wrong.
+    - Change cart items to item-with-entity-data to retain grid equipment if present.
+    - Split out groups equipment category, but retain option for vanilla "armor" equipment.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.22
+Date: Yore
+  Changes:
+    - Dual Carriageway research and tiles.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.21
+Date: Yore
+  Changes:
+    - Path graphics update.
+    - Default to empty barrel icon for stickers. Can't handle tints yet.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.20
+Date: Yore
+  Changes:
+    - BUGFIX: nil mod.players reference
+    - BUGFIX: yield icon broken in 0.1.19
+---------------------------------------------------------------------------------------------------
+Version: 0.1.19
+Date: Yore
+  Changes:
+    - BEHAVIOUR CHANGE: Removed group-specific paths and turns. See stickers for the same result.
+    - BUGFIX: Burner carts now always run out of fuel, rather than sometimes stopping with slightly >0 supply.
+    - Added stop types to perform logistics-chest-like operations on normal chests.
+    - Added tile stickers to direct carts based on contents and equipment.
+    - Grass paths eventually wear down to grass-4 (mod setting).
+    - Split out stops, stickers and turns research.
+    - Increased tile stack sizes.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.18
+Date: Yore
+  Changes:
+    - Base tile recipes on untinted paint.
+    - Virtual signal T sets trunk filtered slots from other signals.
+    - Virtual signal G sets grid group equipment from other signals.
+    - Added *optional route (fuel)* tiles.
+    - UPS savings when off-road.
+    - Recipe cost balancing.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.17
+Date: Yore
+  Changes:
+    - Added *continue off road* light green paint tile. Carts will continue straight until another path is encountered.
+    - Added trial group-specific *optional route* tiles, to allow directing cart groups using only paint.
+    - Further reduce burner cart fuel efficiency.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.16
+Date: Yore
+  Changes:
+    - Changed cart recipe category to allow hand-crafting.
+    - Added trial group-specific path tiles, to allow directing cart groups using only paint.
+    - BEHAVIOUR CHANGE: carts now only load from buffer chests. This seems more useful, without a modal option like requester "request from buffer chests".
+---------------------------------------------------------------------------------------------------
+Version: 0.1.15
+Date: Yore
+  Changes:
+    - BUGFIX: check combinator signals_count (limit) before sending cart contents
+---------------------------------------------------------------------------------------------------
+Version: 0.1.14
+Date: Yore
+  Changes:
+    - Changed yellow *turn-if-clear* arrows to blue *optional routes* (cosmetic only; same item/entity in saves).
+    - Added orange *alternate route* arrows as the inverse action.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.13
+Date: Yore
+  Changes:
+    - BUGFIX: Yield tiles were broken in 0.1.11.
+    - Avoid double-claiming a cell (duplicating the transient marker entity) when CART_TICK_ARRIVING.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.12
+Date: Yore
+  Changes:
+    - BUGFIX: Fix nil reference on entity rotation.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.11
+Date: Yore
+  Changes:
+    - New cart graphics thanks to [Arch666Angel](https://mods.factorio.com/user/Arch666Angel)
+    - Carts now automatically interact with logistic chests adjacent to stops. See above for docs.
+    - Reduced mod overhead a lot; should be easier on UPS and have less bloat in save files now.
+    - BALANCING: Slight increase to burner cart fuel consumption to represent inefficiency compared to electric.
+    - BALANCING: Reduce base cart speed to 5km/h (leaves room for future cart speed research, and is offset by increased loading speed).
+    - BALANCING: Bump up cart recipe costs.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.10
+Date: Yore
+  Changes:
+    - Prevent nil entity ref crash: https://forums.factorio.com/viewtopic.php?f=190&t=61053#p370623 .
+    - Adjust cart timing slightly to reduce jitter (due to auto centering on a tile before moving to next).
+    - Add missing item-group-name.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.9
+Date: Yore
+  Changes:
+    - Added second-tier electric cart. Usable with solar panels or [induction charging](https://mods.factorio.com/mod/Induction%20Charging).
+    - Adjustment to per-tile cart fuel consumption to better match the advertised 50kW consumption.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.8
+Date: Yore
+  Changes:
+    - Changed precedence of yellow turn paint vs L/R/S signals (previous order essentially made them useless when combined).
+    - Fixed constant combinators not resetting in some layouts after cart departure on L/R signal.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.7
+Date: Yore
+  Changes:
+    - Improved anti-collision and path centering checks.
+    - Fixed constant combinator detection when adjacent to more than one path.
+    - Driving carts is now blocked as it causes too many issues with on_tick. Player will be automatically switched to the passenger seat.
+    - *BEHAVIOUR CHANGE*: If a cart has filtered trunk slots the item count sent to constant combinators will be negative if there is a shortfall. This allows *item < 0* checks for loading stops, and *item >= N* of *item != 0* for unloading stops.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: Yore
+  Changes:
+    - Carts now send signals to constant combinators slightly before arrival to allow circuits time to execute and possibly avoid a cart stopping at all.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: Yore
+  Changes:
+    - Added an path-stop paint symbol.
+    - *BEHAVIOUR CHANGE*: inserters and constant combinators no longer implicitly stop carts (though gates still do, and a CC next to a stop still sends and receives cart signals). Place explicit path-stop symbols. This change allows carts to supply a row of inserters while driving past, which is an easy way to load balance resource distribution.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.4
+Date: Yore
+  Changes:
+    - Carts will now pause if damaged.
+    - Added L=go-left, R=go-right, S=go-straight incoming signals to direct carts using the circuit network.
+    - Added small equipment grid to carts, and equipment contents is sent to the circuit network at stops.
+    - Added G1-G5 equipment for easily identifying cart groups.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.3
+Date: Yore
+  Changes:
+    - Improve tile clean up when removing from under cars, or when just traversed.
+    - Fix a lua nil reference bug when removing paint path.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: Yore
+  Changes:
+    - Stop leaking state and making save file size blow out. Updating the mod should fix existing saves.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: Yore
+  Changes:
+    - EN locale
