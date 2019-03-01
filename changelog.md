@@ -1,3 +1,14 @@
+0.1.27
+
+* 0.17 compat, item prototype flags, science pack names
+
+0.1.26
+
+* Carts will ignore paths with empty stickers. [report](https://forums.factorio.com/viewtopic.php?f=190&t=61053&start=20#p382496).
+* Invalid key caused crash (spelling "technolgies" -> "technologies"). [report](https://forums.factorio.com/viewtopic.php?f=190&t=61053&start=20#p387476).
+* Reduce cart selection box size to allow easier access to path tile underneath.
+* Link cart loading speed to stack inserter bonus [report](https://mods.factorio.com/mod/logicarts/discussion/5c72a70426cc3c000bae6506)
+
 0.1.25
 
 * RU locale (Oceanel51)

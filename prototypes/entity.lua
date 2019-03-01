@@ -281,12 +281,12 @@ car.collision_box = {
 }
 car.selection_box = {
 	{
-		-0.5,
-		-0.5
+		-0.4,
+		-0.4
 	},
 	{
-		0.5,
-		0.5
+		0.4,
+		0.4
 	}
 }
 car.animation.layers = {
@@ -368,12 +368,12 @@ car.collision_box = {
 }
 car.selection_box = {
 	{
-		-0.5,
-		-0.5
+		-0.4,
+		-0.4
 	},
 	{
-		0.5,
-		0.5
+		0.4,
+		0.4
 	}
 }
 car.burner = {
@@ -474,7 +474,7 @@ data:extend({
 	}
 })
 
--- Wearign of grass to dirt.
+-- Wearing of grass to dirt.
 data:extend({
 	{
 		type = "simple-entity",

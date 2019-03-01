@@ -28,7 +28,7 @@ local function signalEquipment(n)
 			name = name,
 			icon = icon,
 			icon_size = 128,
-			flags = {"goes-to-main-inventory"},
+			flags = {},
 			placed_as_equipment_result = name,
 			order = "logicarts-b-"..n,
 			stack_size = 200,
@@ -45,7 +45,7 @@ local function signalEquipment(n)
 				input_flow_limit = "1W",
 				output_flow_limit = "1W",
 				type = "electric",
-				usage_priority = "terciary"
+				usage_priority = "tertiary"
 			},
 			shape = {
 				type = "full",
