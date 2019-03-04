@@ -53,12 +53,18 @@ local CAR_TICK_STOPPED = 60
 -- Tick delay (used x3) for inactivity check when car at a logicarts-stop.
 local CAR_TICK_ACTIVITY = 60
 
+-- Tick delay between deploy-stop checks
+local DEPLOY_TICK = 60
+local RETIRE_TICK = 60
+
 local CAR_BURNER = "logicarts-car"
 local CAR_ELECTRIC = "logicarts-car-electric"
 local MARKER = "logicarts-marker"
 local WEAR = "logicarts-wear"
 local STICKER = "logicarts-sticker"
 local DISPLAY = "logicarts-sticker-display"
+local DEPLOY = "logicarts-stop-deploy"
+local RETIRE = "logicarts-stop-retire"
 
 local quadrantDirections = {
 	NORTH,
@@ -213,6 +219,20 @@ local stopAcceptEntities = {
 	["logicarts-stop-accept-west"] = WEST,
 }
 
+local stopDeployEntities = {
+	["logicarts-stop-deploy-north"] = NORTH,
+	["logicarts-stop-deploy-south"] = SOUTH,
+	["logicarts-stop-deploy-east"] = EAST,
+	["logicarts-stop-deploy-west"] = WEST,
+}
+
+local stopRetireEntities = {
+	["logicarts-stop-retire-north"] = NORTH,
+	["logicarts-stop-retire-south"] = SOUTH,
+	["logicarts-stop-retire-east"] = EAST,
+	["logicarts-stop-retire-west"] = WEST,
+}
+
 local equipmentGroups = {
 	["logicarts-equipment-1"] = 1,
 	["logicarts-equipment-2"] = 2,
@@ -236,6 +256,14 @@ local function serialize(t)
 		s[#s+1] = tostring(k).." = "..tostring(v)
 	end
 	return "{ "..table.concat(s, ", ").." }"
+end
+
+local function prefixed(str, start)
+	return str:sub(1, #start) == start
+end
+
+local function suffixed(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
 end
 
 local function notify(car, state, msg)
@@ -323,8 +351,7 @@ local function State()
 	end
 end
 
--- Schedule the next position check for a car in "ticks" time
-local function carQueue(car, ticks)
+local function entityQueue(entity, ticks)
 	local tick = game.tick+ticks
 	local queues = mod.queues
 	local queue = queues[tick]
@@ -332,19 +359,27 @@ local function carQueue(car, ticks)
 		queue = {nil,nil,nil,nil}
 		queues[tick] = queue
 	end
-	queue[#queue+1] = car
+	queue[#queue+1] = entity
+end
+
+-- Schedule the next position check for a car in "ticks" time
+local function carQueue(car, ticks)
+	entityQueue(car, ticks)
 end
 
 -- Schedule removal of a marker in "ticks" time
 local function markerQueue(marker, ticks)
-	local tick = game.tick+ticks
-	local queues = mod.queues
-	local queue = queues[tick]
-	if queue == nil then
-		queue = {nil,nil,nil,nil}
-		queues[tick] = queue
-	end
-	queue[#queue+1] = marker
+	entityQueue(marker, ticks)
+end
+
+-- Schedule the next deployment check in "ticks" time
+local function deployQueue(deploy, ticks)
+	entityQueue(deploy, ticks)
+end
+
+-- Schedule the next deployment check in "ticks" time
+local function retireQueue(retire, ticks)
+	entityQueue(retire, ticks)
 end
 
 local cellGetters = {
@@ -466,6 +501,31 @@ end
 
 for name,_ in pairs(stopAcceptEntities) do
 	cellGetters[name] = cellGetterStopAccept
+end
+
+local function cellGetterStopDeploy(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.load = true
+	cell.deploy = true
+	cell.direction = stopDeployEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopDeployEntities) do
+	cellGetters[name] = cellGetterStopDeploy
+end
+
+local function cellGetterStopRetire(cell, en)
+	cell.path = true
+	cell.stop = true
+	cell.retire = true
+	cell.direction = stopRetireEntities[en.name]
+	cell.entity = en
+end
+
+for name,_ in pairs(stopRetireEntities) do
+	cellGetters[name] = cellGetterStopRetire
 end
 
 local function cellGetterTurnClear(cell, en)
@@ -767,6 +827,16 @@ local function OnEntityCreated(event)
 
 	if entity.name == "logicarts-stop-accept" then
 		replaceEntityWith(entity, "logicarts-stop-accept-"..directionNames[entity.direction])
+		return
+	end
+
+	if entity.name == "logicarts-stop-deploy" then
+		deployQueue(replaceEntityWith(entity, "logicarts-stop-deploy-"..directionNames[entity.direction]), DEPLOY_TICK)
+		return
+	end
+
+	if entity.name == "logicarts-stop-retire" then
+		retireQueue(replaceEntityWith(entity, "logicarts-stop-retire-"..directionNames[entity.direction]), RETIRE_TICK)
 		return
 	end
 
@@ -1852,6 +1922,199 @@ local function runCar(car)
 	return CAR_TICK_BLOCKED
 end
 
+-- A deploy stop places, fuels and equips carts from an adjacent chest
+local function runDeploy(stop)
+
+	local surface = stop.surface
+	local x, y = cellCenter(stop.position.x, stop.position.y)
+	local cell = cellGet(x, y, surface)
+
+	local chests, chestDirections = getAllChests(x, y, surface)
+
+	if #chests < 1 then
+		return RETIRE_TICK
+	end
+
+	local items = {}
+	for _, chest in ipairs(chests) do
+		for name, count in pairs(chest.get_inventory(defines.inventory.chest).get_contents()) do
+			items[name] = (items[name] or 0) + count
+		end
+	end
+
+	local function take_item(name, count)
+		local found = 0
+		for _, chest in ipairs(chests) do
+			local inventory = chest.get_inventory(defines.inventory.chest)
+			found = found + inventory.remove({ name = name, count = count })
+			if found >= count then
+				return found
+			end
+		end
+		return found
+	end
+
+	local cart = nil
+
+	if cell.car_id then
+
+		local carts = stop.surface.find_entities_filtered({
+			name = { CAR_BURNER, CAR_ELECTRIC },
+			position = { x, y },
+			force = stop.force,
+		})
+
+		if #carts > 0 and carts[1] and carts[1].valid and carts[1].unit_number == cell.car_id then
+			cart = carts[1]
+		else
+			return RETIRE_TICK
+		end
+
+	else
+
+		if items[CAR_BURNER] and take_item(CAR_BURNER, 1) == 1 then
+
+			cart = surface.create_entity({
+				name = CAR_BURNER,
+				position = { x, y },
+				force = stop.force,
+			})
+
+		elseif items[CAR_ELECTRIC] and take_item(CAR_ELECTRIC, 1) == 1 then
+
+			cart = surface.create_entity({
+				name = CAR_ELECTRIC,
+				position = { x, y },
+				force = stop.force,
+			})
+
+		end
+
+		-- new cart only; emulate OnEntityCreated
+		if cart then
+			cart.friction_modifier = 0
+			cart.consumption_modifier = 0
+			cellClaim(cell, cart, CAR_TICK_MARGIN)
+			carQueue(cart, CAR_TICK_PLACED)
+			cart.direction = stop.direction
+		end
+	end
+
+	if cart then
+		if cart.name == CAR_BURNER and not cart.burner.currently_burning then
+			-- start fueling
+			for name, count in pairs(items) do
+				local proto = game.item_prototypes[name]
+				if proto and proto.fuel_category == "chemical" and take_item(name, 1) == 1 then
+					cart.burner.inventory.insert({ name = name, count = 1 })
+					break
+				end
+			end
+		end
+
+		local equiped = false
+		for name, count in pairs(cart.grid.get_contents()) do
+			equiped	= true
+			break
+		end
+		if not equiped then
+			-- insert equipment
+			for name, _ in pairs(items) do
+				if game.equipment_prototypes[name] then
+					if cart.grid.put({ name = name }) then
+						take_item(name, 1)
+					end
+				end
+			end
+		end
+	end
+
+	return DEPLOY_TICK
+end
+
+local function runRetire(stop)
+
+	local surface = stop.surface
+	local x, y = cellCenter(stop.position.x, stop.position.y)
+	local cell = cellGet(x, y, surface)
+
+	-- car not in place
+	if not cell.car_id then
+		return RETIRE_TICK
+	end
+
+	local chests, chestDirections = getAllChests(x, y, surface)
+
+	if #chests < 1 then
+		return RETIRE_TICK
+	end
+
+	local carts = stop.surface.find_entities_filtered({
+		name = { CAR_BURNER, CAR_ELECTRIC },
+		position = { x, y },
+		force = stop.force,
+	})
+
+	if #carts < 1 or not carts[1] or not carts[1].valid then
+		return RETIRE_TICK
+	end
+
+	local cart = carts[1]
+
+	if not cart.get_inventory(defines.inventory.car_trunk).is_empty() then
+		return RETIRE_TICK
+	end
+
+	local items = { [cart.name] = 1 }
+
+	for name, count in pairs(cart.grid.get_contents()) do
+		items[name] = (items[name] or 0) + count
+	end
+
+	local function take_item(name, count)
+		local found = 0
+		for _, chest in ipairs(chests) do
+			local inventory = chest.get_inventory(defines.inventory.chest)
+			found = found + inventory.remove({ name = name, count = count })
+			if found >= count then
+				return found
+			end
+		end
+		return found
+	end
+
+	local function store_item(name, count)
+		local stored = 0
+		for _, chest in ipairs(chests) do
+			local inventory = chest.get_inventory(defines.inventory.chest)
+			stored = stored + inventory.insert({ name = name, count = count })
+			if stored >= count then
+				return stored
+			end
+		end
+		return stored
+	end
+
+	local abort = false
+	local moved = {}
+	for name, count in pairs(items) do
+		moved[name] = store_item(name, count)
+		if moved[name] ~= items[name] then
+			abort = true
+		end
+	end
+
+	if abort then
+		for name, count in pairs(moved) do
+			take_item(name, count)
+		end
+		return RETIRE_TICK
+	end
+
+	cart.destroy()
+	return RETIRE_TICK
+end
+
 -- Updating the positions of a bunch of entities every tick is a
 -- recipe for a Factorio UPS crash. We try to be tricksy by using
 -- car.speed deterministically and scheduling individual car
@@ -1898,11 +2161,23 @@ local function OnTick(event)
 			if en.name == MARKER then
 				mod.markers[en.unit_number] = nil
 				en.destroy()
-			else
+			elseif en.name == CAR_BURNER or en.name == CAR_ELECTRIC then
 				local ticks = runCar(en)
 				-- reschedule
 				if ticks > 0 then
 					carQueue(en, ticks)
+				end
+			elseif prefixed(en.name, DEPLOY) then
+				local ticks = runDeploy(en)
+				-- reschedule
+				if ticks > 0 then
+					deployQueue(en, ticks)
+				end
+			elseif prefixed(en.name, RETIRE) then
+				local ticks = runRetire(en)
+				-- reschedule
+				if ticks > 0 then
+					retireQueue(en, ticks)
 				end
 			end
 		end

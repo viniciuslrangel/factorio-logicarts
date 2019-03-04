@@ -39,7 +39,7 @@ for _, list in ipairs(enableDataItems) do
 				items[#items+1] = {
 					type = "item",
 					name = "logicarts-item-"..name,
-					icon = "__logicarts__/sticker-icon.png",
+					icon = "__logicarts__/graphics/sticker-icon.png",
 					icon_size = 32,
 					flags = {"hidden"},
 					order = "logicarts-z",
@@ -63,7 +63,7 @@ for _, list in ipairs(enableDataItems) do
 					collision_mask = {"layer-14"},
 					collision_box = {{-0.4,-0.4},{0.4,0.4}},
 					selection_box = {{-0.25,-0.25},{0.25,0.25}},
-					icon = "__logicarts__/sticker-icon.png",
+					icon = "__logicarts__/graphics/sticker-icon.png",
 					icon_size = 32,
 					picture = {
 						filename = icon,
