@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.29
+Date: 06. 03. 2019
+  Changes:
+    - Added experimental "deploy" and "retire" cart stops, to automatically place and remove carts and battery/generator equipment
+---------------------------------------------------------------------------------------------------
 Version: 0.1.28
 Date: 01. 03. 2019
   Changes:

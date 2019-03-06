@@ -54,7 +54,7 @@ local CAR_TICK_STOPPED = 60
 local CAR_TICK_ACTIVITY = 60
 
 -- Tick delay between deploy-stop checks
-local DEPLOY_TICK = 60
+local DEPLOY_TICK = 60 -- overriden by settings
 local RETIRE_TICK = 60
 
 local CAR_BURNER = "logicarts-car"
@@ -302,6 +302,24 @@ local function warning(car, state, msg)
 		color = {r=1,g=0.6,b=0.6},
 		text = msg,
 	})
+end
+
+local function watts(str)
+	lstr = str:lower()
+	if suffixed(lstr, "kw") then
+		return tonumber(str:sub(-2)) * 1000
+	end
+	if suffixed(lstr, "mw") then
+		return tonumber(str:sub(-2)) * 1000000
+	end
+	if suffixed(lstr, "gw") then
+		return tonumber(str:sub(-2)) * 1000000000
+	end
+	if suffixed(lstr, "w") then
+		return tonumber(str:sub(-1))
+	end
+
+	return tonumber(str)
 end
 
 local function cellCenter(x, y)
@@ -1925,6 +1943,8 @@ end
 -- A deploy stop places, fuels and equips carts from an adjacent chest
 local function runDeploy(stop)
 
+	local interval = math.max(DEPLOY_TICK, settings.global["logicarts-deploy-seconds"].value * 60)
+
 	local surface = stop.surface
 	local x, y = cellCenter(stop.position.x, stop.position.y)
 	local cell = cellGet(x, y, surface)
@@ -1932,7 +1952,7 @@ local function runDeploy(stop)
 	local chests, chestDirections = getAllChests(x, y, surface)
 
 	if #chests < 1 then
-		return RETIRE_TICK
+		return interval
 	end
 
 	local items = {}
@@ -1967,7 +1987,7 @@ local function runDeploy(stop)
 		if #carts > 0 and carts[1] and carts[1].valid and carts[1].unit_number == cell.car_id then
 			cart = carts[1]
 		else
-			return RETIRE_TICK
+			return interval
 		end
 
 	else
@@ -2001,6 +2021,7 @@ local function runDeploy(stop)
 	end
 
 	if cart then
+
 		if cart.name == CAR_BURNER and not cart.burner.currently_burning then
 			-- start fueling
 			for name, count in pairs(items) do
@@ -2012,16 +2033,44 @@ local function runDeploy(stop)
 			end
 		end
 
-		local equiped = false
-		for name, count in pairs(cart.grid.get_contents()) do
-			equiped	= true
-			break
-		end
-		if not equiped then
-			-- insert equipment
+		if cart.name == CAR_ELECTRIC then
+
+			local equipped = cart.grid.get_contents()
+			local batteries = 0
+			local solarpanels = 0
+			local generators = 0
+
+			for name, count in pairs(equipped) do
+				local proto = game.equipment_prototypes[name]
+				if proto.type == "battery-equipment" then
+					batteries = batteries + 1
+				end
+				if proto.type == "solar-panel-equipment" then
+					solarpanels = solarpanels + 1
+				end
+				if proto.type == "generator-equipment" then
+					generators = generators + 1
+				end
+			end
+
 			for name, _ in pairs(items) do
-				if game.equipment_prototypes[name] then
-					if cart.grid.put({ name = name }) then
+				local proto = game.equipment_prototypes[name]
+				if proto then
+
+					if batteries == 0
+						and proto.type == "battery-equipment"
+						and cart.grid.put({ name = name })
+					then
+						take_item(name, 1)
+					end
+
+					if solarpanels == 0 and generators == 0
+						and (
+							proto.type == "solar-panel-equipment"
+							or proto.type == "generator-equipment"
+						)
+						and cart.grid.put({ name = name })
+					then
 						take_item(name, 1)
 					end
 				end
@@ -2029,7 +2078,7 @@ local function runDeploy(stop)
 		end
 	end
 
-	return DEPLOY_TICK
+	return interval
 end
 
 local function runRetire(stop)
@@ -2109,6 +2158,14 @@ local function runRetire(stop)
 			take_item(name, count)
 		end
 		return RETIRE_TICK
+	end
+
+	-- Could do this better. If a cart and equipment fit into the chest,
+	-- but the fuel doesn't, it's currently just lost...
+	if cart.name == CAR_BURNER then
+		for name, count in pairs(cart.get_fuel_inventory().get_contents()) do
+			store_item(name, count)
+		end
 	end
 
 	cart.destroy()
