@@ -1,3 +1,4 @@
+# This is a fork of [dorfl logistic carts](https://mods.factorio.com/mod/logicarts)
 # Logistic Carts (WIP)
 
 Documentation and examples on the wiki: https://gitlab.com/aerosuidae/logicarts/wikis/home
@@ -24,12 +25,13 @@ Documentation and examples on the wiki: https://gitlab.com/aerosuidae/logicarts/
 
 ## Thanks to:
 
+* [dorfl](https://mods.factorio.com/user/dorfl) for the original mod!
 * [Arch666Angel](https://mods.factorio.com/user/Arch666Angel) for graphics! (And some more yet to be released...)
 
 ## Change Log
 
-https://gitlab.com/aerosuidae/logicarts/blob/master/changelog.md
+https://github.com/viniciuslrangel/factorio-logicarts/blob/main/changelog.txt
 
-## Development Direction
+## Issues & Sugestions
 
-https://gitlab.com/aerosuidae/logicarts/issues
+https://github.com/viniciuslrangel/factorio-logicarts/issues
