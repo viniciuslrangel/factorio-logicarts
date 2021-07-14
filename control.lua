@@ -1003,9 +1003,7 @@ local function setCombinatorSignals(combinator, items, virtuals)
 		end
 	end
 
-	combinator.get_control_behavior().parameters = {
-		parameters = parameters
-	}
+	combinator.get_control_behavior().parameters = parameters
 end
 
 local function getCombinatorSignals(combinator)
@@ -1027,7 +1025,7 @@ local function getCombinatorSignals(combinator)
 		end
 	end
 	check(combinator.get_merged_signals())
-	check(combinator.get_control_behavior().parameters.parameters)
+	check(combinator.get_control_behavior().parameters)
 	return virtuals, items, array
 end
 
@@ -1770,13 +1768,11 @@ local function runCar(car)
 
 			if CCvirtuals["signal-T"] then
 				carFiltersFromSignals(car, CCarray)
+				adjacentCombinator = nil
 			end
 
 			if CCvirtuals["signal-G"] and car.force.technologies["logicarts-tech-groups"].researched then
 				carGroupFromSignals(car, CCarray)
-			end
-
-			if restrictedVirtuals(CCvirtuals) then
 				adjacentCombinator = nil
 			end
 		end
@@ -1784,7 +1780,7 @@ local function runCar(car)
 
 	local stop = red or (cell.stop and not green)
 
-	if stop then
+	if cell.path and stop then
 		contentsAndSignals()
 
 		if cell.load or cell.unload or cell.supply or cell.dump or cell.accept then
