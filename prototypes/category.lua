@@ -8,7 +8,7 @@ data:extend({
 		name = "logicarts-group",
 		order = "z",
 		inventory_order = "z",
-		icon = "__logicarts__/graphics/cart-tech.png",
+		icon = "__logicarts2__/graphics/cart-tech.png",
 		icon_size = 128,
 	},
 	{

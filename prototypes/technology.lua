@@ -2,7 +2,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech1",
-		icon = "__logicarts__/graphics/cart-tech.png",
+		icon = "__logicarts2__/graphics/cart-tech.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-paint" },
@@ -32,7 +32,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech2",
-		icon = "__logicarts__/graphics/e-cart-tech.png",
+		icon = "__logicarts2__/graphics/e-cart-tech.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-car-electric" },
@@ -56,7 +56,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech-stops",
-		icon = "__logicarts__/graphics/tech-stops.png",
+		icon = "__logicarts2__/graphics/tech-stops.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-stop-load" },
@@ -83,7 +83,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech-stickers",
-		icon = "__logicarts__/graphics/tech-stickers.png",
+		icon = "__logicarts2__/graphics/tech-stickers.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-sticker" },
@@ -104,7 +104,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech-groups",
-		icon = "__logicarts__/graphics/tech-groups.png",
+		icon = "__logicarts2__/graphics/tech-groups.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-equipment-1" },
@@ -129,7 +129,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "logicarts-tech-dual",
-		icon = "__logicarts__/graphics/tech-dual.png",
+		icon = "__logicarts2__/graphics/tech-dual.png",
 		icon_size = 128,
 		effects = {
 			{ type = "unlock-recipe", recipe = "logicarts-path-dual-straight" },

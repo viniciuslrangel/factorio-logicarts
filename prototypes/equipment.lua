@@ -21,7 +21,7 @@ data:extend({
 
 local function signalEquipment(n)
 	local name = "logicarts-equipment-"..n
-	local icon = "__logicarts__/graphics/icon-G"..n..".png"
+	local icon = "__logicarts2__/graphics/icon-G"..n..".png"
 	data:extend({
 		{
 			type = "item",

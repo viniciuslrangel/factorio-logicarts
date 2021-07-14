@@ -60,7 +60,7 @@ local function hiddenItem(name, size, icon)
 end
 
 local function invisibleItem(name, size, icon)
-	hiddenItem(name, 32, "__logicarts__/graphics/nothing.png")
+	hiddenItem(name, 32, "__logicarts2__/graphics/nothing.png")
 end
 
 local function directionItems(name, size, icon)
@@ -93,36 +93,36 @@ invisibleItem("logicarts-marker")
 invisibleItem("logicarts-wear")
 
 -- ROW 1
-ingredientItem("logicarts-paint", 50, "logicarts-subgroup", 128, "__logicarts__/graphics/paint-icon.png")
-placeableItemWithEntityData("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/cart-ico.png")
-placeableItemWithEntityData("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts__/graphics/e-cart-ico.png")
+ingredientItem("logicarts-paint", 50, "logicarts-subgroup", 128, "__logicarts2__/graphics/paint-icon.png")
+placeableItemWithEntityData("logicarts-car", 10, "logicarts-subgroup", 32, "__logicarts2__/graphics/cart-ico.png")
+placeableItemWithEntityData("logicarts-car-electric", 10, "logicarts-subgroup", 32, "__logicarts2__/graphics/e-cart-ico.png")
 
-placeableItem("logicarts-sticker", 1000, "logicarts-subgroup", 32, "__logicarts__/graphics/sticker-icon.png")
-hiddenItem("logicarts-sticker-display", 32, "__logicarts__/graphics/sticker-icon.png")
+placeableItem("logicarts-sticker", 1000, "logicarts-subgroup", 32, "__logicarts2__/graphics/sticker-icon.png")
+hiddenItem("logicarts-sticker-display", 32, "__logicarts2__/graphics/sticker-icon.png")
 
 -- ROW 2
-pathItem("logicarts-path",  "__logicarts__/graphics/path-icon.png")
-pathItem("logicarts-turn",  "__logicarts__/graphics/turn-icon.png")
-pathItem("logicarts-stop",  "__logicarts__/graphics/stop-icon.png")
-pathItem("logicarts-turn-fuel",  "__logicarts__/graphics/turn-fuel-icon.png")
-pathItem("logicarts-turn-blocked",  "__logicarts__/graphics/turn-blocked-icon.png")
-pathItem("logicarts-continue",  "__logicarts__/graphics/continue-icon.png")
+pathItem("logicarts-path",  "__logicarts2__/graphics/path-icon.png")
+pathItem("logicarts-turn",  "__logicarts2__/graphics/turn-icon.png")
+pathItem("logicarts-stop",  "__logicarts2__/graphics/stop-icon.png")
+pathItem("logicarts-turn-fuel",  "__logicarts2__/graphics/turn-fuel-icon.png")
+pathItem("logicarts-turn-blocked",  "__logicarts2__/graphics/turn-blocked-icon.png")
+pathItem("logicarts-continue",  "__logicarts2__/graphics/continue-icon.png")
 
-placeableItem("logicarts-yield", path_stack_size, "logicarts-subgroup-path", 128, "__logicarts__/graphics/yield-icon.png")
+placeableItem("logicarts-yield", path_stack_size, "logicarts-subgroup-path", 128, "__logicarts2__/graphics/yield-icon.png")
 
 -- ROW 3
-stopItem("logicarts-stop-load",   "__logicarts__/graphics/stop-load-icon.png")
-stopItem("logicarts-stop-unload", "__logicarts__/graphics/stop-unload-icon.png")
-stopItem("logicarts-stop-supply", "__logicarts__/graphics/stop-supply-icon.png")
-stopItem("logicarts-stop-dump",   "__logicarts__/graphics/stop-dump-icon.png")
-stopItem("logicarts-stop-accept", "__logicarts__/graphics/stop-accept-icon.png")
-stopItem("logicarts-stop-deploy", "__logicarts__/graphics/stop-deploy-icon.png")
-stopItem("logicarts-stop-retire", "__logicarts__/graphics/stop-retire-icon.png")
+stopItem("logicarts-stop-load",   "__logicarts2__/graphics/stop-load-icon.png")
+stopItem("logicarts-stop-unload", "__logicarts2__/graphics/stop-unload-icon.png")
+stopItem("logicarts-stop-supply", "__logicarts2__/graphics/stop-supply-icon.png")
+stopItem("logicarts-stop-dump",   "__logicarts2__/graphics/stop-dump-icon.png")
+stopItem("logicarts-stop-accept", "__logicarts2__/graphics/stop-accept-icon.png")
+stopItem("logicarts-stop-deploy", "__logicarts2__/graphics/stop-deploy-icon.png")
+stopItem("logicarts-stop-retire", "__logicarts2__/graphics/stop-retire-icon.png")
 
 -- ROW 4
-dualItem("logicarts-path-dual-straight",  "__logicarts__/graphics/path-dual-straight-icon.png")
-dualItem("logicarts-path-dual-turn",  "__logicarts__/graphics/path-dual-turn-icon.png")
-dualItem("logicarts-continue-dual-straight",  "__logicarts__/graphics/continue-dual-straight-icon.png")
-dualItem("logicarts-continue-dual-turn",  "__logicarts__/graphics/continue-dual-turn-icon.png")
+dualItem("logicarts-path-dual-straight",  "__logicarts2__/graphics/path-dual-straight-icon.png")
+dualItem("logicarts-path-dual-turn",  "__logicarts2__/graphics/path-dual-turn-icon.png")
+dualItem("logicarts-continue-dual-straight",  "__logicarts2__/graphics/continue-dual-straight-icon.png")
+dualItem("logicarts-continue-dual-turn",  "__logicarts2__/graphics/continue-dual-turn-icon.png")
 
 data:extend(prototypes)

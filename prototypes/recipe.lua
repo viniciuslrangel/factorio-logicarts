@@ -12,7 +12,7 @@ data:extend({
 		category = "crafting-with-fluid",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
-		icon = "__logicarts__/graphics/paint-icon.png",
+		icon = "__logicarts2__/graphics/paint-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item",  name = "stone", amount = 1 },
@@ -32,7 +32,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
-		icon = "__logicarts__/graphics/cart-ico.png",
+		icon = "__logicarts2__/graphics/cart-ico.png",
 		icon_size = 32,
 		ingredients = {
 			{ type = "item", name = "engine-unit", amount = 2 },
@@ -52,7 +52,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
-		icon = "__logicarts__/graphics/e-cart-ico.png",
+		icon = "__logicarts2__/graphics/e-cart-ico.png",
 		icon_size = 32,
 		ingredients = {
 			{ type = "item", name = "electric-engine-unit", amount = 2 },
@@ -72,7 +72,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup",
 		enabled = false,
-		icon = "__logicarts__/graphics/sticker-icon.png",
+		icon = "__logicarts2__/graphics/sticker-icon.png",
 		icon_size = 32,
 		ingredients = {
 			{ type = "item", name = "logicarts-paint", amount = 1 },
@@ -91,7 +91,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-icon.png",
+		icon = "__logicarts2__/graphics/stop-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
@@ -110,7 +110,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/path-icon.png",
+		icon = "__logicarts2__/graphics/path-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
@@ -129,7 +129,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/continue-icon.png",
+		icon = "__logicarts2__/graphics/continue-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-ore", amount = 1 },
@@ -148,7 +148,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/turn-icon.png",
+		icon = "__logicarts2__/graphics/turn-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
@@ -167,7 +167,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/turn-blocked-icon.png",
+		icon = "__logicarts2__/graphics/turn-blocked-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
@@ -186,7 +186,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/turn-fuel-icon.png",
+		icon = "__logicarts2__/graphics/turn-fuel-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
@@ -205,7 +205,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-path",
 		enabled = false,
-		icon = "__logicarts__/graphics/yield-icon.png",
+		icon = "__logicarts2__/graphics/yield-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-ore", amount = 1 },
@@ -224,7 +224,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-load-icon.png",
+		icon = "__logicarts2__/graphics/stop-load-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-plate", amount = 1 },
@@ -243,7 +243,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-unload-icon.png",
+		icon = "__logicarts2__/graphics/stop-unload-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-plate", amount = 1 },
@@ -262,7 +262,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-supply-icon.png",
+		icon = "__logicarts2__/graphics/stop-supply-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-plate", amount = 1 },
@@ -281,7 +281,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-dump-icon.png",
+		icon = "__logicarts2__/graphics/stop-dump-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "copper-plate", amount = 1 },
@@ -300,7 +300,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-accept-icon.png",
+		icon = "__logicarts2__/graphics/stop-accept-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "iron-plate", amount = 1 },
@@ -319,7 +319,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-deploy-icon.png",
+		icon = "__logicarts2__/graphics/stop-deploy-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = steelPlate, amount = 1 },
@@ -338,7 +338,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-stop",
 		enabled = false,
-		icon = "__logicarts__/graphics/stop-retire-icon.png",
+		icon = "__logicarts2__/graphics/stop-retire-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = steelPlate, amount = 1 },
@@ -357,7 +357,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-dual",
 		enabled = false,
-		icon = "__logicarts__/graphics/path-dual-straight-icon.png",
+		icon = "__logicarts2__/graphics/path-dual-straight-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "logicarts-path", amount = 2 },
@@ -375,7 +375,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-dual",
 		enabled = false,
-		icon = "__logicarts__/graphics/path-dual-turn-icon.png",
+		icon = "__logicarts2__/graphics/path-dual-turn-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "logicarts-path", amount = 2 },
@@ -393,7 +393,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-dual",
 		enabled = false,
-		icon = "__logicarts__/graphics/continue-dual-straight-icon.png",
+		icon = "__logicarts2__/graphics/continue-dual-straight-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "logicarts-continue", amount = 2 },
@@ -411,7 +411,7 @@ data:extend({
 		category = "crafting",
 		subgroup = "logicarts-subgroup-dual",
 		enabled = false,
-		icon = "__logicarts__/graphics/continue-dual-turn-icon.png",
+		icon = "__logicarts2__/graphics/continue-dual-turn-icon.png",
 		icon_size = 128,
 		ingredients = {
 			{ type = "item", name = "logicarts-continue", amount = 2 },

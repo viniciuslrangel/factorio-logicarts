@@ -55,160 +55,160 @@ local function logicartsPath(placeable, name, size, scale, sheet, xpos)
 end
 
 data:extend({logicartsPath("logicarts-path", "logicarts-path-north",
-	128, 0.25, "__logicarts__/graphics/path.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/path.png", 0)})
 data:extend({logicartsPath("logicarts-path", "logicarts-path-east",
-	128, 0.25, "__logicarts__/graphics/path.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/path.png", 1)})
 data:extend({logicartsPath("logicarts-path", "logicarts-path-south",
-	128, 0.25, "__logicarts__/graphics/path.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/path.png", 2)})
 data:extend({logicartsPath("logicarts-path", "logicarts-path-west",
-	128, 0.25, "__logicarts__/graphics/path.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/path.png", 3)})
 
 data:extend({logicartsPath("logicarts-turn", "logicarts-turn-north",
-	128, 0.25, "__logicarts__/graphics/turn.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/turn.png", 0)})
 data:extend({logicartsPath("logicarts-turn", "logicarts-turn-east",
-	128, 0.25, "__logicarts__/graphics/turn.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/turn.png", 1)})
 data:extend({logicartsPath("logicarts-turn", "logicarts-turn-south",
-	128, 0.25, "__logicarts__/graphics/turn.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/turn.png", 2)})
 data:extend({logicartsPath("logicarts-turn", "logicarts-turn-west",
-	128, 0.25, "__logicarts__/graphics/turn.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/turn.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-north",
-	128, 0.25, "__logicarts__/graphics/stop.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop.png", 0)})
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-east",
-	128, 0.25, "__logicarts__/graphics/stop.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop.png", 1)})
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-south",
-	128, 0.25, "__logicarts__/graphics/stop.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop.png", 2)})
 data:extend({logicartsPath("logicarts-stop", "logicarts-stop-west",
-	128, 0.25, "__logicarts__/graphics/stop.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-north",
-	128, 0.25, "__logicarts__/graphics/stop-load.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-load.png", 0)})
 data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-east",
-	128, 0.25, "__logicarts__/graphics/stop-load.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-load.png", 1)})
 data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-south",
-	128, 0.25, "__logicarts__/graphics/stop-load.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-load.png", 2)})
 data:extend({logicartsPath("logicarts-stop-load", "logicarts-stop-load-west",
-	128, 0.25, "__logicarts__/graphics/stop-load.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-load.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-north",
-	128, 0.25, "__logicarts__/graphics/stop-unload.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-unload.png", 0)})
 data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-east",
-	128, 0.25, "__logicarts__/graphics/stop-unload.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-unload.png", 1)})
 data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-south",
-	128, 0.25, "__logicarts__/graphics/stop-unload.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-unload.png", 2)})
 data:extend({logicartsPath("logicarts-stop-unload", "logicarts-stop-unload-west",
-	128, 0.25, "__logicarts__/graphics/stop-unload.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-unload.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-north",
-	128, 0.25, "__logicarts__/graphics/stop-supply.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-supply.png", 0)})
 data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-east",
-	128, 0.25, "__logicarts__/graphics/stop-supply.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-supply.png", 1)})
 data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-south",
-	128, 0.25, "__logicarts__/graphics/stop-supply.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-supply.png", 2)})
 data:extend({logicartsPath("logicarts-stop-supply", "logicarts-stop-supply-west",
-	128, 0.25, "__logicarts__/graphics/stop-supply.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-supply.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-north",
-	128, 0.25, "__logicarts__/graphics/stop-dump.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-dump.png", 0)})
 data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-east",
-	128, 0.25, "__logicarts__/graphics/stop-dump.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-dump.png", 1)})
 data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-south",
-	128, 0.25, "__logicarts__/graphics/stop-dump.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-dump.png", 2)})
 data:extend({logicartsPath("logicarts-stop-dump", "logicarts-stop-dump-west",
-	128, 0.25, "__logicarts__/graphics/stop-dump.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-dump.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-north",
-	128, 0.25, "__logicarts__/graphics/stop-accept.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-accept.png", 0)})
 data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-east",
-	128, 0.25, "__logicarts__/graphics/stop-accept.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-accept.png", 1)})
 data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-south",
-	128, 0.25, "__logicarts__/graphics/stop-accept.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-accept.png", 2)})
 data:extend({logicartsPath("logicarts-stop-accept", "logicarts-stop-accept-west",
-	128, 0.25, "__logicarts__/graphics/stop-accept.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-accept.png", 3)})
 
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-north",
-	128, 0.25, "__logicarts__/graphics/turn-blocked.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/turn-blocked.png", 0)})
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-east",
-	128, 0.25, "__logicarts__/graphics/turn-blocked.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/turn-blocked.png", 1)})
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-south",
-	128, 0.25, "__logicarts__/graphics/turn-blocked.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/turn-blocked.png", 2)})
 data:extend({logicartsPath("logicarts-turn-blocked", "logicarts-turn-blocked-west",
-	128, 0.25, "__logicarts__/graphics/turn-blocked.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/turn-blocked.png", 3)})
 
 data:extend({logicartsPath("logicarts-continue", "logicarts-continue-north",
-	128, 0.25, "__logicarts__/graphics/continue.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/continue.png", 0)})
 data:extend({logicartsPath("logicarts-continue", "logicarts-continue-east",
-	128, 0.25, "__logicarts__/graphics/continue.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/continue.png", 1)})
 data:extend({logicartsPath("logicarts-continue", "logicarts-continue-south",
-	128, 0.25, "__logicarts__/graphics/continue.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/continue.png", 2)})
 data:extend({logicartsPath("logicarts-continue", "logicarts-continue-west",
-	128, 0.25, "__logicarts__/graphics/continue.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/continue.png", 3)})
 
 data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-north",
-	128, 0.25, "__logicarts__/graphics/turn-fuel.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/turn-fuel.png", 0)})
 data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-east",
-	128, 0.25, "__logicarts__/graphics/turn-fuel.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/turn-fuel.png", 1)})
 data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-south",
-	128, 0.25, "__logicarts__/graphics/turn-fuel.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/turn-fuel.png", 2)})
 data:extend({logicartsPath("logicarts-turn-fuel", "logicarts-turn-fuel-west",
-	128, 0.25, "__logicarts__/graphics/turn-fuel.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/turn-fuel.png", 3)})
 
 data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-north",
-	128, 0.25, "__logicarts__/graphics/path-dual-straight.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-straight.png", 0)})
 data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-east",
-	128, 0.25, "__logicarts__/graphics/path-dual-straight.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-straight.png", 1)})
 data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-south",
-	128, 0.25, "__logicarts__/graphics/path-dual-straight.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-straight.png", 2)})
 data:extend({logicartsPath("logicarts-path-dual-straight", "logicarts-path-dual-straight-west",
-	128, 0.25, "__logicarts__/graphics/path-dual-straight.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-straight.png", 3)})
 
 data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-north",
-	128, 0.25, "__logicarts__/graphics/path-dual-turn.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-turn.png", 0)})
 data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-east",
-	128, 0.25, "__logicarts__/graphics/path-dual-turn.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-turn.png", 1)})
 data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-south",
-	128, 0.25, "__logicarts__/graphics/path-dual-turn.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-turn.png", 2)})
 data:extend({logicartsPath("logicarts-path-dual-turn", "logicarts-path-dual-turn-west",
-	128, 0.25, "__logicarts__/graphics/path-dual-turn.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/path-dual-turn.png", 3)})
 
 data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-north",
-	128, 0.25, "__logicarts__/graphics/continue-dual-straight.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-straight.png", 0)})
 data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-east",
-	128, 0.25, "__logicarts__/graphics/continue-dual-straight.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-straight.png", 1)})
 data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-south",
-	128, 0.25, "__logicarts__/graphics/continue-dual-straight.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-straight.png", 2)})
 data:extend({logicartsPath("logicarts-continue-dual-straight", "logicarts-continue-dual-straight-west",
-	128, 0.25, "__logicarts__/graphics/continue-dual-straight.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-straight.png", 3)})
 
 data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-north",
-	128, 0.25, "__logicarts__/graphics/continue-dual-turn.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-turn.png", 0)})
 data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-east",
-	128, 0.25, "__logicarts__/graphics/continue-dual-turn.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-turn.png", 1)})
 data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-south",
-	128, 0.25, "__logicarts__/graphics/continue-dual-turn.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-turn.png", 2)})
 data:extend({logicartsPath("logicarts-continue-dual-turn", "logicarts-continue-dual-turn-west",
-	128, 0.25, "__logicarts__/graphics/continue-dual-turn.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/continue-dual-turn.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-deploy", "logicarts-stop-deploy-north",
-	128, 0.25, "__logicarts__/graphics/stop-deploy.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-deploy.png", 0)})
 data:extend({logicartsPath("logicarts-stop-deploy", "logicarts-stop-deploy-east",
-	128, 0.25, "__logicarts__/graphics/stop-deploy.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-deploy.png", 1)})
 data:extend({logicartsPath("logicarts-stop-deploy", "logicarts-stop-deploy-south",
-	128, 0.25, "__logicarts__/graphics/stop-deploy.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-deploy.png", 2)})
 data:extend({logicartsPath("logicarts-stop-deploy", "logicarts-stop-deploy-west",
-	128, 0.25, "__logicarts__/graphics/stop-deploy.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-deploy.png", 3)})
 
 data:extend({logicartsPath("logicarts-stop-retire", "logicarts-stop-retire-north",
-	128, 0.25, "__logicarts__/graphics/stop-retire.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/stop-retire.png", 0)})
 data:extend({logicartsPath("logicarts-stop-retire", "logicarts-stop-retire-east",
-	128, 0.25, "__logicarts__/graphics/stop-retire.png", 1)})
+	128, 0.25, "__logicarts2__/graphics/stop-retire.png", 1)})
 data:extend({logicartsPath("logicarts-stop-retire", "logicarts-stop-retire-south",
-	128, 0.25, "__logicarts__/graphics/stop-retire.png", 2)})
+	128, 0.25, "__logicarts2__/graphics/stop-retire.png", 2)})
 data:extend({logicartsPath("logicarts-stop-retire", "logicarts-stop-retire-west",
-	128, 0.25, "__logicarts__/graphics/stop-retire.png", 3)})
+	128, 0.25, "__logicarts2__/graphics/stop-retire.png", 3)})
 
 data:extend({logicartsPath("logicarts-yield", "logicarts-yield",
-	128, 0.25, "__logicarts__/graphics/yield.png", 0)})
+	128, 0.25, "__logicarts2__/graphics/yield.png", 0)})
 
 -- The placer entity is only used to make path placement with the mouse look normal,
 -- and to make blueprints work. It's never actually placed on the ground itself.
@@ -253,23 +253,23 @@ local function logicartsPathPlacer(name, size, scale, sheet, n, e, s, w)
 	data:extend({ path })
 end
 
-logicartsPathPlacer("logicarts-path", 128, 0.25, "__logicarts__/graphics/path.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop", 128, 0.25, "__logicarts__/graphics/stop.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-load", 128, 0.25, "__logicarts__/graphics/stop-load.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-unload", 128, 0.25, "__logicarts__/graphics/stop-unload.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-supply", 128, 0.25, "__logicarts__/graphics/stop-supply.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-dump", 128, 0.25, "__logicarts__/graphics/stop-dump.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-accept", 128, 0.25, "__logicarts__/graphics/stop-accept.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-deploy", 128, 0.25, "__logicarts__/graphics/stop-deploy.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-stop-retire", 128, 0.25, "__logicarts__/graphics/stop-retire.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts__/graphics/turn.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts__/graphics/turn-blocked.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts__/graphics/continue.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-turn-fuel", 128, 0.25, "__logicarts__/graphics/turn-fuel.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-dual-straight", 128, 0.25, "__logicarts__/graphics/path-dual-straight.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-path-dual-turn", 128, 0.25, "__logicarts__/graphics/path-dual-turn.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-continue-dual-straight", 128, 0.25, "__logicarts__/graphics/continue-dual-straight.png", 0, 1, 2, 3)
-logicartsPathPlacer("logicarts-continue-dual-turn", 128, 0.25, "__logicarts__/graphics/continue-dual-turn.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path", 128, 0.25, "__logicarts2__/graphics/path.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop", 128, 0.25, "__logicarts2__/graphics/stop.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-load", 128, 0.25, "__logicarts2__/graphics/stop-load.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-unload", 128, 0.25, "__logicarts2__/graphics/stop-unload.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-supply", 128, 0.25, "__logicarts2__/graphics/stop-supply.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-dump", 128, 0.25, "__logicarts2__/graphics/stop-dump.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-accept", 128, 0.25, "__logicarts2__/graphics/stop-accept.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-deploy", 128, 0.25, "__logicarts2__/graphics/stop-deploy.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-stop-retire", 128, 0.25, "__logicarts2__/graphics/stop-retire.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn", 128, 0.25, "__logicarts2__/graphics/turn.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-blocked", 128, 0.25, "__logicarts2__/graphics/turn-blocked.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue", 128, 0.25, "__logicarts2__/graphics/continue.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-turn-fuel", 128, 0.25, "__logicarts2__/graphics/turn-fuel.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-dual-straight", 128, 0.25, "__logicarts2__/graphics/path-dual-straight.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-path-dual-turn", 128, 0.25, "__logicarts2__/graphics/path-dual-turn.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue-dual-straight", 128, 0.25, "__logicarts2__/graphics/continue-dual-straight.png", 0, 1, 2, 3)
+logicartsPathPlacer("logicarts-continue-dual-turn", 128, 0.25, "__logicarts2__/graphics/continue-dual-turn.png", 0, 1, 2, 3)
 
 -- A mini car with sprites that are part 1x1 scaled car and part rail wagon...
 -- As direction_count=4, these look terible if you try to drive one around, but
@@ -324,7 +324,7 @@ car.animation.layers = {
 		},
 		stripes = {
 			{
-				filename = "__logicarts__/graphics/cart.png",
+				filename = "__logicarts2__/graphics/cart.png",
 				height_in_frames = 4,
 				width_in_frames =2,
 			},
@@ -346,7 +346,7 @@ car.animation.layers = {
 		},
 		stripes = {
 			{
-				filename = "__logicarts__/graphics/shadow.png",
+				filename = "__logicarts2__/graphics/shadow.png",
 				height_in_frames = 4,
 				width_in_frames = 2,
 			},
@@ -425,7 +425,7 @@ car.animation.layers = {
 		},
 		stripes = {
 			{
-				filename = "__logicarts__/graphics/electric-cart.png",
+				filename = "__logicarts2__/graphics/electric-cart.png",
 				height_in_frames = 4,
 				width_in_frames =2,
 			},
@@ -447,7 +447,7 @@ car.animation.layers = {
 		},
 		stripes = {
 			{
-				filename = "__logicarts__/graphics/shadow.png",
+				filename = "__logicarts2__/graphics/shadow.png",
 				height_in_frames = 4,
 				width_in_frames =2,
 			},
@@ -481,11 +481,11 @@ data:extend({
 		collision_mask = {},
 		collision_box = {{-0.5,-0.5},{0.5,0.5}},
 		selection_box = {{0,0},{0,0}},
-		icon = "__logicarts__/graphics/nothing.png",
+		icon = "__logicarts2__/graphics/nothing.png",
 		icon_size = 32,
 		picture = {
 			x = 0,
-			filename = "__logicarts__/graphics/nothing.png",
+			filename = "__logicarts2__/graphics/nothing.png",
 			width = 32,
 			height = 32,
 		},
@@ -518,11 +518,11 @@ data:extend({
 		collision_mask = {},
 		collision_box = {{-0.5,-0.5},{0.5,0.5}},
 		selection_box = {{0,0},{0,0}},
-		icon = "__logicarts__/graphics/nothing.png",
+		icon = "__logicarts2__/graphics/nothing.png",
 		icon_size = 32,
 		picture = {
 			x = 0,
-			filename = "__logicarts__/graphics/nothing.png",
+			filename = "__logicarts2__/graphics/nothing.png",
 			width = 32,
 			height = 32,
 		},
@@ -565,14 +565,14 @@ data:extend({
 		collision_mask = {"layer-14"},
 		collision_box = {{-0.4,-0.4},{0.4,0.4}},
 		selection_box = {{-0.25,-0.25},{0.25,0.25}},
-		icon = "__logicarts__/graphics/sticker-icon.png",
+		icon = "__logicarts2__/graphics/sticker-icon.png",
 		icon_size = 32,
 		pictures = variations,
 		render_layer = "higher-object-above",
 		tile_width = 1,
 		tile_height = 1,
 		picture = {
-			filename = "__logicarts__/graphics/sticker-icon.png",
+			filename = "__logicarts2__/graphics/sticker-icon.png",
 			width = 32,
 			height = 32,
 			scale = 0.25,
@@ -598,35 +598,35 @@ data:extend({
 		collision_box = {{-0.25,-0.25},{0.25,0.25}},
 		--selection_box = {{-0.25,-0.25},{0.25,0.25}},
 		selection_box = {{0.1,0.1},{0.6,0.6}},
-		icon = "__logicarts__/graphics/sticker-icon.png",
+		icon = "__logicarts2__/graphics/sticker-icon.png",
 		icon_size = 32,
 		tile_width = 1,
 		tile_height = 1,
 		item_slot_count = 1,
 		sprites = {
 			north = {
-				filename = "__logicarts__/graphics/sticker.png",
+				filename = "__logicarts2__/graphics/sticker.png",
 				width = 128,
 				height = 128,
 				priority = "medium",
 				scale = 0.25,
 			},
 			south = {
-				filename = "__logicarts__/graphics/sticker.png",
+				filename = "__logicarts2__/graphics/sticker.png",
 				width = 128,
 				height = 128,
 				priority = "medium",
 				scale = 0.25,
 			},
 			east = {
-				filename = "__logicarts__/graphics/sticker.png",
+				filename = "__logicarts2__/graphics/sticker.png",
 				width = 128,
 				height = 128,
 				priority = "medium",
 				scale = 0.25,
 			},
 			west = {
-				filename = "__logicarts__/graphics/sticker.png",
+				filename = "__logicarts2__/graphics/sticker.png",
 				width = 128,
 				height = 128,
 				priority = "medium",
