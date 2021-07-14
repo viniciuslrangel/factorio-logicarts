@@ -1,3 +1,10 @@
+local steelPlate
+if mods["IndustrialRevolution"] then
+  steelPlate = "iron-beam"
+else
+  steelPlate = "steel-plate"
+end
+
 data:extend({
 	{
 		type = "recipe",
@@ -29,7 +36,7 @@ data:extend({
 		icon_size = 32,
 		ingredients = {
 			{ type = "item", name = "engine-unit", amount = 2 },
-			{ type = "item", name = "steel-plate", amount = 4 },
+			{ type = "item", name = steelPlate, amount = 4 },
 			{ type = "item", name = "electronic-circuit", amount = 4 },
 		},
 		results = {
@@ -49,7 +56,7 @@ data:extend({
 		icon_size = 32,
 		ingredients = {
 			{ type = "item", name = "electric-engine-unit", amount = 2 },
-			{ type = "item", name = "steel-plate", amount = 4 },
+			{ type = "item", name = steelPlate, amount = 4 },
 			{ type = "item", name = "advanced-circuit", amount = 4 },
 		},
 		results = {
@@ -315,7 +322,7 @@ data:extend({
 		icon = "__logicarts__/graphics/stop-deploy-icon.png",
 		icon_size = 128,
 		ingredients = {
-			{ type = "item", name = "steel-plate", amount = 1 },
+			{ type = "item", name = steelPlate, amount = 1 },
 			{ type = "item", name = "logicarts-stop", amount = 1 },
 		},
 		results = {
@@ -334,7 +341,7 @@ data:extend({
 		icon = "__logicarts__/graphics/stop-retire-icon.png",
 		icon_size = 128,
 		ingredients = {
-			{ type = "item", name = "steel-plate", amount = 1 },
+			{ type = "item", name = steelPlate, amount = 1 },
 			{ type = "item", name = "logicarts-stop", amount = 1 },
 		},
 		results = {
