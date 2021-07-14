@@ -1,8 +1,18 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.1.29
-Date: 06. 03. 2019
+Version: 0.2.0
+Date: 23. 01. 2020
   Changes:
-    - Added experimental "deploy" and "retire" cart stops, to automatically place and remove carts and battery/generator equipment
+    - Factorio 0.18 support
+---------------------------------------------------------------------------------------------------
+Version: 0.1.30
+Date: 21. 10. 2019
+  Bugfixes:
+    - Stricter sticker icon type checks
+---------------------------------------------------------------------------------------------------
+Version: 0.1.29
+Date: 01. 03. 2019
+  Changes:
+    - Auto deploy and retire stops
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.28
 Date: 01. 03. 2019

@@ -11,17 +11,8 @@ data:extend({
   {
     type = "bool-setting",
     name = "logicarts-grass-wearing",
-    order = "b",
+    order = "a",
     setting_type = "runtime-global",
     default_value = true,
-  },
-  {
-    type = "int-setting",
-    name = "logicarts-deploy-seconds",
-    order = "c",
-    setting_type = "runtime-global",
-    default_value = 3,
-    minimum_value = 1,
-    maximum_value = 60,
   },
 })

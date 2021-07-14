@@ -35,7 +35,7 @@ for _, list in ipairs(enableDataItems) do
 				icon = "__base__/graphics/icons/fluid/barreling/empty-barrel.png"
 				icon_size = 32
 			end
-			if icon ~= nil then
+			if type(icon) == "string" and type(icon_size) == "number" then
 				items[#items+1] = {
 					type = "item",
 					name = "logicarts-item-"..name,

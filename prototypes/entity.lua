@@ -354,6 +354,7 @@ car.animation.layers = {
 		width = 192,
 	}
 }
+car.track_particle_triggers = nil
 
 data:extend({ car })
 
@@ -454,6 +455,7 @@ car.animation.layers = {
 		width = 192,
 	}
 }
+car.track_particle_triggers = nil
 data:extend({ car })
 
 -- When carts move around, to avoid collision we claim tiles before
