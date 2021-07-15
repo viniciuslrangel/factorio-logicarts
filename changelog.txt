@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.4
+Date: 14.07.2021
+  Features:
+    - Cart speed can be changed in the map settings
+---------------------------------------------------------------------------------------------------
 Version: 0.3.3
 Date: 14.07.2021
   Bugfixes:
@@ -15,6 +20,7 @@ Date: 14.07.2021
     - Mod forked
   Changed:
     - Reduced burner cart fuel consumption
+  Features:
     - Add Industrial Revolution compatibility (crafting updated to be able to craft after iron tech)
   Bugfixes:
     - Crashing when constant combinator was used near a stop

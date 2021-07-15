@@ -15,4 +15,13 @@ data:extend({
     setting_type = "runtime-global",
     default_value = true,
   },
+  {
+    type = "int-setting",
+    name = "logicarts-cart-speed",
+    order = "a",
+    setting_type = "runtime-global",
+    default_value = 10,
+    minimum_value = 1,
+    maximum_value = 200,
+  },
 })

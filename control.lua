@@ -6,7 +6,7 @@ local EAST = defines.direction.east
 local WEST = defines.direction.west
 
 -- kph
-local CAR_SPEED = 5
+local CAR_SPEED = settings.global["logicarts-cart-speed"].value or 10
 
 -- entity.speed of cars
 local CAR_ENTITY_SPEED = CAR_SPEED/216
@@ -54,7 +54,7 @@ local CAR_TICK_STOPPED = 60
 local CAR_TICK_ACTIVITY = 60
 
 -- Tick delay between deploy-stop checks
-local DEPLOY_TICK = 60 -- overriden by settings
+local DEPLOY_TICK = 60
 local RETIRE_TICK = 60
 
 local CAR_BURNER = "logicarts-car"
